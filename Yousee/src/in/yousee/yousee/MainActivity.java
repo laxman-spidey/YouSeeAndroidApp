@@ -1,8 +1,21 @@
 package in.yousee.yousee;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class MainActivity extends Activity
 {
@@ -12,6 +25,45 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+	}
+
+	public void sendTestRequest()
+	{
+		URL url;
+		try
+		{
+			/*
+			url = new URL("http://192.168.0.102/yousee_test/YouseeMobile/");
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			connection.connect();
+			*/
+			DefaultHttpClient client = new DefaultHttpClient();
+			String postURL = "http://192.168.0.102/yousee_test/YouseeMobile/";
+			HttpPost post = new HttpPost(postURL);
+			
+			
+			
+			
+			HttpResponse response = client.execute(post);
+			
+			HttpEntity entity = response.getEntity();
+			String string = entity.toString();
+			
+			
+
+		} catch (MalformedURLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
