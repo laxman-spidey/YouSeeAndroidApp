@@ -25,6 +25,7 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		sendTestRequest();
 	}
 
 	public void sendTestRequest()
@@ -32,25 +33,25 @@ public class MainActivity extends Activity
 		URL url;
 		try
 		{
-			/*
-			url = new URL("http://192.168.0.102/yousee_test/YouseeMobile/");
+			
+			url = new URL("http://192.168.0.102:80/yousee_test/YouseeMobile/");
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			connection.connect();
-			*/
+			
 			DefaultHttpClient client = new DefaultHttpClient();
-			String postURL = "http://192.168.0.102/yousee_test/YouseeMobile/";
+			String postURL = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
 			HttpPost post = new HttpPost(postURL);
 			
 			
 			
 			
-			HttpResponse response = client.execute(post);
+			client.execute(post);
 			
-			HttpEntity entity = response.getEntity();
-			String string = entity.toString();
+			TextView t= (TextView) findViewById(R.id.textView1);
+			t.setText("hurrrayyyy");
 			
 			
 
