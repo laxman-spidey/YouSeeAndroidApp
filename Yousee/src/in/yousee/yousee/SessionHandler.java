@@ -3,21 +3,27 @@ package in.yousee.yousee;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class SessionHandler
 {
 	private Activity activity;
+	private Context context;
 	private String username;
 	private String password;
 	private String sessionID;
+	private String userID;
+	private String userType;
 
 	public SessionHandler(Activity activity)
 	{
 		this.activity = activity;
+		context=activity.getApplicationContext();
 	}
 
 	private boolean getLoginCredentials(String username, String password)
 	{
+		Log.i("tag", "in getLogin credentials");
 		SharedPreferences sharedPrefs;
 		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
 		username = sharedPrefs.getString("USERNAME", null);
@@ -69,16 +75,25 @@ public class SessionHandler
 	public int loginExec()
 	{
 		
-		if (getLoginCredentials(username, password))
+		
+		Log.i("tag", "in login exec");
+		//if (getLoginCredentials(username, password))
 			return loginExec(username, password);
-		else
-			return -1;
+		//else
+			//return -1;
 	}
 
 	public int loginExec(String username, String password)
 	{
 		int statusCode = 0;
-
+		
+		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
+		if(NetworkConnectionHandler.isNetworkConnected(context))
+		{
+			Log.i("tag", "connection available");
+			networkHandler.sendRequest();
+			Log.i("tag", "response recieved");
+		}
 		
 		setSessionId(sessionID);
 		setLoginCredentials(username, password);

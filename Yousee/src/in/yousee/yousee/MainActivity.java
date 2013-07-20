@@ -50,7 +50,7 @@ public class MainActivity extends Activity
 			HttpPost post = new HttpPost(postURL);
 			// uncomment lines when we use no proxy(at home)
 			HttpResponse response = client.execute(post);
-			Log.i("tag","request sent");
+			//Log.i("tag","request sent");
 			HttpEntity entity = response.getEntity();
 			ob.put("username", "deo");
 			ob.put("pwd", "deo123");
@@ -61,7 +61,7 @@ public class MainActivity extends Activity
 			t.setText("hurrrayyyy");
 			
 			HttpResponse responsePOST = client.execute(post);
-			Log.i("tag","request sent");
+			//Log.i("tag","request sent");
 			HttpEntity resEntity = responsePOST.getEntity();
 		} catch (Exception e)
 		{
