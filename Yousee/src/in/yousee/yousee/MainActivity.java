@@ -54,22 +54,31 @@ public class MainActivity extends SherlockActivity
 
 	private boolean filterMenuVisibility = false;
 
-	/*
-	 * @Override public boolean onOptionsItemSelected(MenuItem item) {
-	 * 
-	 * switch (item.getItemId()) { case R.id.action_filter:
-	 * filterMenuVisibility = !(filterMenuVisibility); //
-	 * showFilterMenu(filterMenuVisibility);
-	 * 
-	 * break;
-	 * 
-	 * default: break; } return true; }
-	 * 
-	 * public void showFilterMenu(boolean visibility) { RelativeLayout lay =
-	 * (RelativeLayout) findViewById(R.id.filterMenuLayout); if (visibility)
-	 * lay.setVisibility(View.VISIBLE); else
-	 * lay.setVisibility(View.INVISIBLE); }
-	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+
+		switch (item.getItemId())
+			{
+			case R.id.action_filter:
+				filterMenuVisibility = !(filterMenuVisibility);
+				showFilterMenu(filterMenuVisibility);
+
+				break;
+
+			default:
+				break;
+			}
+		return true;
+	}
+
+	public void showFilterMenu(boolean visibility)
+	{
+		if (visibility)
+			myList.setVisibility(View.VISIBLE);
+		else
+			myList.setVisibility(View.INVISIBLE);
+	}
 
 	public void sendRequest()
 	{
@@ -108,12 +117,12 @@ public class MainActivity extends SherlockActivity
 		listAdapter.notifyDataSetChanged();
 
 		// collapse all groups
-		//collapseAll();
+		// collapseAll();
 		// expand the group where item was just added
-		//myList.expandGroup(groupPosition);
+		// myList.expandGroup(groupPosition);
 		// set the current group to be selected so that it becomes
 		// visible
-		//myList.setSelectedGroup(groupPosition);
+		// myList.setSelectedGroup(groupPosition);
 	}
 
 	// method to expand all groups
@@ -140,27 +149,38 @@ public class MainActivity extends SherlockActivity
 	private void loadData()
 	{
 
-		addProduct("Apparel", "Activewear");
-		addProduct("Apparel", "Jackets");
-		addProduct("Apparel", "Shorts");
+		addProduct("Area", "Education");
+		addProduct("Area", "Environment");
+		addProduct("Area", "Health");
 
-		addProduct("Beauty", "Fragrances");
-		addProduct("Beauty", "Makeup");
+		addProduct("Domain", "Documentation");
+		addProduct("Domain", "Project Activity");
+		addProduct("Domain", "Technology");
+
+		addProduct("City", "Bangalore");
+		addProduct("City", "Hyderabad");
+		addProduct("City", "Lucknow");
+
+		addProduct("Acivity Type", "Onsite");
+		addProduct("Acivity Type", "Offsite");
 
 	}
 
 	// our child listener
-	private OnChildClickListener myListItemClicked = new OnChildClickListener() {
+	public OnChildClickListener myListItemClicked = new OnChildClickListener() {
 
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
 		{
 
+			Log.d("tag", "child is selected");
 			// get the group header
 			HeaderInfo headerInfo = deptList.get(groupPosition);
 			// get the child info
 			DetailInfo detailInfo = headerInfo.getProductList().get(childPosition);
 			// display it or do something with it
-			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_SHORT).show();
+			CheckBox checkBox = detailInfo.getCheckBox();
+			checkBox.setChecked(!checkBox.isChecked());
 			return false;
 		}
 
@@ -175,7 +195,7 @@ public class MainActivity extends SherlockActivity
 			// get the group header
 			HeaderInfo headerInfo = deptList.get(groupPosition);
 			// display it or do something with it
-			Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(), Toast.LENGTH_SHORT).show();
 
 			return false;
 		}

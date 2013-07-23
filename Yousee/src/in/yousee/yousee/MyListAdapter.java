@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class MyListAdapter extends BaseExpandableListAdapter
@@ -38,18 +39,24 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view, ViewGroup parent)
 	{
 
+		HeaderInfo group = (HeaderInfo) getGroup(groupPosition);
+
 		DetailInfo detailInfo = (DetailInfo) getChild(groupPosition, childPosition);
+
 		if (view == null)
 		{
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = infalInflater.inflate(R.layout.child_row, null);
 		}
 
-		TextView sequence = (TextView) view.findViewById(R.id.sequence);
-		sequence.setText(detailInfo.getSequence().trim() + ") ");
+		CheckBox check = (CheckBox) view.findViewById(R.id.sequence);
+		check.setFocusable(false);
+		detailInfo.setCheckBox(check);
+
+		// sequence.setText(detailInfo.getSequence().trim() + ") ");
 		TextView childItem = (TextView) view.findViewById(R.id.childItem);
 		childItem.setText(detailInfo.getName().trim());
-
+		detailInfo.setTextView(childItem);
 		return view;
 	}
 
@@ -107,6 +114,6 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public boolean isChildSelectable(int groupPosition, int childPosition)
 	{
 		return true;
-	}
+	}  
 
 }
