@@ -43,7 +43,7 @@ public class SessionHandler
 		
 	}
 
-	private boolean isLoginCredentialsExists()
+	public boolean isLoginCredentialsExists()
 	{
 		SharedPreferences sharedPrefs;
 		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);

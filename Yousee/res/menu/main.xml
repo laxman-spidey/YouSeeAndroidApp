@@ -5,5 +5,27 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/action_filter"
+        android:showAsAction="ifRoom"
+        android:title="FILTER"/>
+
+    <group
+        android:id="@+id/group1"
+        android:showAsAction="ifRoom"
+        android:checkableBehavior="all"
+        android:enabled="true"
+        android:menuCategory="container"
+        android:orderInCategory="1"
+        android:visible="true" >
+        <item
+            android:id="@+id/item1"
+            android:showAsAction="ifRoom"
+            android:actionLayout="@layout/test"
+            android:checkable="true"
+            android:checked="false"
+            android:visible="true">
+        </item>
+    </group>
 
 </menu>

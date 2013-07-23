@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listView1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/textView3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Areas of Interest"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/textView4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" City"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/textView5"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=" Area"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ExpandableListView
+        android:id="@+id/expandableListView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ExpandableListView>
+
+</LinearLayout>

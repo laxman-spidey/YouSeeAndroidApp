@@ -10,6 +10,7 @@ public class WelcomeActivity extends Activity
 {
 
 	Thread t;
+	String sessionId = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -17,7 +18,8 @@ public class WelcomeActivity extends Activity
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.welcome_activity);
 
 		Thread splashThread = new Thread() {
@@ -39,24 +41,87 @@ public class WelcomeActivity extends Activity
 				{
 					finish();
 					showMainActivity();
-					
+
 				}
 			}
 		};
 		splashThread.start();
+		/*
 		SessionHandler session = new SessionHandler(this);
 		Log.i("tag", "new thread started");
-		session.loginExec(); 
+		session.loginExec();
+		*/
 		
+		
+	}
+
+	private void getSessionDataIfExists()
+	{
+		SessionHandler session = new SessionHandler(this);
+
+		if (session.getSessionId(sessionId))
+			;
+		else if (session.isLoginCredentialsExists())
+		{
+			session.loginExec();
+		} else
+		{
+			sessionId = "guestId";
+		}
+
 	}
 
 	public void showMainActivity()
 	{
-		
-		Intent intent = new Intent();
 
-		intent.setClass(this, MainActivity.class);
+		Log.i("tag","in Show menu activity");
+		Intent intent = new Intent();
+		intent.putExtra("sessionId", sessionId);
+		intent.setClass(this, in.yousee.yousee.MainActivity.class);
 		startActivity(intent);
 	}
+
+	@Override
+	protected void onDestroy()
+	{
+		Log.i("tag","onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause()
+	{
+		Log.i("tag","onPause");
+		super.onPause();
+	}
+
+	@Override
+	protected void onRestart()
+	{
+		Log.i("tag","onRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		Log.i("tag","onResume");
+		super.onResume();
+	}
+
+	@Override
+	protected void onStart()
+	{
+		Log.i("tag","onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop()
+	{
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+	
 
 }

@@ -57,7 +57,7 @@ public class NetworkConnectionHandler
 	{
 		Log.i("tag", "send request started");
 		DownloadWebpageTask downloadwebContent = new DownloadWebpageTask();
-		String postURL = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
+		String postURL = "http://192.168.0.3:80/yousee_test/YouseeMobile/";
 		downloadwebContent.execute(postURL);
 
 		Log.i("tag", "response returned");
@@ -94,36 +94,45 @@ public class NetworkConnectionHandler
 
 	public void onResponseRecieved()
 	{
-		
+
 		Log.i("tag", " result length : " + webContentResult.length());
-		
-		int index=webContentResult.lastIndexOf(';');
-		String subString=webContentResult.substring(0, index);
+
+		int index = webContentResult.lastIndexOf(';');
+		Log.i("tag", " index : " + index);
+		String subString = webContentResult.substring(0, index);
 		Log.i("tag", " result : " + subString);
-		Map<String, String> map = new HashMap<String, String>();
-		try
+		if (index < 0)
 		{
-			JSONObject jsonObject = new JSONObject(subString);
-			Iterator keys = jsonObject.keys();
-
-			while (keys.hasNext())
+			Map<String, String> map = new HashMap<String, String>();
+			try
 			{
-				String key = (String) keys.next();
-				map.put(key, jsonObject.getString(key));
+				JSONObject jsonObject = new JSONObject(subString);
+				Iterator keys = jsonObject.keys();
+
+				while (keys.hasNext())
+				{
+					String key = (String) keys.next();
+					map.put(key, jsonObject.getString(key));
+				}
+				System.out.println(map);// this map will contain
+							// your
+							// json stuff
+			} catch (JSONException e)
+			{
+				e.printStackTrace();
 			}
-			System.out.println(map);// this map will contain your
-						// json stuff
-		} catch (JSONException e)
-		{
-			e.printStackTrace();
+
+			Iterator<Map.Entry<String, String>> i = map.entrySet().iterator();
+			while (i.hasNext())
+			{
+
+				String key = i.next().getKey();
+				System.out.println(key + ", " + map.get(key));
+			}
 		}
-
-		Iterator<Map.Entry<String, String>> i = map.entrySet().iterator();
-		while (i.hasNext())
+		else
 		{
-
-			String key = i.next().getKey();
-			System.out.println(key + ", " + map.get(key));
+			
 		}
 
 	}
@@ -143,7 +152,7 @@ public class NetworkConnectionHandler
 			conn.setConnectTimeout(15000 /* milliseconds */);
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
-			
+
 			// Starts the query
 			conn.connect();
 			// long contentLength =
@@ -151,8 +160,8 @@ public class NetworkConnectionHandler
 			int response = conn.getResponseCode();
 			is = conn.getInputStream();
 			String res = conn.getResponseMessage();
-			
-			//Log.i("tag", "The response is: " + res);
+
+			// Log.i("tag", "The response is: " + res);
 			// Log.i("tag", "The content length is: " +
 			// contentLength);
 			// Toast.makeText(context, "The content length is: " +
