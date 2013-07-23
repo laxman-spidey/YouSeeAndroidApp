@@ -98,12 +98,9 @@ public class MyListAdapter extends BaseExpandableListAdapter
 			view = inf.inflate(R.layout.group_heading, null);
 		}
 
-		CheckBox check = (CheckBox) view.findViewById(R.id.groupCheck);
-		check.setFocusable(false);
-		headerInfo.setCheckBox(check);
 		TextView heading = (TextView) view.findViewById(R.id.heading);
 		heading.setText(headerInfo.getName().trim());
-		headerInfo.setTextView(heading);
+
 		return view;
 	}
 
@@ -117,6 +114,6 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public boolean isChildSelectable(int groupPosition, int childPosition)
 	{
 		return true;
-	}
+	}  
 
 }

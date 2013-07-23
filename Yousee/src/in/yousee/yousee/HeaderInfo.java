@@ -9,13 +9,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class HeaderInfo implements OnCheckedChangeListener
+public class HeaderInfo 
 {
 
 	private String name;
 	private ArrayList<DetailInfo> productList = new ArrayList<DetailInfo>();
-	private CheckBox checkBox;
-	private TextView textView;
+	
 	private boolean checked = false;
 
 	public boolean isChecked()
@@ -28,27 +27,8 @@ public class HeaderInfo implements OnCheckedChangeListener
 		this.checked = checked;
 	}
 
-	public CheckBox getCheckBox()
-	{
-		return checkBox;
-	}
-
-	public void setCheckBox(CheckBox checkBox)
-	{
-		this.checkBox = checkBox;
-		checkBox.setOnCheckedChangeListener(this);
-	}
-
-	public TextView getTextView()
-	{
-		return textView;
-	}
-
-	public void setTextView(TextView textView)
-	{
-		this.textView = textView;
-	}
-
+	
+	
 	public String getName()
 	{
 		return name;
@@ -69,26 +49,5 @@ public class HeaderInfo implements OnCheckedChangeListener
 		this.productList = productList;
 	}
 
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-	{
-
-		Log.d("tag", "group checked");
-
-		Iterator<DetailInfo> it = productList.listIterator();
-		while (it.hasNext())
-		{
-			DetailInfo child = it.next();
-			child.setChecked(isChecked);
-			CheckBox checkbox = child.getCheckBox();
-			if(checkbox!=null)
-			{
-				checkbox.setChecked(isChecked);
-			}
-		}
-
-		checked = isChecked;
-
-	}
-
+	 
 }

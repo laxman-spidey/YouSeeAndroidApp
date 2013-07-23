@@ -3,10 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ExpandableListView
-        android:id="@+id/expandableListView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </ExpandableListView>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:minWidth="200dp" >
+
+        <ExpandableListView
+            android:id="@+id/expandableListView1"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="#C0C0C0"
+            android:visibility="invisible" >
+        </ExpandableListView>
+    </RelativeLayout>
 
 </FrameLayout>

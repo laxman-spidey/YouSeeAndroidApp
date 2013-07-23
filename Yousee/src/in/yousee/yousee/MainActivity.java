@@ -54,22 +54,31 @@ public class MainActivity extends SherlockActivity
 
 	private boolean filterMenuVisibility = false;
 
-	/*
-	 * @Override public boolean onOptionsItemSelected(MenuItem item) {
-	 * 
-	 * switch (item.getItemId()) { case R.id.action_filter:
-	 * filterMenuVisibility = !(filterMenuVisibility); //
-	 * showFilterMenu(filterMenuVisibility);
-	 * 
-	 * break;
-	 * 
-	 * default: break; } return true; }
-	 * 
-	 * public void showFilterMenu(boolean visibility) { RelativeLayout lay =
-	 * (RelativeLayout) findViewById(R.id.filterMenuLayout); if (visibility)
-	 * lay.setVisibility(View.VISIBLE); else
-	 * lay.setVisibility(View.INVISIBLE); }
-	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+
+		switch (item.getItemId())
+			{
+			case R.id.action_filter:
+				filterMenuVisibility = !(filterMenuVisibility);
+				showFilterMenu(filterMenuVisibility);
+
+				break;
+
+			default:
+				break;
+			}
+		return true;
+	}
+
+	public void showFilterMenu(boolean visibility)
+	{
+		if (visibility)
+			myList.setVisibility(View.VISIBLE);
+		else
+			myList.setVisibility(View.INVISIBLE);
+	}
 
 	public void sendRequest()
 	{
@@ -172,12 +181,11 @@ public class MainActivity extends SherlockActivity
 			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_SHORT).show();
 			CheckBox checkBox = detailInfo.getCheckBox();
 			checkBox.setChecked(!checkBox.isChecked());
-			return false; 
+			return false;
 		}
 
 	};
 
-	
 	// our group listener
 	private OnGroupClickListener myListGroupClicked = new OnGroupClickListener() {
 
@@ -188,7 +196,7 @@ public class MainActivity extends SherlockActivity
 			HeaderInfo headerInfo = deptList.get(groupPosition);
 			// display it or do something with it
 			Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(), Toast.LENGTH_SHORT).show();
-			
+
 			return false;
 		}
 
