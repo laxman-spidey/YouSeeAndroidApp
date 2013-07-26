@@ -9,11 +9,11 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class HeaderInfo 
+public class FilterGroupInfo 
 {
 
 	private String name;
-	private ArrayList<DetailInfo> productList = new ArrayList<DetailInfo>();
+	private ArrayList<FilterChildInfo> productList = new ArrayList<FilterChildInfo>();
 	
 	private boolean checked = false;
 
@@ -39,12 +39,12 @@ public class HeaderInfo
 		this.name = name;
 	}
 
-	public ArrayList<DetailInfo> getProductList()
+	public ArrayList<FilterChildInfo> getProductList()
 	{
 		return productList;
 	}
 
-	public void setProductList(ArrayList<DetailInfo> productList)
+	public void setProductList(ArrayList<FilterChildInfo> productList)
 	{
 		this.productList = productList;
 	}

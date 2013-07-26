@@ -10,13 +10,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class MyListAdapter extends BaseExpandableListAdapter
+public class FilterListAdapter extends BaseExpandableListAdapter
 {
 
 	private Context context;
-	private ArrayList<HeaderInfo> deptList;
+	private ArrayList<FilterGroupInfo> deptList;
 
-	public MyListAdapter(Context context, ArrayList<HeaderInfo> deptList)
+	public FilterListAdapter(Context context, ArrayList<FilterGroupInfo> deptList)
 	{
 		this.context = context;
 		this.deptList = deptList;
@@ -25,7 +25,7 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	@Override
 	public Object getChild(int groupPosition, int childPosition)
 	{
-		ArrayList<DetailInfo> productList = deptList.get(groupPosition).getProductList();
+		ArrayList<FilterChildInfo> productList = deptList.get(groupPosition).getProductList();
 		return productList.get(childPosition);
 	}
 
@@ -39,9 +39,9 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view, ViewGroup parent)
 	{
 
-		HeaderInfo group = (HeaderInfo) getGroup(groupPosition);
+		FilterGroupInfo group = (FilterGroupInfo) getGroup(groupPosition);
 
-		DetailInfo detailInfo = (DetailInfo) getChild(groupPosition, childPosition);
+		FilterChildInfo detailInfo = (FilterChildInfo) getChild(groupPosition, childPosition);
 
 		if (view == null)
 		{
@@ -64,7 +64,7 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public int getChildrenCount(int groupPosition)
 	{
 
-		ArrayList<DetailInfo> productList = deptList.get(groupPosition).getProductList();
+		ArrayList<FilterChildInfo> productList = deptList.get(groupPosition).getProductList();
 		return productList.size();
 
 	}
@@ -91,7 +91,7 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public View getGroupView(int groupPosition, boolean isLastChild, View view, ViewGroup parent)
 	{
 
-		HeaderInfo headerInfo = (HeaderInfo) getGroup(groupPosition);
+		FilterGroupInfo headerInfo = (FilterGroupInfo) getGroup(groupPosition);
 		if (view == null)
 		{
 			LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -99,8 +99,7 @@ public class MyListAdapter extends BaseExpandableListAdapter
 		}
 
 		TextView heading = (TextView) view.findViewById(R.id.heading);
-		heading.setText(headerInfo.getName().trim());
-
+		heading.setText(headerInfo.getName().trim());    
 		return view;
 	}
 
@@ -114,6 +113,6 @@ public class MyListAdapter extends BaseExpandableListAdapter
 	public boolean isChildSelectable(int groupPosition, int childPosition)
 	{
 		return true;
-	}  
+	}
 
 }

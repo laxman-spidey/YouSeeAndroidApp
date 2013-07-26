@@ -57,7 +57,7 @@ public class NetworkConnectionHandler
 	{
 		Log.i("tag", "send request started");
 		DownloadWebpageTask downloadwebContent = new DownloadWebpageTask();
-		String postURL = "http://192.168.0.3:80/yousee_test/YouseeMobile/";
+		String postURL = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
 		downloadwebContent.execute(postURL);
 
 		Log.i("tag", "response returned");
@@ -173,7 +173,7 @@ public class NetworkConnectionHandler
 			return contentAsString;
 
 			// Makes sure that the InputStream is closed after the
-			// app is
+			// app is 
 			// finished using it.
 		} finally
 		{
