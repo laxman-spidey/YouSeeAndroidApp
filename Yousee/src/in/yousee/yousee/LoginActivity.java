@@ -101,7 +101,6 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 			showPasswordError("");
 			return true;
 		}
-		
 	}
 
 	private void showUsernameError(String errorMsg)

@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -91,7 +92,9 @@ public class SessionHandler
 		if(NetworkConnectionHandler.isNetworkConnected(context))
 		{
 			Log.i("tag", "connection available");
-			networkHandler.sendRequest();
+			LoginRequestHandler request = new LoginRequestHandler();
+			
+			networkHandler.sendRequest(request.buildRequest(username, password));
 			Log.i("tag", "response recieved");
 		}
 		
