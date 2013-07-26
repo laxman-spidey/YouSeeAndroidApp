@@ -20,14 +20,19 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class NetworkConnectionHandler
+public class NetworkConnectionHandler implements Runnable
 {
 	Context context;
 	String webContentResult;
+	Thread networkThread;
+	DownloadWebpageTask downloadwebContent;
+	String postURL;
 
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
+		networkThread = new Thread(this);
+
 	}
 
 	public static boolean isNetworkConnected(Context context)
@@ -48,25 +53,30 @@ public class NetworkConnectionHandler
 		}
 	}
 
-	public void createConnection()
+	public void sendRequest(String url)
 	{
+		downloadwebContent = new DownloadWebpageTask();
+		postURL = url; 
+		networkThread.start();
 
 	}
 
-	public void sendRequest()
+	@Override
+	public void run()
 	{
-		Log.i("tag", "send request started");
-		DownloadWebpageTask downloadwebContent = new DownloadWebpageTask();
-		String postURL = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
+		Log.i("tag", "networkThread Started");
+
+		
+
 		downloadwebContent.execute(postURL);
 
 		Log.i("tag", "response returned");
-		// Log.i("tag", " result : "+webContentResult);
 
 	}
 
 	private class DownloadWebpageTask extends AsyncTask<String, Void, String>
 	{
+
 		@Override
 		protected String doInBackground(String... urls)
 		{
@@ -129,10 +139,9 @@ public class NetworkConnectionHandler
 				String key = i.next().getKey();
 				System.out.println(key + ", " + map.get(key));
 			}
-		}
-		else
+		} else
 		{
-			
+
 		}
 
 	}
@@ -142,7 +151,7 @@ public class NetworkConnectionHandler
 		InputStream is = null;
 		// Only display the first 500 characters of the retrieved
 		// web page content.
-		int len = 500;
+		int len = 500; 
 
 		try
 		{
@@ -152,7 +161,7 @@ public class NetworkConnectionHandler
 			conn.setConnectTimeout(15000 /* milliseconds */);
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
-
+			
 			// Starts the query
 			conn.connect();
 			// long contentLength =
@@ -173,7 +182,7 @@ public class NetworkConnectionHandler
 			return contentAsString;
 
 			// Makes sure that the InputStream is closed after the
-			// app is 
+			// app is
 			// finished using it.
 		} finally
 		{
@@ -186,7 +195,7 @@ public class NetworkConnectionHandler
 	}
 
 	// Reads an InputStream and converts it to a String.
-	public String readIt(InputStream stream, int len) throws IOException
+	private String readIt(InputStream stream, int len) throws IOException
 	{
 		Reader reader = null;
 		reader = new InputStreamReader(stream, "UTF-8");
