@@ -35,6 +35,11 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
+		
+		usernameEditText.setText("fdas");
+		passwordEditText.setText("ds");
+		
+		networkThread = new Thread(this);
 
 	}
 
@@ -43,6 +48,8 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	{
 		if (validateForm())
 		{
+			SessionHandler session= new SessionHandler(this);
+			session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
 			networkThread.start();
 		}
 
@@ -121,8 +128,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	@Override
 	public void run()
 	{
-		SessionHandler session= new SessionHandler(this);
-		session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+		
 		
 	}
 
