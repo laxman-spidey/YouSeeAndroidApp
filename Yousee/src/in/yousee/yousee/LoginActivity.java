@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener
+public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener, Runnable
 {
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -18,6 +18,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	Button RegisterButton;
 	TextView usernameErrorMsg;
 	TextView passwordErrorMsg;
+	Thread networkThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -42,8 +43,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	{
 		if (validateForm())
 		{
-			SessionHandler session= new SessionHandler(this);
-			session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+			networkThread.start();
 		}
 
 	}
@@ -116,6 +116,14 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	{
 		passwordErrorMsg.setText(errorMsg);
 		passwordErrorMsg.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void run()
+	{
+		SessionHandler session= new SessionHandler(this);
+		session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+		
 	}
 
 }

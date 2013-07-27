@@ -24,18 +24,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class NetworkConnectionHandler implements Runnable
+public class NetworkConnectionHandler
 {
 	Context context;
 	String webContentResult;
-	Thread networkThread;
+
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
-		networkThread = new Thread(this);
 
 	}
 
@@ -60,19 +59,10 @@ public class NetworkConnectionHandler implements Runnable
 	public void sendRequest(HttpPost postRequest)
 	{
 		this.postRequest = postRequest;
-		networkThread.start();
-
-	}
-
-	@Override
-	public void run()
-	{
 		downloadwebContent = new DownloadWebpageTask();
 		Log.i("tag", "networkThread Started");
 
 		downloadwebContent.execute(postRequest);
-
-		Log.i("tag", "response returned");
 
 	}
 
