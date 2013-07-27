@@ -92,9 +92,9 @@ public class SessionHandler
 		if(NetworkConnectionHandler.isNetworkConnected(context))
 		{
 			Log.i("tag", "connection available");
-			LoginRequestHandler request = new LoginRequestHandler();
+			LoginRequestHandler request = new LoginRequestHandler(username, password);
 			
-			networkHandler.sendRequest(request.buildRequest(username, password));
+			networkHandler.sendRequest(request.buildRequest());
 			Log.i("tag", "response recieved");
 		}
 		

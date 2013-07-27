@@ -40,7 +40,12 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	@Override
 	public void onClick(View v)
 	{
-		validateForm();
+		if (validateForm())
+		{
+			SessionHandler session= new SessionHandler(this);
+			session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+		}
+
 	}
 
 	@Override
@@ -84,7 +89,6 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 			showUsernameError("");
 			return true;
 		}
-		
 
 	}
 
@@ -95,8 +99,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 
 			showPasswordError("Please Enter password");
 			return false;
-		}
-		else
+		} else
 		{
 			showPasswordError("");
 			return true;
