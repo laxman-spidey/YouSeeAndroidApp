@@ -1,4 +1,4 @@
-package in.yousee.yousee; 
+package in.yousee.yousee;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 		{
 			mIdMap.put(values[i], i);
 		}
- 
+
 	}
 
 	@Override
@@ -66,9 +66,27 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 		View rowView = inflater.inflate(R.layout.opportunity_list_item, parent, false);
 		TextView textView = (TextView) rowView.findViewById(R.id.opportunityTitle);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.opportunityCatagoryIcon);
-		textView.setText(values[position]);     
-		//Log.i("tag", "item " + (position) + "   " + imageIdList.get(position));
-		//imageView.setBackgroundResource(imageIdList.get(position));
+		textView.setText(values[position]);
+		switch (position % 3)
+			{
+			case 0:
+				imageView.setBackgroundResource(R.drawable.ic_environment);
+
+				break;
+			case 1:
+				imageView.setBackgroundResource(R.drawable.ic_health);
+
+				break;
+			case 2:
+				imageView.setBackgroundResource(R.drawable.ic_education);
+
+				break;
+			default:
+				break;
+			}
+		// Log.i("tag", "item " + (position) + "   " +
+		// imageIdList.get(position));
+		// imageView.setBackgroundResource(imageIdList.get(position));
 		// Log.i("tag","endgetview");
 		return rowView;
 	}

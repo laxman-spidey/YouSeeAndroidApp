@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,7 +30,7 @@ public class NetworkConnectionHandler implements Runnable
 	String webContentResult;
 	Thread networkThread;
 	DownloadWebpageTask downloadwebContent;
-	String postURL;
+	HttpPost postRequest;
 
 	public NetworkConnectionHandler(Context context)
 	{
@@ -53,10 +57,9 @@ public class NetworkConnectionHandler implements Runnable
 		}
 	}
 
-	public void sendRequest(String url)
+	public void sendRequest(HttpPost postRequest)
 	{
-		downloadwebContent = new DownloadWebpageTask();
-		postURL = url; 
+		this.postRequest = postRequest;
 		networkThread.start();
 
 	}
@@ -64,28 +67,27 @@ public class NetworkConnectionHandler implements Runnable
 	@Override
 	public void run()
 	{
+		downloadwebContent = new DownloadWebpageTask();
 		Log.i("tag", "networkThread Started");
 
-		
-
-		downloadwebContent.execute(postURL);
+		downloadwebContent.execute(postRequest);
 
 		Log.i("tag", "response returned");
 
 	}
 
-	private class DownloadWebpageTask extends AsyncTask<String, Void, String>
+	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, String>
 	{
 
 		@Override
-		protected String doInBackground(String... urls)
+		protected String doInBackground(HttpPost... postRequests)
 		{
 
 			// params comes from the execute() call: params[0] is
 			// the url.
 			try
 			{
-				return downloadUrl(urls[0]);
+				return downloadUrl(postRequests[0]);
 			} catch (IOException e)
 			{
 				return "Unable to retrieve web page. URL may be invalid.";
@@ -146,39 +148,20 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
-	private String downloadUrl(String myurl) throws IOException
+	private String downloadUrl(HttpPost postRequest) throws IOException
 	{
 		InputStream is = null;
 		// Only display the first 500 characters of the retrieved
 		// web page content.
-		int len = 500; 
+		int len = 500;
 
 		try
 		{
-			URL url = new URL(myurl);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setReadTimeout(10000 /* milliseconds */);
-			conn.setConnectTimeout(15000 /* milliseconds */);
-			conn.setRequestMethod("GET");
-			conn.setDoInput(true);
-			
-			// Starts the query
-			conn.connect();
-			// long contentLength =
-			// Long.parseLong(conn.getHeaderField("Content-Length"));
-			int response = conn.getResponseCode();
-			is = conn.getInputStream();
-			String res = conn.getResponseMessage();
+			HttpClient httpclient = new DefaultHttpClient();
 
-			// Log.i("tag", "The response is: " + res);
-			// Log.i("tag", "The content length is: " +
-			// contentLength);
-			// Toast.makeText(context, "The content length is: " +
-			// contentLength, Toast.LENGTH_LONG).show();
-
-			// Convert the InputStream into a string
+			HttpResponse response = httpclient.execute(postRequest);
+			is = response.getEntity().getContent();
 			String contentAsString = readIt(is, len);
-			conn.disconnect();
 			return contentAsString;
 
 			// Makes sure that the InputStream is closed after the

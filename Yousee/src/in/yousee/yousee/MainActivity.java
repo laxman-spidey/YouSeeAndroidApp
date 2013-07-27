@@ -48,9 +48,9 @@ public class MainActivity extends SherlockActivity
 
 		initiateExpandableList();
 		createOpportunityListView();
-		   
+
 		// sendRequest();
-		// sendTestRequest(); 
+		// sendTestRequest();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class MainActivity extends SherlockActivity
 	{
 		Log.i("tag", "onResume - progress bar has to be disappear");
 		super.onResume();
-	} 
+	}
 
 	private void createOpportunityListView()
 	{
@@ -68,14 +68,15 @@ public class MainActivity extends SherlockActivity
 		Log.i("tag", "before getting attributes");
 
 		Log.i("tag", "after getting attributes");
-		String[] titles = new String[6];
-		titles[0]="no title"; 
-		titles[1]="title 1.. a longer one. This title is just a longer and longer one. Text in this title has no meaning. Don't read it.. Thanks for reading.kj sdfjshdl fsdkfhsjkdh fudgjdfguid fgdf gdfg iudfgd g";
-		titles[2]="It's a short title.";
-		titles[3]="It's a longer title. But not as long as first title. Like first one, this title also doesn't mean anything";
-		titles[4]="bla. bla. bla. bla. bla. bla. bla. bla. bla. bla. ";
-		titles[5]="no more titles.. don't swipe down";
-		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(),titles); 
+		String[] titles = new String[7];
+		titles[0] = "Support Innovation through documentation - Documentation of UC projects reports";
+		titles[1] = "title 1.. a longer one. This title is just a longer and longer one. Text in this title has no meaning. Don't read it.. Thanks for reading.kj sdfjshdl fsdkfhsjkdh fudgjdfguid fgdf gdfg iudfgd g";
+		titles[2] = "It's a short title.";
+		titles[6] = "Organise Monthly Donation camp for Reusable and Recyclable items at your Office or Residential Community.";
+		titles[3] = "It's a longer title. But not as long as first title. Like first one, this title also doesn't mean anything";
+		titles[4] = "bla. bla. bla. bla. bla. bla. bla. bla. bla. bla. ";
+		titles[5] = "no more titles.. don't swipe down";
+		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), titles);
 		listview.setAdapter(adapter);
 
 	}

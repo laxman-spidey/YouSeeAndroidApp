@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="horizontal"
     android:paddingBottom="5dp"
     android:paddingTop="5dp" >
@@ -9,17 +10,17 @@
     <ImageView
         android:id="@+id/opportunityCatagoryIcon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/uc_logo" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/opportunityTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@android:color/white"
-        android:gravity="center_vertical"
         android:paddingLeft="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black"
-        android:textStyle="italic" />
+         />
 
 </LinearLayout>
