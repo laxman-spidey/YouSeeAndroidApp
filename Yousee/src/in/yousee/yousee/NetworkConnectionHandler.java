@@ -24,7 +24,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class NetworkConnectionHandler
+public class NetworkConnectionHandler implements Runnable
 {
 	Context context;
 	String webContentResult;
@@ -59,6 +59,23 @@ public class NetworkConnectionHandler
 	public void sendRequest(HttpPost postRequest)
 	{
 		this.postRequest = postRequest;
+		downloadwebContent = new DownloadWebpageTask();
+		downloadwebContent.execute(postRequest);
+
+	}
+
+	public void sendRequestInMultiThreadedMode(HttpPost postRequest)
+	{
+		this.postRequest = postRequest;
+		Thread networkThread = new Thread(this);
+		networkThread.start();
+
+	}
+
+	@Override
+	public void run()
+	{
+
 		downloadwebContent = new DownloadWebpageTask();
 		Log.i("tag", "networkThread Started");
 
@@ -143,7 +160,7 @@ public class NetworkConnectionHandler
 		InputStream is = null;
 		// Only display the first 500 characters of the retrieved
 		// web page content.
-		int len = 500;
+		int len = 1000;
 
 		try
 		{
