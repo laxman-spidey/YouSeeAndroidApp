@@ -31,6 +31,7 @@ public class NetworkConnectionHandler implements Runnable
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
+	OnPostResponseRecievedListener listener;
 
 	public NetworkConnectionHandler(Context context)
 	{
@@ -56,20 +57,23 @@ public class NetworkConnectionHandler implements Runnable
 		}
 	}
 
-	public void sendRequest(HttpPost postRequest)
+	public void sendRequest(HttpPost postRequest, OnPostResponseRecievedListener listener)
 	{
+		this.listener = listener;
 		this.postRequest = postRequest;
 		downloadwebContent = new DownloadWebpageTask();
 		downloadwebContent.execute(postRequest);
 
+		// onResponseRecieved();
+
 	}
 
-	public void sendRequestInMultiThreadedMode(HttpPost postRequest)
+	public void sendRequestInMultiThreadedMode(HttpPost postRequest, OnPostResponseRecievedListener listener)
 	{
+		this.listener = listener;
 		this.postRequest = postRequest;
 		Thread networkThread = new Thread(this);
 		networkThread.start();
-
 	}
 
 	@Override
@@ -80,7 +84,6 @@ public class NetworkConnectionHandler implements Runnable
 		Log.i("tag", "networkThread Started");
 
 		downloadwebContent.execute(postRequest);
-
 	}
 
 	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, String>
@@ -106,6 +109,8 @@ public class NetworkConnectionHandler implements Runnable
 		protected void onPostExecute(String result)
 		{
 			webContentResult = result;
+			Log.i("tag", "before notify");
+
 			onResponseRecieved();
 
 		}
@@ -116,12 +121,15 @@ public class NetworkConnectionHandler implements Runnable
 
 		Log.i("tag", " result length : " + webContentResult.length());
 
-		int index = webContentResult.lastIndexOf(';');
+		int index = webContentResult.lastIndexOf('}');
 		Log.i("tag", " index : " + index);
-		String subString = webContentResult.substring(0, index);
-		Log.i("tag", " result : " + subString);
+		String subString;
 		if (index < 0)
 		{
+			subString = webContentResult;// .substring(0,
+							// index);
+			Log.i("tag", " result : " + subString);
+
 			Map<String, String> map = new HashMap<String, String>();
 			try
 			{
@@ -148,10 +156,13 @@ public class NetworkConnectionHandler implements Runnable
 				String key = i.next().getKey();
 				System.out.println(key + ", " + map.get(key));
 			}
+			listener.onPostResponseRecieved(subString);
 		} else
 		{
-
+			
 		}
+		
+		
 
 	}
 

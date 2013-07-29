@@ -3,6 +3,7 @@ package in.yousee.yousee;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -10,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener, Runnable
+public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener
 {
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -18,7 +19,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	Button RegisterButton;
 	TextView usernameErrorMsg;
 	TextView passwordErrorMsg;
-	Thread networkThread;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -39,7 +40,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		usernameEditText.setText("fdas");
 		passwordEditText.setText("ds");
 		
-		networkThread = new Thread(this);
+		
 
 	}
 
@@ -48,9 +49,10 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	{
 		if (validateForm())
 		{
+			Log.i("tag", "Logging in ........");
 			SessionHandler session= new SessionHandler(this);
 			session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-			networkThread.start();
+			
 		}
 
 	}
@@ -125,11 +127,6 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		passwordErrorMsg.setVisibility(View.VISIBLE);
 	}
 
-	@Override
-	public void run()
-	{
-		
-		
-	}
+	
 
 }

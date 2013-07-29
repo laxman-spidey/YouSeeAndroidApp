@@ -14,7 +14,7 @@ public class LoginRequestHandler extends AbstractRequestHandler
 
 	private String username;
 	private String password;
-	private final String FILE_NAME = "login.php";
+	private final String FILE_NAME = "login_exec.php";
 
 	public LoginRequestHandler(String username, String password)
 	{
