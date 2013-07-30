@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -64,6 +68,29 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.opportunity_list_item, parent, false);
+		rowView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+
+				if (event.getAction() == android.view.MotionEvent.ACTION_DOWN)
+				{
+					v.setBackgroundColor(Color.parseColor("#DCDCDC"));
+
+				} else if (event.getAction() == android.view.MotionEvent.ACTION_CANCEL)
+				{
+					v.setBackgroundColor(Color.parseColor("#FFFFFF"));
+					Log.d("tag", "Touch up");
+				} else if (event.getAction() == android.view.MotionEvent.ACTION_UP)
+				{
+					v.setBackgroundColor(Color.parseColor("#FFFFFF"));
+					Log.d("tag", "Touch up");
+				}
+				return true; 
+			}
+		});
+
 		TextView textView = (TextView) rowView.findViewById(R.id.opportunityTitle);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.opportunityCatagoryIcon);
 		textView.setText(values[position]);
@@ -97,4 +124,5 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 		// TODO Auto-generated method stub
 		return super.getItem(position);
 	}
+
 }

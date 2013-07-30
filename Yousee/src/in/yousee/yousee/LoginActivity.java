@@ -37,8 +37,8 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
 		
-		usernameEditText.setText("fdas");
-		passwordEditText.setText("ds");
+		usernameEditText.setText("gunaranjan");
+		passwordEditText.setText("password");
 		
 		
 

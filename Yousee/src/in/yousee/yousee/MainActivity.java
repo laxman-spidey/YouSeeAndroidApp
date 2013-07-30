@@ -28,7 +28,7 @@ public class MainActivity extends SherlockActivity
 	private FrameLayout filterFrame;
 	private Button updateButton;
 	ListView listview;
-
+ 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -283,7 +283,7 @@ public class MainActivity extends SherlockActivity
 		// size of the children list
 		int listSize = productList.size();
 		// add to the counter
-		listSize++;
+		listSize++; 
 
 		// create a new child and add that to the group
 		FilterChildInfo detailInfo = new FilterChildInfo();
@@ -303,5 +303,9 @@ public class MainActivity extends SherlockActivity
 
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	public void fancyThat(View v)
+	{
+		v.getBackground().setAlpha(50);
 	}
 }

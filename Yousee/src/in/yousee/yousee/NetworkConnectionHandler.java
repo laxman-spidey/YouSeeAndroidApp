@@ -124,7 +124,7 @@ public class NetworkConnectionHandler implements Runnable
 		int index = webContentResult.lastIndexOf('}');
 		Log.i("tag", " index : " + index);
 		String subString;
-		if (index < 0)
+		if (index > 0)
 		{
 			subString = webContentResult;// .substring(0,
 							// index);
