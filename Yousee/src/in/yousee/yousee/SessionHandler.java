@@ -1,11 +1,12 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class SessionHandler
+public class SessionHandler implements OnPostResponseRecievedListener
 {
 	private Activity activity;
 	private Context context;
@@ -18,7 +19,7 @@ public class SessionHandler
 	public SessionHandler(Activity activity)
 	{
 		this.activity = activity;
-		context=activity.getApplicationContext();
+		context = activity.getApplicationContext();
 	}
 
 	private boolean getLoginCredentials(String username, String password)
@@ -40,7 +41,7 @@ public class SessionHandler
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString("USERNAME", username);
 		editor.putString("PASSWORD", password);
-		
+
 	}
 
 	public boolean isLoginCredentialsExists()
@@ -63,40 +64,47 @@ public class SessionHandler
 			return true;
 		return false;
 	}
+
 	private void setSessionId(String sessionId)
 	{
 		SharedPreferences sharedPrefs;
 		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString("SESSION_ID", sessionId);
-		this.sessionID=sessionId;
-		
+		this.sessionID = sessionId;
+
 	}
+
 	public int loginExec()
 	{
-		
-		
+
 		Log.i("tag", "in login exec");
-		//if (getLoginCredentials(username, password))
-			return loginExec(username, password);
-		//else
-			//return -1;
+		// if (getLoginCredentials(username, password))
+		return loginExec(username, password);
+		// else
+		// return -1;
 	}
 
 	public int loginExec(String username, String password)
 	{
 		int statusCode = 0;
-		
+
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
-		if(NetworkConnectionHandler.isNetworkConnected(context))
+		if (NetworkConnectionHandler.isNetworkConnected(context))
 		{
 			Log.i("tag", "connection available");
-			networkHandler.sendRequest();
-			Log.i("tag", "response recieved");
+			LoginRequestHandler request = new LoginRequestHandler(username, password);
+			networkHandler.sendRequest(request.buildRequest(), this);
 		}
-		
+
 		setSessionId(sessionID);
 		setLoginCredentials(username, password);
 		return statusCode;
+	}
+
+	@Override
+	public void onPostResponseRecieved(String result)
+	{
+		Log.i("tag", result);
 	}
 }

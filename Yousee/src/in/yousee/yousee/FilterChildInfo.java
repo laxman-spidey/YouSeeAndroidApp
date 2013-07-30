@@ -5,7 +5,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class DetailInfo implements OnCheckedChangeListener       
+public class FilterChildInfo implements OnCheckedChangeListener       
 {
 
 	private String sequence = "";

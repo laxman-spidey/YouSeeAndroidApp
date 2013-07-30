@@ -1,55 +1,113 @@
 package in.yousee.yousee;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONObject;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 public class MainActivity extends SherlockActivity
 {
 
+	private FrameLayout filterFrame;
+	private Button updateButton;
+	ListView listview;
+ 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setSupportProgressBarIndeterminate(false);
+		// setSupportProgressBarIndeterminate(true);
 		// requestWindowFeature(Window.FEATURE_PROGRESS);
 		// setSupportProgressBarVisibility(true);
-		// setSupportProgressBarIndeterminate(true);
 		super.onCreate(savedInstanceState);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		setContentView(R.layout.activity_main);
+		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
+		updateButton = (Button) findViewById(R.id.updateButton);
+		setUpdateButtonOnClickListener();
+
 		initiateExpandableList();
+		createOpportunityListView();
+
 		// sendRequest();
 		// sendTestRequest();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		Log.i("tag", "onResume - progress bar has to be disappear");
+		super.onResume();
+	}
+
+	private void createOpportunityListView()
+	{
+
+		listview = (ListView) findViewById(R.id.opportunityListview);
+
+		Log.i("tag", "before getting attributes");
+
+		Log.i("tag", "after getting attributes");
+		String[] titles = new String[7];
+		titles[0] = "Support Innovation through documentation - Documentation of UC projects reports";
+		titles[1] = "title 1.. a longer one. This title is just a longer and longer one. Text in this title has no meaning. Don't read it.. Thanks for reading.kj sdfjshdl fsdkfhsjkdh fudgjdfguid fgdf gdfg iudfgd g";
+		titles[2] = "It's a short title.";
+		titles[6] = "Organise Monthly Donation camp for Reusable and Recyclable items at your Office or Residential Community.";
+		titles[3] = "It's a longer title. But not as long as first title. Like first one, this title also doesn't mean anything";
+		titles[4] = "bla. bla. bla. bla. bla. bla. bla. bla. bla. bla. ";
+		titles[5] = "no more titles.. don't swipe down";
+		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), titles);
+		listview.setAdapter(adapter);
+
+	}
+
+	private void setUpdateButtonOnClickListener()
+	{
+		updateButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v)
+			{
+				Iterator<FilterGroupInfo> it = deptList.iterator();
+				while (it.hasNext())
+				{
+					FilterGroupInfo group = it.next();
+					Log.i("tag", "+" + group.getName());
+					Iterator<FilterChildInfo> childIterator = group.getProductList().iterator();
+					while (childIterator.hasNext())
+					{
+						FilterChildInfo child = childIterator.next();
+						if (child.isChecked())
+						{
+							Log.i("tag", "	" + child.getName());
+						}
+					}
+
+				}
+				showFilterMenu(false);
+			}
+		});
+
 	}
 
 	private boolean filterMenuVisibility = false;
@@ -74,10 +132,11 @@ public class MainActivity extends SherlockActivity
 
 	public void showFilterMenu(boolean visibility)
 	{
+		filterMenuVisibility = visibility;
 		if (visibility)
-			myList.setVisibility(View.VISIBLE);
+			filterFrame.setVisibility(View.VISIBLE);
 		else
-			myList.setVisibility(View.INVISIBLE);
+			filterFrame.setVisibility(View.INVISIBLE);
 	}
 
 	public void sendRequest()
@@ -85,18 +144,19 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	private LinkedHashMap<String, HeaderInfo> myDepartments = new LinkedHashMap<String, HeaderInfo>();
-	private ArrayList<HeaderInfo> deptList = new ArrayList<HeaderInfo>();
+	private LinkedHashMap<String, FilterGroupInfo> myDepartments = new LinkedHashMap<String, FilterGroupInfo>();
+	private ArrayList<FilterGroupInfo> deptList = new ArrayList<FilterGroupInfo>();
 
-	private MyListAdapter listAdapter;
+	private FilterListAdapter listAdapter;
 	private ExpandableListView myList;
 
 	public void initiateExpandableList()
 	{
 		// get reference to the ExpandableListView
 		myList = (ExpandableListView) findViewById(R.id.expandableListView1);
+		// setPadding();
 		// create the adapter by passing your ArrayList data
-		listAdapter = new MyListAdapter(MainActivity.this, deptList);
+		listAdapter = new FilterListAdapter(MainActivity.this, deptList);
 		// attach the adapter to the list
 		myList.setAdapter(listAdapter);
 
@@ -105,7 +165,6 @@ public class MainActivity extends SherlockActivity
 		expandAll();
 
 		// add new item to the List
-
 		// listener for child row click
 		myList.setOnChildClickListener(myListItemClicked);
 		// listener for group heading click
@@ -174,9 +233,9 @@ public class MainActivity extends SherlockActivity
 
 			Log.d("tag", "child is selected");
 			// get the group header
-			HeaderInfo headerInfo = deptList.get(groupPosition);
+			FilterGroupInfo headerInfo = deptList.get(groupPosition);
 			// get the child info
-			DetailInfo detailInfo = headerInfo.getProductList().get(childPosition);
+			FilterChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
 			// display it or do something with it
 			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_SHORT).show();
 			CheckBox checkBox = detailInfo.getCheckBox();
@@ -193,7 +252,7 @@ public class MainActivity extends SherlockActivity
 		{
 
 			// get the group header
-			HeaderInfo headerInfo = deptList.get(groupPosition);
+			FilterGroupInfo headerInfo = deptList.get(groupPosition);
 			// display it or do something with it
 			Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(), Toast.LENGTH_SHORT).show();
 
@@ -209,25 +268,25 @@ public class MainActivity extends SherlockActivity
 		int groupPosition = 0;
 
 		// check the hash map if the group already exists
-		HeaderInfo headerInfo = myDepartments.get(department);
+		FilterGroupInfo headerInfo = myDepartments.get(department);
 		// add the group if doesn't exists
 		if (headerInfo == null)
 		{
-			headerInfo = new HeaderInfo();
+			headerInfo = new FilterGroupInfo();
 			headerInfo.setName(department);
 			myDepartments.put(department, headerInfo);
 			deptList.add(headerInfo);
 		}
 
 		// get the children for the group
-		ArrayList<DetailInfo> productList = headerInfo.getProductList();
+		ArrayList<FilterChildInfo> productList = headerInfo.getProductList();
 		// size of the children list
 		int listSize = productList.size();
 		// add to the counter
-		listSize++;
+		listSize++; 
 
 		// create a new child and add that to the group
-		DetailInfo detailInfo = new DetailInfo();
+		FilterChildInfo detailInfo = new FilterChildInfo();
 		detailInfo.setSequence(String.valueOf(listSize));
 		detailInfo.setName(product);
 		productList.add(detailInfo);
@@ -244,5 +303,9 @@ public class MainActivity extends SherlockActivity
 
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	public void fancyThat(View v)
+	{
+		v.getBackground().setAlpha(50);
 	}
 }
