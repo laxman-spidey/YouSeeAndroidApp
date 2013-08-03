@@ -3,21 +3,31 @@ package in.yousee.yousee.model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONObject;
+
 import android.text.format.Time;
 
 public class RealOpportunityItem extends ProxyOpportunityItem
 {
+
 	private ArrayList<ActivitySchedule> activityScheduleList;
 
-	public RealOpportunityItem(int volunteerId, String title, String description, int opportunityType, String partner, ArrayList<ActivitySchedule> activityScheduleList)
+	public RealOpportunityItem(int id, String title, String opportunityType, String partner, String description, ArrayList<ActivitySchedule> activityScheduleList)
 	{
-		super(volunteerId, title, description, opportunityType, partner);
+		super(id, title, opportunityType, partner, description);
 		this.activityScheduleList = activityScheduleList;
 	}
 
-	public RealOpportunityItem(int volunteerId, String title, String description, int opportunityType, String partner)
+	public RealOpportunityItem(ProxyOpportunityItem proxyItem, ArrayList<ActivitySchedule> activityScheduleList)
 	{
-		super(volunteerId, title, description, opportunityType, partner);
+		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
+
+		this.activityScheduleList = activityScheduleList;
+	}
+
+	public RealOpportunityItem(ProxyOpportunityItem proxyItem, String JSONString)
+	{
+		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
 
 	}
 
@@ -31,7 +41,13 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		this.activityScheduleList = activityScheduleList;
 	}
 
-	public class ActivitySchedule
+	@Override
+	public void parseJSON(String JSONString)
+	{
+
+	}
+
+	public class ActivitySchedule implements JSONParsable
 	{
 		private int activityId;
 		private Date fromDate, toDate;
@@ -131,6 +147,12 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		public void setVolReq(int volReq)
 		{
 			this.volReq = volReq;
+		}
+
+		@Override
+		public void parseJSON(JSONObject JSONObject)
+		{
+			
 		}
 
 	}

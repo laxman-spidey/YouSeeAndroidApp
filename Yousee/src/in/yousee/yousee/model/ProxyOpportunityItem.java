@@ -1,42 +1,40 @@
 package in.yousee.yousee.model;
 
-public class ProxyOpportunityItem
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class ProxyOpportunityItem implements JSONParsable
 {
+	private static final String TAG_ID = "id";
+	private static final String TAG_TITLE = "name";
+	private static final String TAG_TYPE = "type";
+	private static final String TAG_PARTNER = "partner";
+	private static final String TAG_DESCRIPTION = "description";
 
-	private int volunteerId;
+	private int id;
 	private String title;
-	private String description;
-	private int opportunityType;
+	private String opportunityType;
 	private String partner;
+	private String description;
 
-	public ProxyOpportunityItem(int volunteerId, String title, String description, int opportunityType, String partner)
+	public ProxyOpportunityItem(int id, String title, String opportunityType, String partner, String description)
 	{
 		super();
-		this.volunteerId = volunteerId;
+		this.id = id;
 		this.title = title;
-		this.description = description;
 		this.opportunityType = opportunityType;
 		this.partner = partner;
+		this.description = description;
 	}
 
-	public int getVolunteerId()
+	public String getPartner()
 	{
-		return volunteerId;
+		return partner;
 	}
 
-	public void setVolunteerId(int volunteerId)
+	public void setPartner(String partner)
 	{
-		this.volunteerId = volunteerId;
-	}
-
-	public String getTitle()
-	{
-		return title;
-	}
-
-	public void setTitle(String title)
-	{
-		this.title = title;
+		this.partner = partner;
 	}
 
 	public String getDescription()
@@ -49,24 +47,73 @@ public class ProxyOpportunityItem
 		this.description = description;
 	}
 
-	public int getOpportunityType()
+	public ProxyOpportunityItem(String JSONString)
+	{
+		parseJSON(JSONString);
+	}
+
+	public int getId()
+	{
+		return id;
+	}
+
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
+	public String getOpportunityType()
 	{
 		return opportunityType;
 	}
 
-	public void setOpportunityType(int opportunityType)
+	public void setOpportunityType(String opportunityType)
 	{
 		this.opportunityType = opportunityType;
 	}
 
-	public String getPartner()
+	public void parseJSON(String JSONString)
 	{
-		return partner;
+		JSONObject json;
+		try
+		{
+			json = new JSONObject(JSONString);
+			parseJSON(json);
+		} catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
-	public void setPartner(String partner)
+	@Override
+	public void parseJSON(JSONObject JSONObject)
 	{
-		this.partner = partner;
+
+		try
+		{
+			this.id = JSONObject.getInt(TAG_ID);
+			this.title = JSONObject.getString(TAG_TITLE);
+			this.opportunityType = JSONObject.getString(TAG_TYPE);
+			this.partner = JSONObject.getString(TAG_PARTNER);
+			this.description = JSONObject.getString(TAG_DESCRIPTION);
+		} catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }
