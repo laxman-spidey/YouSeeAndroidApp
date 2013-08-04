@@ -28,12 +28,17 @@ public class ProxyOpportunityItem implements JSONParsable
 		this.partner = partner;
 		this.description = description;
 	}
+
 	public ProxyOpportunityItem(JSONObject jsonObject)
 	{
 		parseJSON(jsonObject);
 	}
-	
-	
+
+	public ProxyOpportunityItem(String jsonString)
+	{
+		parseJSON(jsonString);
+	}
+
 	public String getPartner()
 	{
 		return partner;
@@ -52,11 +57,6 @@ public class ProxyOpportunityItem implements JSONParsable
 	public void setDescription(String description)
 	{
 		this.description = description;
-	}
-
-	public ProxyOpportunityItem(String JSONString)
-	{
-		parseJSON(JSONString);
 	}
 
 	public int getId()
@@ -113,8 +113,9 @@ public class ProxyOpportunityItem implements JSONParsable
 			this.id = JSONObject.getInt(TAG_ID);
 			this.title = JSONObject.getString(TAG_TITLE);
 			this.opportunityType = JSONObject.getString(TAG_TYPE);
-			//this.partner = JSONObject.getString(TAG_PARTNER);
-			//this.description = JSONObject.getString(TAG_DESCRIPTION);
+			// this.partner = JSONObject.getString(TAG_PARTNER);
+			// this.description =
+			// JSONObject.getString(TAG_DESCRIPTION);
 			Log.i("tag", this.title);
 		} catch (JSONException e)
 		{
@@ -124,4 +125,22 @@ public class ProxyOpportunityItem implements JSONParsable
 
 	}
 
+	public String toJsonString()
+	{
+		String jsonString = new String();
+		JSONObject jsonObject = new JSONObject();
+		try
+		{
+			jsonObject.put(TAG_ID, id);
+			jsonObject.put(TAG_TITLE, title);
+			jsonObject.put(TAG_TYPE, opportunityType);
+		} catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		jsonString = jsonObject.toString();
+
+		return jsonString;
+	}
 }
