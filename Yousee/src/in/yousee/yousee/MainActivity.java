@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,7 +66,6 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		listBuilder = new OpportunityListBuilder(this);
 		listBuilder.execute();
 	}
-
 
 	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
 	{
@@ -320,46 +318,20 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	}
 
 	public void fancyThat(View v)
-	{    
+	{
 		v.getBackground().setAlpha(50);
 	}
 
-	View selectedView;
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 	{
-		Log.i("tag", "item clicked "+position);
-		selectedView = view;   
-		//view.setBackgroundColor(Color.parseColor("#DCDCDC"));
+		Log.i("tag", "item clicked " + position);
+
 		Intent intent = new Intent();
 		intent.setClass(this, IndividualOpportunityItemActivity.class);
 		intent.putExtra("result", proxyList.get(position).toJsonString());
 		startActivity(intent);
-		try
-		{
-			Thread.sleep(500);
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//view.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
 	}
-	@Override
-	protected void onResume()
-	{
-		Log.i("tag", "onResume - progress bar has to be disappear");
-		if(selectedView!=null)
-		{
-			//selectedView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-		}
-		else
-		{
-			Log.i("tag", "oselected View in null");
-		}
-		super.onResume();
-	}
 
-	
 }
