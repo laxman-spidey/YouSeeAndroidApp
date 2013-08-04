@@ -3,10 +3,12 @@ package in.yousee.yousee.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class ProxyOpportunityItem implements JSONParsable
 {
 	private static final String TAG_ID = "id";
-	private static final String TAG_TITLE = "name";
+	private static final String TAG_TITLE = "title";
 	private static final String TAG_TYPE = "type";
 	private static final String TAG_PARTNER = "partner";
 	private static final String TAG_DESCRIPTION = "description";
@@ -26,7 +28,12 @@ public class ProxyOpportunityItem implements JSONParsable
 		this.partner = partner;
 		this.description = description;
 	}
-
+	public ProxyOpportunityItem(JSONObject jsonObject)
+	{
+		parseJSON(jsonObject);
+	}
+	
+	
 	public String getPartner()
 	{
 		return partner;
@@ -106,8 +113,9 @@ public class ProxyOpportunityItem implements JSONParsable
 			this.id = JSONObject.getInt(TAG_ID);
 			this.title = JSONObject.getString(TAG_TITLE);
 			this.opportunityType = JSONObject.getString(TAG_TYPE);
-			this.partner = JSONObject.getString(TAG_PARTNER);
-			this.description = JSONObject.getString(TAG_DESCRIPTION);
+			//this.partner = JSONObject.getString(TAG_PARTNER);
+			//this.description = JSONObject.getString(TAG_DESCRIPTION);
+			Log.i("tag", this.title);
 		} catch (JSONException e)
 		{
 			// TODO Auto-generated catch block

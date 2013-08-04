@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -73,6 +74,7 @@ public class NetworkConnectionHandler implements Runnable
 		this.listener = listener;
 		this.postRequest = postRequest;
 		Thread networkThread = new Thread(this);
+		downloadwebContent = new DownloadWebpageTask();
 		networkThread.start();
 	}
 
@@ -80,7 +82,6 @@ public class NetworkConnectionHandler implements Runnable
 	public void run()
 	{
 
-		downloadwebContent = new DownloadWebpageTask();
 		Log.i("tag", "networkThread Started");
 
 		downloadwebContent.execute(postRequest);
@@ -121,19 +122,18 @@ public class NetworkConnectionHandler implements Runnable
 
 		Log.i("tag", " result length : " + webContentResult.length());
 
-		int index = webContentResult.lastIndexOf('}');
-		Log.i("tag", " index : " + index);
-		String subString;
-		if (index > 0)
+		// int index = webContentResult.lastIndexOf('}');
+		// Log.i("tag", " index : " + index);
+		// String subString;
+		// if (index > 0)
 		{
-			subString = webContentResult;// .substring(0,
-							// index);
-			Log.i("tag", " result : " + subString);
+			// subString = webContentResult.substring(0, index+1);
+			Log.i("tag", " result : " + webContentResult);
 
 			Map<String, String> map = new HashMap<String, String>();
 			try
 			{
-				JSONObject jsonObject = new JSONObject(subString);
+				JSONObject jsonObject = new JSONObject(webContentResult);
 				Iterator keys = jsonObject.keys();
 
 				while (keys.hasNext())
@@ -156,14 +156,8 @@ public class NetworkConnectionHandler implements Runnable
 				String key = i.next().getKey();
 				System.out.println(key + ", " + map.get(key));
 			}
-			listener.onPostResponseRecieved(subString);
-		} else
-		{
-			
+			listener.onPostResponseRecieved(webContentResult);
 		}
-		
-		
-
 	}
 
 	private String downloadUrl(HttpPost postRequest) throws IOException
@@ -171,7 +165,7 @@ public class NetworkConnectionHandler implements Runnable
 		InputStream is = null;
 		// Only display the first 500 characters of the retrieved
 		// web page content.
-		int len = 1000;
+		int len = 10000;
 
 		try
 		{
@@ -198,11 +192,28 @@ public class NetworkConnectionHandler implements Runnable
 	// Reads an InputStream and converts it to a String.
 	private String readIt(InputStream stream, int len) throws IOException
 	{
-		Reader reader = null;
-		reader = new InputStreamReader(stream, "UTF-8");
-		char[] buffer = new char[len];
-		reader.read(buffer);
-		return new String(buffer);
+		/*
+		 * Reader reader = null; reader = new InputStreamReader(stream,
+		 * "UTF-8"); char[] buffer = new char[len];
+		 * //reader.read(buffer); String string = ""; char ch; if((ch =
+		 * (char) reader.read())==-1) { Log.i("tag", ""+ch); string+=ch;
+		 * } return string; //return new String(buffer);
+		 */
+
+		InputStreamReader is = new InputStreamReader(stream);
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = new BufferedReader(is);
+		String read = br.readLine();
+
+		while (read != null)
+		{
+			// System.out.println(read);
+			sb.append(read);
+			read = br.readLine();
+
+		}
+
+		return sb.toString();
 	}
 
 }
