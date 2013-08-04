@@ -22,7 +22,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 {
 	private String TAG_FIRSTTIME = "firstTime";
 
-	protected final String DOMAIN = "http://192.168.0.103:80/yousee_test/YouseeMobile/";
+	protected final String DOMAIN = "http://192.168.1.4:80/yousee_test/YouseeMobile/";
 	protected HttpPost postRequest;
 
 	private MainActivity activity;

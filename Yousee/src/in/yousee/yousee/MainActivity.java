@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
@@ -24,20 +28,21 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
-public class MainActivity extends SherlockActivity
+public class MainActivity extends SherlockActivity implements OnItemClickListener
 {
 
 	private FrameLayout filterFrame;
 	private Button updateButton;
 	ListView listview;
 	OpportunityListBuilder listBuilder;
+	ArrayList<ProxyOpportunityItem> proxyList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
-		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		//setSupportProgressBarIndeterminate(false);
+		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		// setSupportProgressBarIndeterminate(false);
 		// setSupportProgressBarIndeterminate(true);
 		// requestWindowFeature(Window.FEATURE_PROGRESS);
 		// setSupportProgressBarVisibility(true);
@@ -50,7 +55,7 @@ public class MainActivity extends SherlockActivity
 		setUpdateButtonOnClickListener();
 
 		initiateExpandableList();
-		
+
 		buildOpportunityListForTheFirstTime();
 		// sendRequest();
 		// sendTestRequest();
@@ -63,18 +68,12 @@ public class MainActivity extends SherlockActivity
 		listBuilder.execute();
 	}
 
-	
-	@Override
-	protected void onResume()
-	{
-		Log.i("tag", "onResume - progress bar has to be disappear");
-		super.onResume();
-	}
 
 	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
 	{
 
-		//Log.i("tag", "creating");
+		// Log.i("tag", "creating");
+		this.proxyList = proxyList;
 		listview = (ListView) findViewById(R.id.opportunityListview);
 
 		String[] titles = new String[proxyList.size()];
@@ -87,13 +86,13 @@ public class MainActivity extends SherlockActivity
 			titles[index] = item.getTitle();
 			types[index] = item.getOpportunityType();
 			index++;
-			
+
 		}
 
 		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), titles, types);
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
-		
+		listview.setOnItemClickListener(this);
 
 	}
 
@@ -321,7 +320,46 @@ public class MainActivity extends SherlockActivity
 	}
 
 	public void fancyThat(View v)
-	{
+	{    
 		v.getBackground().setAlpha(50);
 	}
+
+	View selectedView;
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+	{
+		Log.i("tag", "item clicked "+position);
+		selectedView = view;   
+		//view.setBackgroundColor(Color.parseColor("#DCDCDC"));
+		Intent intent = new Intent();
+		intent.setClass(this, IndividualOpportunityItemActivity.class);
+		intent.putExtra("result", proxyList.get(position).toJsonString());
+		startActivity(intent);
+		try
+		{
+			Thread.sleep(500);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+	}
+	@Override
+	protected void onResume()
+	{
+		Log.i("tag", "onResume - progress bar has to be disappear");
+		if(selectedView!=null)
+		{
+			//selectedView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+		}
+		else
+		{
+			Log.i("tag", "oselected View in null");
+		}
+		super.onResume();
+	}
+
+	
 }

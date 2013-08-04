@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Yousee</string>
+    <string name="app_name">AAAAA</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="SERVER_URL">http://192.168.0.102/yousee_test/YouseeMobile/</string>
@@ -9,5 +9,6 @@
     <string name="USERNAME">USERNAME</string>
     <string name="PASSWORD">PASSWORD</string>
     <string name="LOGIN_FAILED">LOGIN_FAILED</string>
+    <color name="custom_grey">#DCDCDC</color>
 
 </resources>

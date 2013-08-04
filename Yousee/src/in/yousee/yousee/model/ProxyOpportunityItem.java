@@ -115,7 +115,7 @@ public class ProxyOpportunityItem implements JSONParsable
 			this.opportunityType = JSONObject.getString(TAG_TYPE);
 			// this.partner = JSONObject.getString(TAG_PARTNER);
 			// this.description =
-			// JSONObject.getString(TAG_DESCRIPTION);
+			this.description = JSONObject.getString(TAG_DESCRIPTION);
 			Log.i("tag", this.title);
 		} catch (JSONException e)
 		{
@@ -134,6 +134,7 @@ public class ProxyOpportunityItem implements JSONParsable
 			jsonObject.put(TAG_ID, id);
 			jsonObject.put(TAG_TITLE, title);
 			jsonObject.put(TAG_TYPE, opportunityType);
+			jsonObject.put(TAG_DESCRIPTION, description);
 		} catch (JSONException e)
 		{
 			// TODO Auto-generated catch block

@@ -71,6 +71,7 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.opportunity_list_item, parent, false);
+		/*
 		rowView.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -93,7 +94,7 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 				return true;
 			}
 		});
-
+		*/
 		TextView textView = (TextView) rowView.findViewById(R.id.opportunityTitle);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.opportunityCatagoryIcon);
 		textView.setText(values[position]);
