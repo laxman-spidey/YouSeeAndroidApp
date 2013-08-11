@@ -24,7 +24,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
 
-	protected final String DOMAIN = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
+	
 	protected HttpPost postRequest;
 
 	private MainActivity activity;
@@ -46,7 +46,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 
 	protected void createRequest()
 	{
-		postRequest = new HttpPost(DOMAIN + fileName);
+		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + fileName);
 	}
 
 	protected void addValuesToPostFirstTime()
