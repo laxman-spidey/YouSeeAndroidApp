@@ -169,11 +169,13 @@ public class NetworkConnectionHandler implements Runnable
 
 		try
 		{
+			Log.i("tag", "download Started");
 			HttpClient httpclient = new DefaultHttpClient();
 
 			HttpResponse response = httpclient.execute(postRequest);
 			is = response.getEntity().getContent();
 			String contentAsString = readIt(is, len);
+			Log.i("tag", "download completed");
 			return contentAsString;
 
 			// Makes sure that the InputStream is closed after the

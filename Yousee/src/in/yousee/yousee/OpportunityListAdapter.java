@@ -22,12 +22,12 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 
 	private final Context context;
 	private final String[] values;
-	private final String[] types;
+	private final int[] types;
 	// private final ArrayList<Integer> imageIdList;
 
 	HashMap<String, Integer> mIdMap;
 
-	public OpportunityListAdapter(Context context, String[] values, String[] types )
+	public OpportunityListAdapter(Context context, String[] values, int[] types)
 	{
 		super(context, R.layout.opportunity_list_item, values);
 		this.context = context;
@@ -71,53 +71,11 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.opportunity_list_item, parent, false);
-		/*
-		rowView.setOnTouchListener(new OnTouchListener() {
 
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-
-				if (event.getAction() == android.view.MotionEvent.ACTION_DOWN)
-				{
-					v.setBackgroundColor(Color.parseColor("#DCDCDC"));
-
-				} else if (event.getAction() == android.view.MotionEvent.ACTION_CANCEL)
-				{
-					v.setBackgroundColor(Color.parseColor("#FFFFFF"));
-					Log.d("tag", "Touch up");
-				} else if (event.getAction() == android.view.MotionEvent.ACTION_UP)
-				{
-					v.setBackgroundColor(Color.parseColor("#FFFFFF"));
-					Log.d("tag", "Touch up");
-				}
-				return true;
-			}
-		});
-		*/
 		TextView textView = (TextView) rowView.findViewById(R.id.opportunityTitle);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.opportunityCatagoryIcon);
 		textView.setText(values[position]);
-		
-		
-		
-		switch (position % 3)
-			{
-			case 0:
-				imageView.setBackgroundResource(R.drawable.ic_environment);
-
-				break;
-			case 1:
-				imageView.setBackgroundResource(R.drawable.ic_health);
-
-				break;
-			case 2:
-				imageView.setBackgroundResource(R.drawable.ic_education);
-
-				break;
-			default:
-				break;
-			}
+		imageView.setBackgroundResource(types[position]);
 		// Log.i("tag", "item " + (position) + "   " +
 		// imageIdList.get(position));
 		// imageView.setBackgroundResource(imageIdList.get(position));

@@ -23,9 +23,11 @@ public class IndividualOpportunityItemActivity extends SherlockActivity
 		image = (ImageView) findViewById(R.id.opportunityCatagoryIcon);
 		titleTextView = (TextView) findViewById(R.id.opportunityTitle);
 		descriptionTextView =(TextView) findViewById(R.id.descriptionTextView);
+		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
 		titleTextView.setText(proxyOpportunityItem.getTitle());
 		descriptionTextView.setText(proxyOpportunityItem.getDescription());
 
 	}
 
-}
+} 
+ 

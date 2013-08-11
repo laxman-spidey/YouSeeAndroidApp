@@ -4,6 +4,7 @@ import in.yousee.yousee.model.ProxyOpportunityItem;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -21,23 +22,26 @@ import android.util.Log;
 public class OpportunityListBuilder implements OnPostResponseRecievedListener
 {
 	private String TAG_FIRSTTIME = "firstTime";
+	private String TAG_UPDATE = "update";
 
-	protected final String DOMAIN = "http://192.168.1.4:80/yousee_test/YouseeMobile/";
+	protected final String DOMAIN = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
 	protected HttpPost postRequest;
 
 	private MainActivity activity;
 	private String fileName = "volunteering_opportunities.php";
 
-	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, Context context)
+	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, MainActivity activity)
 	{
-
+		this.activity = (MainActivity) activity;
+		createRequest();
+		addValuesToPost(filterGroupList);
 	}
 
 	public OpportunityListBuilder(Activity activity)
 	{
 		this.activity = (MainActivity) activity;
 		createRequest();
-		addValuesToPost("true");
+		addValuesToPostFirstTime();
 	}
 
 	protected void createRequest()
@@ -45,10 +49,45 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 		postRequest = new HttpPost(DOMAIN + fileName);
 	}
 
-	protected void addValuesToPost(String firstTime)
+	protected void addValuesToPostFirstTime()
 	{
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, firstTime));
+		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
+
+		try
+		{
+			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		} catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	protected void addValuesToPost(ArrayList<FilterGroupInfo> filterGroupList)
+	{
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
+		Log.i("tag", "+hfksjdhfldhfjkghdfjkgdkjfhgjkdhfjgkhdfjkghjkdfhgkjdshfg");
+		Iterator<FilterGroupInfo> it = filterGroupList.iterator();
+		while (it.hasNext())
+		{
+			FilterGroupInfo group = it.next();
+			
+			// nameValuePairs.add(new
+			// BasicNameValuePair(group.getName(), "true"));
+			Iterator<FilterChildInfo> childIterator = group.getProductList().iterator();
+			while (childIterator.hasNext())
+			{
+				FilterChildInfo child = childIterator.next();
+				if (child.isChecked())
+				{
+					Log.i("tag", " "+group.getName()+": " + child.getName());
+					nameValuePairs.add(new BasicNameValuePair(group.getName(), child.getName()));
+				}
+			}
+
+		}
 
 		try
 		{
@@ -78,25 +117,25 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 			json = new JSONObject(result);
 			int resultCount = json.getInt("resultCount");
 			String totalCount = json.getString("totalCount");
-			
+
 			JSONArray list = json.getJSONArray("list");
-			Log.i("tag", "JSONlist length "+list.toString());
+			Log.i("tag", "JSONlist length " + list.toString());
 			for (int i = 0; i < list.length(); i++)
 			{
-				Log.i("tag", ""+i);
+				Log.i("tag", "" + i);
 				proxyItemList.add(new ProxyOpportunityItem(list.getJSONObject(i)));
 			}
 
 		} catch (JSONException e)
-		
+
 		{
 			Log.i("tag", "exception caught");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i("tag", "item list length = "+proxyItemList.size());
+		Log.i("tag", "item list length = " + proxyItemList.size());
 		activity.createOpportunityListView(proxyItemList);
 
 	}
- 
+
 }

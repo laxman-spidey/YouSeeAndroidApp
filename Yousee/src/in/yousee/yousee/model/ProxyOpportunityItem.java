@@ -1,5 +1,7 @@
 package in.yousee.yousee.model;
 
+import in.yousee.yousee.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +14,10 @@ public class ProxyOpportunityItem implements JSONParsable
 	private static final String TAG_TYPE = "type";
 	private static final String TAG_PARTNER = "partner";
 	private static final String TAG_DESCRIPTION = "description";
+
+	private static final String TAG_TYPE_EDUCATION = "Education";
+	private static final String TAG_TYPE_ENVIRONMENT = "Environment";
+	private static final String TAG_TYPE_HEALTH = "Health";
 
 	private int id;
 	private String title;
@@ -143,5 +149,17 @@ public class ProxyOpportunityItem implements JSONParsable
 		jsonString = jsonObject.toString();
 
 		return jsonString;
+	}
+
+	public int getResourceOfCatagoryType()
+	{
+		if(opportunityType.equalsIgnoreCase(TAG_TYPE_EDUCATION))
+			return R.drawable.ic_education;
+		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_ENVIRONMENT))
+			return R.drawable.ic_environment;
+		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_HEALTH))
+			return R.drawable.ic_health;
+		else
+			return R.drawable.uc_logo;
 	}
 }

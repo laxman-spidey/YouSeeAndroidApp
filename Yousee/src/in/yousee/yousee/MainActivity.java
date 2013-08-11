@@ -65,7 +65,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		Log.i("tag", "building opportunity list");
 		listBuilder = new OpportunityListBuilder(this);
 		listBuilder.execute();
-	}
+	} 
 
 	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
 	{
@@ -75,14 +75,14 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		listview = (ListView) findViewById(R.id.opportunityListview);
 
 		String[] titles = new String[proxyList.size()];
-		String[] types = new String[proxyList.size()];
+		int[] types = new int[proxyList.size()];
 		int index = 0;
 		Iterator it = proxyList.iterator();
 		while (it.hasNext())
 		{
 			ProxyOpportunityItem item = (ProxyOpportunityItem) it.next();
 			titles[index] = item.getTitle();
-			types[index] = item.getOpportunityType();
+			types[index] = item.getResourceOfCatagoryType();
 			index++;
 
 		}
@@ -118,6 +118,9 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 
 				}
 				showFilterMenu(false);
+				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
+				listBuilder.execute();
+				
 			}
 		});
 
@@ -232,8 +235,8 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		addProduct("City", "Hyderabad");
 		addProduct("City", "Lucknow");
 
-		addProduct("Acivity Type", "Onsite");
-		addProduct("Acivity Type", "Offsite");
+		addProduct("Activity_Type", "Onsite");
+		addProduct("Activity_Type", "Offsite");
 
 	}
 
