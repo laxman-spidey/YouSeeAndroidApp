@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class SessionHandler implements OnPostResponseRecievedListener
+public class SessionHandler implements Chef
 {
 	private Activity activity;
 	private Context context;
@@ -15,6 +15,10 @@ public class SessionHandler implements OnPostResponseRecievedListener
 	private String sessionID;
 	private String userID;
 	private String userType;
+	private static final String LOGIN_DATA = "login_data";
+	private static final String KEY_USERNAME = "username";
+	private static final String KEY_PASSWORD = "password";
+	private static final String KEY_SESSION_ID = "sessionID";
 
 	public SessionHandler(Activity activity)
 	{
@@ -22,57 +26,75 @@ public class SessionHandler implements OnPostResponseRecievedListener
 		context = activity.getApplicationContext();
 	}
 
+	private SharedPreferences getLoginSharedPrefs()
+	{
+		return activity.getApplicationContext().getSharedPreferences(LOGIN_DATA, Activity.MODE_PRIVATE);
+	}
+
 	private boolean getLoginCredentials(String username, String password)
 	{
 		Log.i("tag", "in getLogin credentials");
-		SharedPreferences sharedPrefs;
-		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
-		username = sharedPrefs.getString("USERNAME", null);
-		password = sharedPrefs.getString("PASSWORD", null);
-		if (username == null || password == null)
-			return false;
-		return true;
+		if (isLoginCredentialsExists())
+		{
+			SharedPreferences sharedPrefs = getLoginSharedPrefs();
+			username = sharedPrefs.getString(KEY_USERNAME, null);
+			password = sharedPrefs.getString(KEY_PASSWORD, null);
+			return true;
+		}
+		return false;
+
 	}
 
 	private void setLoginCredentials(String username, String password)
 	{
-		SharedPreferences sharedPrefs;
-		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
+		SharedPreferences sharedPrefs = getLoginSharedPrefs();
 		SharedPreferences.Editor editor = sharedPrefs.edit();
-		editor.putString("USERNAME", username);
-		editor.putString("PASSWORD", password);
+		editor.putString(KEY_USERNAME, username);
+		editor.putString(KEY_PASSWORD, password);
 
 	}
 
 	public boolean isLoginCredentialsExists()
 	{
-		SharedPreferences sharedPrefs;
-		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
-		username = sharedPrefs.getString("USERNAME", null);
-		password = sharedPrefs.getString("PASSWORD", null);
-		if (username == null || password == null)
-			return false;
-		return true;
+		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		if (sharedPrefs.contains(KEY_USERNAME) && sharedPrefs.contains(KEY_PASSWORD))
+		{
+			return true;
+		}
+		return false;
+
 	}
 
 	public boolean getSessionId(String sessionId)
 	{
-		SharedPreferences sharedPrefs;
-		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
-		sessionId = sharedPrefs.getString("SESSION_ID", null);
-		if (sessionId == null)
+		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		if (isSessionIdExists())
+		{
+			sessionId = sharedPrefs.getString("SESSION_ID", null);
 			return true;
+		}
 		return false;
+
 	}
 
 	private void setSessionId(String sessionId)
 	{
-		SharedPreferences sharedPrefs;
-		sharedPrefs = activity.getPreferences(activity.MODE_PRIVATE);
+		SharedPreferences sharedPrefs = getLoginSharedPrefs();
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString("SESSION_ID", sessionId);
 		this.sessionID = sessionId;
 
+	}
+
+	private boolean isSessionIdExists()
+	{
+
+		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		if (sharedPrefs.contains(KEY_SESSION_ID))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public int loginExec()
@@ -103,8 +125,20 @@ public class SessionHandler implements OnPostResponseRecievedListener
 	}
 
 	@Override
-	public void onPostResponseRecieved(String result)
+	public void serveResponse(String result)
 	{
 		Log.i("tag", result);
+	}
+
+	@Override
+	public void assembleRequest()
+	{
+
+	}
+
+	@Override
+	public void cook()
+	{
+
 	}
 }

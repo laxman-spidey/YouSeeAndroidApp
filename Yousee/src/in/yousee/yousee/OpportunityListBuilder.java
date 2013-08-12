@@ -19,12 +19,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-public class OpportunityListBuilder implements OnPostResponseRecievedListener
+public class OpportunityListBuilder implements Chef
 {
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
 
-	
 	protected HttpPost postRequest;
 
 	private MainActivity activity;
@@ -33,24 +32,21 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, MainActivity activity)
 	{
 		this.activity = (MainActivity) activity;
-		createRequest();
-		addValuesToPost(filterGroupList);
+		assembleRequest(filterGroupList);
+
 	}
 
 	public OpportunityListBuilder(Activity activity)
 	{
 		this.activity = (MainActivity) activity;
-		createRequest();
-		addValuesToPostFirstTime();
+		assembleRequest();
+
 	}
 
-	protected void createRequest()
+	@Override
+	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + fileName);
-	}
-
-	protected void addValuesToPostFirstTime()
-	{
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
 
@@ -64,7 +60,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 
 	}
 
-	protected void addValuesToPost(ArrayList<FilterGroupInfo> filterGroupList)
+	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
@@ -73,7 +69,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 		while (it.hasNext())
 		{
 			FilterGroupInfo group = it.next();
-			
+
 			// nameValuePairs.add(new
 			// BasicNameValuePair(group.getName(), "true"));
 			Iterator<FilterChildInfo> childIterator = group.getProductList().iterator();
@@ -82,7 +78,7 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 				FilterChildInfo child = childIterator.next();
 				if (child.isChecked())
 				{
-					Log.i("tag", " "+group.getName()+": " + child.getName());
+					Log.i("tag", " " + group.getName() + ": " + child.getName());
 					nameValuePairs.add(new BasicNameValuePair(group.getName(), child.getName()));
 				}
 			}
@@ -99,14 +95,15 @@ public class OpportunityListBuilder implements OnPostResponseRecievedListener
 
 	}
 
-	public void execute()
+	@Override
+	public void cook()
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(activity.getApplicationContext());
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}
 
 	@Override
-	public void onPostResponseRecieved(String result)
+	public void serveResponse(String result)
 	{
 
 		JSONObject json;

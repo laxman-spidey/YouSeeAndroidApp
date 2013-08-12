@@ -29,11 +29,11 @@ public class NetworkConnectionHandler implements Runnable
 {
 	Context context;
 	String webContentResult;
-	public static final String DOMAIN = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.106:80/yousee_test/YouseeMobile/";
 	
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
-	OnPostResponseRecievedListener listener;
+	Chef listener;
 
 	public NetworkConnectionHandler(Context context)
 	{
@@ -59,7 +59,7 @@ public class NetworkConnectionHandler implements Runnable
 		}
 	}
 
-	public void sendRequest(HttpPost postRequest, OnPostResponseRecievedListener listener)
+	public void sendRequest(HttpPost postRequest, Chef listener)
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
@@ -70,7 +70,7 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
-	public void sendRequestInMultiThreadedMode(HttpPost postRequest, OnPostResponseRecievedListener listener)
+	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Chef listener)
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
@@ -157,7 +157,7 @@ public class NetworkConnectionHandler implements Runnable
 				String key = i.next().getKey();
 				System.out.println(key + ", " + map.get(key));
 			}
-			listener.onPostResponseRecieved(webContentResult);
+			listener.serveResponse(webContentResult);
 		}
 	}
 

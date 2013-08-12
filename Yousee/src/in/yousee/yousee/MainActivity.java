@@ -64,7 +64,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	{
 		Log.i("tag", "building opportunity list");
 		listBuilder = new OpportunityListBuilder(this);
-		listBuilder.execute();
+		listBuilder.cook();
 	} 
 
 	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
@@ -119,7 +119,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 				}
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
-				listBuilder.execute();
+				listBuilder.cook();
 				
 			}
 		});

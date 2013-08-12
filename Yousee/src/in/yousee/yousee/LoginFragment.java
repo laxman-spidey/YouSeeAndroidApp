@@ -1,17 +1,21 @@
 package in.yousee.yousee;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener
+public class LoginFragment extends SherlockFragment implements OnClickListener, OnFocusChangeListener
 {
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -19,28 +23,29 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	Button RegisterButton;
 	TextView usernameErrorMsg;
 	TextView passwordErrorMsg;
-	
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login_form);
-		usernameEditText = (EditText) findViewById(R.id.username);
-		passwordEditText = (EditText) findViewById(R.id.password);
-		loginButton = (Button) findViewById(R.id.loginButton);
-		RegisterButton = (Button) findViewById(R.id.registerButton);
-		usernameErrorMsg = (TextView) findViewById(R.id.usernameErrorMessage);
-		passwordErrorMsg = (TextView) findViewById(R.id.passwordErrorMessage);
+		// Inflate the layout for this fragment
+		return inflater.inflate(R.layout.login_form, container, false);
+	}
+
+	public void instantiate()
+	{
+		View layout = getView();
+		usernameEditText = (EditText) layout.findViewById(R.id.username);
+		passwordEditText = (EditText) layout.findViewById(R.id.password);
+		loginButton = (Button) layout.findViewById(R.id.loginButton);
+		RegisterButton = (Button) layout.findViewById(R.id.registerButton);
+		usernameErrorMsg = (TextView) layout.findViewById(R.id.usernameErrorMessage);
+		passwordErrorMsg = (TextView) layout.findViewById(R.id.passwordErrorMessage);
 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
-		
-		usernameEditText.setText("gunaranjan");
-		passwordEditText.setText("password");
-		
-		
+
+		// usernameEditText.setText("gunaranjan");
+		// passwordEditText.setText("password");
 
 	}
 
@@ -50,9 +55,9 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		if (validateForm())
 		{
 			Log.i("tag", "Logging in ........");
-			SessionHandler session= new SessionHandler(this);
+			SessionHandler session = new SessionHandler(this.getActivity());
 			session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-			
+
 		}
 
 	}
@@ -117,16 +122,20 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 
 	private void showUsernameError(String errorMsg)
 	{
+		usernameEditText.setHighlightColor(Color.RED);
+		usernameEditText.setHint("Username invalid");
+		usernameEditText.setHintTextColor(Color.RED);
 		usernameErrorMsg.setText(errorMsg);
 		usernameErrorMsg.setVisibility(View.VISIBLE);
 	}
 
 	private void showPasswordError(String errorMsg)
 	{
+		passwordEditText.setHighlightColor(Color.RED);
+		passwordEditText.setHint("Password invalid");
+		passwordEditText.setHintTextColor(Color.RED);
 		passwordErrorMsg.setText(errorMsg);
 		passwordErrorMsg.setVisibility(View.VISIBLE);
 	}
-
-	
 
 }
