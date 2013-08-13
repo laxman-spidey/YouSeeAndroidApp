@@ -8,35 +8,52 @@
         android:id="@+id/opportunityListview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:background="#C9C9C9"
         android:divider="#C9C9C9"
-        android:dividerHeight="8dp" >
+        android:dividerHeight="8dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
     </ListView>
 
-    <FrameLayout
-        android:id="@+id/filterFrame"
-        android:layout_width="200dp"
+    <LinearLayout
+        android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:minWidth="200dp"
-        android:visibility="invisible" >
+        android:orientation="vertical" >
 
-        <ExpandableListView
-            android:id="@+id/expandableListView1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="false"
-            android:paddingBottom="48dp" >
-        </ExpandableListView>
-
-        <Button
-            android:id="@+id/updateButton"
+        <FrameLayout
+            android:id="@+id/filterFrame"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="Update" />
-    </FrameLayout>
+            android:layout_gravity="top|right"
+            android:background="@drawable/border"
+            android:minWidth="200dp"
+            android:visibility="invisible" >
+
+            <ExpandableListView
+                android:id="@+id/expandableListView1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="false"
+                android:childDivider="@color/divider"
+                android:divider="@color/divider"
+                android:dividerHeight="1dp"
+                android:groupIndicator="@drawable/expandable_list_indicator" >
+            </ExpandableListView>
+
+            <Button
+                android:id="@+id/updateButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="Update" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:background="@color/red" >
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

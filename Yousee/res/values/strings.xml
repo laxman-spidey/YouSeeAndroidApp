@@ -10,5 +10,7 @@
     <string name="PASSWORD">PASSWORD</string>
     <string name="LOGIN_FAILED">LOGIN_FAILED</string>
     <color name="custom_grey">#DCDCDC</color>
-
+	<color name="dark_gray">#808080</color>
+	<color name="divider">#B1B1B1</color>
+	<color name="red">#FF0000</color>
 </resources>
