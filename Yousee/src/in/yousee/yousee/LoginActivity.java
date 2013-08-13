@@ -1,23 +1,19 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.model.CustomException;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragment;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginFragment extends SherlockFragment implements OnClickListener, OnFocusChangeListener
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener
 {
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -26,28 +22,30 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 	TextView usernameErrorMsg;
 	TextView passwordErrorMsg;
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	@Override
+	public void onCreate(Bundle savedInstanceState)
 	{
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.login_form, container, false);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.login_form);
+		instantiate();
+
 	}
 
 	public void instantiate()
 	{
-		View layout = getView();
-		usernameEditText = (EditText) layout.findViewById(R.id.username);
-		passwordEditText = (EditText) layout.findViewById(R.id.password);
-		loginButton = (Button) layout.findViewById(R.id.loginButton);
-		RegisterButton = (Button) layout.findViewById(R.id.registerButton);
-		usernameErrorMsg = (TextView) layout.findViewById(R.id.usernameErrorMessage);
-		passwordErrorMsg = (TextView) layout.findViewById(R.id.passwordErrorMessage);
+		usernameEditText = (EditText) findViewById(R.id.username);
+		passwordEditText = (EditText) findViewById(R.id.password);
+		loginButton = (Button) findViewById(R.id.loginButton);
+		RegisterButton = (Button) findViewById(R.id.registerButton);
+		usernameErrorMsg = (TextView) findViewById(R.id.usernameErrorMessage);
+		passwordErrorMsg = (TextView) findViewById(R.id.passwordErrorMessage);
 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
 
-		// usernameEditText.setText("gunaranjan");
-		// passwordEditText.setText("password");
+		usernameEditText.setText("gunaranjan");
+		passwordEditText.setText("password");
 
 	}
 
@@ -57,14 +55,29 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 		if (validateForm())
 		{
 			Log.i("tag", "Logging in ........");
-			SessionHandler session = new SessionHandler(this.getActivity());
+			SessionHandler session = new SessionHandler(this);
 			try
 			{
 				session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-			}
-			catch(CustomException e)
+			} catch (CustomException e)
 			{
-				CustomException.showToastError(this.getActivity().getApplicationContext(), e);
+				switch (e.errorCode)
+					{
+					case CustomException.INVALID_URL:
+					case CustomException.NETWORK_NOT_FOUND:
+					case CustomException.NO_INTERNET_CONNECTIVITY:
+						CustomException.showToastError(getApplicationContext(), e);
+						break;
+					case CustomException.USERNAME_INVALID:
+						showUsernameError(e.getErrorMsg());
+						break;
+					case CustomException.PASSWORD_INVALID:
+						showPasswordError(e.getErrorMsg());
+
+					default:
+						break;
+					}
+
 			}
 
 		}

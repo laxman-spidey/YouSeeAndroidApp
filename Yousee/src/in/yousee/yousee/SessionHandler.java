@@ -1,6 +1,7 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
+import in.yousee.yousee.model.CustomException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -97,7 +98,7 @@ public class SessionHandler implements Chef
 		return false;
 	}
 
-	public int loginExec()
+	public int loginExec() throws CustomException
 	{
 
 		Log.i("tag", "in login exec");
@@ -107,17 +108,15 @@ public class SessionHandler implements Chef
 		// return -1;
 	}
 
-	public int loginExec(String username, String password)
+	public int loginExec(String username, String password) throws CustomException
 	{
 		int statusCode = 0;
 
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
-		if (NetworkConnectionHandler.isNetworkConnected(context))
-		{
-			Log.i("tag", "connection available");
-			LoginRequestHandler request = new LoginRequestHandler(username, password);
-			networkHandler.sendRequest(request.buildRequest(), this);
-		}
+
+		Log.i("tag", "connection available");
+		LoginRequestHandler request = new LoginRequestHandler(username, password);
+		networkHandler.sendRequest(request.buildRequest(), this);
 
 		setSessionId(sessionID);
 		setLoginCredentials(username, password);

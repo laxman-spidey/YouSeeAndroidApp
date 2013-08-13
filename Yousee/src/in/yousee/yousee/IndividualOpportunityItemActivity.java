@@ -54,9 +54,10 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 			
 		} else
 		{
-			showLoginScreen();
+			//showLoginScreen();
 		}
 
+		showLoginScreen();
 	}
 
 	public void commit()
@@ -69,7 +70,7 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 		Intent intent = new Intent();
 		Log.i("tag", "showing LoginScreen");
-		intent.setClass(this, in.yousee.yousee.LoginFragment.class);
+		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivity(intent);
 	}
 

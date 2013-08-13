@@ -1,5 +1,7 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.model.CustomException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +31,8 @@ public class NetworkConnectionHandler implements Runnable
 {
 	Context context;
 	String webContentResult;
-	public static final String DOMAIN = "http://192.168.0.106:80/yousee_test/YouseeMobile/";
-	
+	public static final String DOMAIN = "http://192.168.0.103:80/yousee_test/YouseeMobile/";
+
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 	Chef listener;
@@ -41,7 +43,7 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
-	public static boolean isNetworkConnected(Context context)
+	public static boolean isNetworkConnected(Context context) throws CustomException
 	{
 		Log.i("tag", "is network connected");
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -54,29 +56,35 @@ public class NetworkConnectionHandler implements Runnable
 
 		} else
 		{
-			Log.i("tag", "network connection is not available");
-			return false;
+			throw new CustomException(CustomException.NETWORK_NOT_FOUND);
 		}
+
 	}
 
-	public void sendRequest(HttpPost postRequest, Chef listener)
+	public void sendRequest(HttpPost postRequest, Chef listener) throws CustomException
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
 		downloadwebContent = new DownloadWebpageTask();
-		downloadwebContent.execute(postRequest);
-
+		if (NetworkConnectionHandler.isNetworkConnected(context))
+		{
+			downloadwebContent.execute(postRequest);
+		}
 		// onResponseRecieved();
 
 	}
 
-	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Chef listener)
+	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Chef listener) throws CustomException
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
 		Thread networkThread = new Thread(this);
-		downloadwebContent = new DownloadWebpageTask();
-		networkThread.start();
+		if (NetworkConnectionHandler.isNetworkConnected(context))
+		{
+			downloadwebContent = new DownloadWebpageTask();
+			networkThread.start();
+		}
+
 	}
 
 	@Override

@@ -63,7 +63,7 @@ public class WelcomeActivity extends Activity
 			;
 		else if (session.isLoginCredentialsExists())
 		{
-			session.loginExec();
+			//session.loginExec();
 		} else
 		{
 			sessionId = "guestId";

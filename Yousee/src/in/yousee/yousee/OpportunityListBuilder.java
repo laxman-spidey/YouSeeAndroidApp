@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
 import java.io.UnsupportedEncodingException;
@@ -96,7 +97,7 @@ public class OpportunityListBuilder implements Chef
 	}
 
 	@Override
-	public void cook()
+	public void cook() throws CustomException
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(activity.getApplicationContext());
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);

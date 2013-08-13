@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
 import java.util.ArrayList;
@@ -64,8 +65,14 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	{
 		Log.i("tag", "building opportunity list");
 		listBuilder = new OpportunityListBuilder(this);
-		listBuilder.cook();
-	} 
+		try
+		{
+			listBuilder.cook();
+		} catch (CustomException e)
+		{
+			CustomException.showToastError(getApplicationContext(), e);
+		}
+	}
 
 	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
 	{
@@ -119,8 +126,14 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 				}
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
-				listBuilder.cook();
-				
+				try
+				{
+					listBuilder.cook();
+				} catch (CustomException e)
+				{
+					CustomException.showToastError(getApplicationContext(), e);
+				}
+
 			}
 		});
 
