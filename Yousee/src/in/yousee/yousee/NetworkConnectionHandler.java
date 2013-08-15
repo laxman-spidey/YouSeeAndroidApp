@@ -6,32 +6,34 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
+/**
+ * 
+ * NetworkConnectionHandler.java Purpose: Connects to server, recieves response
+ * and passes it to class which implements class Chef
+ * 
+ * @author Laxman
+ * @version 1.0 15/08/2013
+ */
 public class NetworkConnectionHandler implements Runnable
 {
+	// used to get System services to check network status and required
+	// information
 	Context context;
-	String webContentResult;
-	public static final String DOMAIN = "http://192.168.0.103:80/yousee_test/YouseeMobile/";
+
+	// web service URL
+	public static final String DOMAIN = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
@@ -43,6 +45,17 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
+	/**
+	 * Tells whether network is connected or not
+	 * 
+	 * @param Context
+	 *                used to get System services
+	 * 
+	 * @throws CustomException
+	 * @see in.yousee.yousee.model.CustomException
+	 * 
+	 * @return network Connection status
+	 */
 	public static boolean isNetworkConnected(Context context) throws CustomException
 	{
 		Log.i("tag", "is network connected");
@@ -61,6 +74,20 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
+	/**
+	 * Checks network status and creates a AsyncTask object starts its
+	 * execution
+	 * 
+	 * @param HttpPostRequest
+	 *                Post request object
+	 * 
+	 * @param Chef
+	 *                assigned to a global variable listener. a method of
+	 *                this class is called after recieving response
+	 * 
+	 * @throws CustomException
+	 * @see in.yousee.yousee.model.CustomException
+	 */
 	public void sendRequest(HttpPost postRequest, Chef listener) throws CustomException
 	{
 		this.listener = listener;
@@ -74,6 +101,20 @@ public class NetworkConnectionHandler implements Runnable
 
 	}
 
+	/**
+	 * This method does the same job as sendRequest() but executed in a new
+	 * Thread
+	 * 
+	 * @param HttpPostRequest
+	 *                Post request object
+	 * 
+	 * @param Chef
+	 *                assigned to a global variable listener. a method of
+	 *                this class is called after recieving response
+	 * 
+	 * @throws CustomException
+	 * @see in.yousee.yousee.model.CustomException
+	 */
 	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Chef listener) throws CustomException
 	{
 		this.listener = listener;
@@ -96,6 +137,15 @@ public class NetworkConnectionHandler implements Runnable
 		downloadwebContent.execute(postRequest);
 	}
 
+	/**
+	 * @param <HttpPost>
+	 *                input
+	 * 
+	 * @param <void> progress
+	 * 
+	 * @param <Sring>
+	 *                output
+	 */
 	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, String>
 	{
 
@@ -118,63 +168,29 @@ public class NetworkConnectionHandler implements Runnable
 		@Override
 		protected void onPostExecute(String result)
 		{
-			webContentResult = result;
-			Log.i("tag", "before notify");
-
-			onResponseRecieved();
-
+			onResponseRecieved(result);
 		}
 	}
 
-	public void onResponseRecieved()
+	/**
+	 * This method is called whenever the response is recieved from the
+	 * server.
+	 */
+
+	public void onResponseRecieved(String webContentResult)
 	{
 
-		Log.i("tag", " result length : " + webContentResult.length());
+		listener.serveResponse(webContentResult);
 
-		// int index = webContentResult.lastIndexOf('}');
-		// Log.i("tag", " index : " + index);
-		// String subString;
-		// if (index > 0)
-		{
-			// subString = webContentResult.substring(0, index+1);
-			Log.i("tag", " result : " + webContentResult);
-
-			Map<String, String> map = new HashMap<String, String>();
-			try
-			{
-				JSONObject jsonObject = new JSONObject(webContentResult);
-				Iterator keys = jsonObject.keys();
-
-				while (keys.hasNext())
-				{
-					String key = (String) keys.next();
-					map.put(key, jsonObject.getString(key));
-				}
-				System.out.println(map);// this map will contain
-							// your
-							// json stuff
-			} catch (JSONException e)
-			{
-				e.printStackTrace();
-			}
-
-			Iterator<Map.Entry<String, String>> i = map.entrySet().iterator();
-			while (i.hasNext())
-			{
-
-				String key = i.next().getKey();
-				System.out.println(key + ", " + map.get(key));
-			}
-			listener.serveResponse(webContentResult);
-		}
 	}
 
+	/**
+	 * This method connects to Server and downloads Response String is
+	 * extracted from Body of response
+	 */
 	private String downloadUrl(HttpPost postRequest) throws IOException
 	{
 		InputStream is = null;
-		// Only display the first 500 characters of the retrieved
-		// web page content.
-		int len = 10000;
 
 		try
 		{
@@ -183,7 +199,7 @@ public class NetworkConnectionHandler implements Runnable
 
 			HttpResponse response = httpclient.execute(postRequest);
 			is = response.getEntity().getContent();
-			String contentAsString = readIt(is, len);
+			String contentAsString = readIt(is);
 			Log.i("tag", "download completed");
 			return contentAsString;
 
@@ -201,15 +217,8 @@ public class NetworkConnectionHandler implements Runnable
 	}
 
 	// Reads an InputStream and converts it to a String.
-	private String readIt(InputStream stream, int len) throws IOException
+	private String readIt(InputStream stream) throws IOException
 	{
-		/*
-		 * Reader reader = null; reader = new InputStreamReader(stream,
-		 * "UTF-8"); char[] buffer = new char[len];
-		 * //reader.read(buffer); String string = ""; char ch; if((ch =
-		 * (char) reader.read())==-1) { Log.i("tag", ""+ch); string+=ch;
-		 * } return string; //return new String(buffer);
-		 */
 
 		InputStreamReader is = new InputStreamReader(stream);
 		StringBuilder sb = new StringBuilder();
