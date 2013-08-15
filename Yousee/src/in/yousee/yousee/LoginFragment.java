@@ -39,8 +39,8 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 		passwordEditText = (EditText) layout.findViewById(R.id.password);
 		loginButton = (Button) layout.findViewById(R.id.loginButton);
 		RegisterButton = (Button) layout.findViewById(R.id.registerButton);
-		usernameErrorMsg = (TextView) layout.findViewById(R.id.usernameErrorMessage);
-		passwordErrorMsg = (TextView) layout.findViewById(R.id.passwordErrorMessage);
+		//usernameErrorMsg = (TextView) layout.findViewById(R.id.usernameErrorMessage);
+		//passwordErrorMsg = (TextView) layout.findViewById(R.id.passwordErrorMessage);
 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
@@ -134,8 +134,8 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 		usernameEditText.setHighlightColor(Color.RED);
 		usernameEditText.setHint("Username invalid");
 		usernameEditText.setHintTextColor(Color.RED);
-		usernameErrorMsg.setText(errorMsg);
-		usernameErrorMsg.setVisibility(View.VISIBLE);
+		//usernameErrorMsg.setText(errorMsg);
+		//usernameErrorMsg.setVisibility(View.VISIBLE);
 	}
 
 	private void showPasswordError(String errorMsg)
@@ -143,8 +143,8 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 		passwordEditText.setHighlightColor(Color.RED);
 		passwordEditText.setHint("Password invalid");
 		passwordEditText.setHintTextColor(Color.RED);
-		passwordErrorMsg.setText(errorMsg);
-		passwordErrorMsg.setVisibility(View.VISIBLE);
+		//passwordErrorMsg.setText(errorMsg);
+		//passwordErrorMsg.setVisibility(View.VISIBLE);
 	}
 
 }

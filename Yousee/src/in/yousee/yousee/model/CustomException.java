@@ -18,6 +18,8 @@ public class CustomException extends Exception implements JSONParsable
 	public static final int NETWORK_NOT_FOUND = 3;
 	public static final int NO_INTERNET_CONNECTIVITY = 4;
 	public static final int INVALID_URL = 5;
+	public static final int LOGIN_ERROR = 6;
+	public static final int CUSTOM_ERROR = 7;
 
 	private String errorMsg;
 	public int errorCode;
@@ -27,6 +29,11 @@ public class CustomException extends Exception implements JSONParsable
 		this.errorCode = errorCode;
 		setErrorMsg(errorCode);
 
+	}
+	public CustomException(String errorMsg)
+	{
+		setErrorCode(CUSTOM_ERROR);
+		setErrorMsg(errorMsg);
 	}
 
 	private void setErrorMsg(int errorCode)
@@ -44,6 +51,9 @@ public class CustomException extends Exception implements JSONParsable
 				break;
 			case NO_INTERNET_CONNECTIVITY:
 				setErrorMsg("Your device is not connected to internet.");
+				break;
+			case LOGIN_ERROR:
+				setErrorMsg("Details you have entered are incorrect.");
 				break;
 			default:
 				break;

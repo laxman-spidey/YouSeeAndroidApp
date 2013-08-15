@@ -2,6 +2,7 @@ package in.yousee.yousee;
 
 import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
 import in.yousee.yousee.model.CustomException;
+import in.yousee.yousee.model.SessionData;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +16,8 @@ public class SessionHandler implements Chef
 	private String sessionID;
 	private String userID;
 	private String userType;
+	private UsesLoginFeature loginFeatureClient;
+	
 	private static final String LOGIN_DATA = "login_data";
 	private static final String KEY_USERNAME = "username";
 	private static final String KEY_PASSWORD = "password";
@@ -24,6 +27,12 @@ public class SessionHandler implements Chef
 	{
 		this.context = context;
 	}
+	public SessionHandler(Context context, UsesLoginFeature usesLoginFeature)
+	{
+		this.loginFeatureClient = usesLoginFeature;
+		this.context = context;
+	}
+	
 
 	private SharedPreferences getLoginSharedPrefs()
 	{
@@ -99,35 +108,48 @@ public class SessionHandler implements Chef
 		return false;
 	}
 
-	public int loginExec() throws CustomException
+	public void loginExec() throws CustomException
 	{
 
 		Log.i("tag", "in login exec");
 		// if (getLoginCredentials(username, password))
-		return loginExec(username, password);
+		if (getLoginCredentials(username, password))
+			loginExec(username, password);
+
 		// else
 		// return -1;
 	}
 
-	public int loginExec(String username, String password) throws CustomException
+	public void loginExec(String username, String password) throws CustomException
 	{
 		int statusCode = 0;
 
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 
 		Log.i("tag", "connection available");
+		
 		LoginRequestHandler request = new LoginRequestHandler(username, password);
 		networkHandler.sendRequest(request.buildRequest(), this);
 
 		setSessionId(sessionID);
 		setLoginCredentials(username, password);
-		return statusCode;
+
 	}
 
 	@Override
 	public void serveResponse(String result)
 	{
-		Log.i("tag", result);
+		SessionData sessionData = new SessionData(result);
+		if (sessionData.isSuccess())
+		{
+			setLoginCredentials(username, password);
+			setSessionId(sessionData.getSessionId());
+			loginFeatureClient.onLoginSuccess();
+		} else
+		{
+			loginFeatureClient.onLoginFailed();
+			
+		}
 	}
 
 	@Override

@@ -1,6 +1,10 @@
 package in.yousee.yousee;
 
+import com.actionbarsherlock.app.SherlockActivity;
+
 import in.yousee.yousee.model.CustomException;
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +14,14 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
-public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener
+public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
 {
+	
+	private Context context;
+	
+
 	EditText usernameEditText;
 	EditText passwordEditText;
 	Button loginButton;
@@ -37,8 +44,10 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		passwordEditText = (EditText) findViewById(R.id.password);
 		loginButton = (Button) findViewById(R.id.loginButton);
 		RegisterButton = (Button) findViewById(R.id.registerButton);
-		usernameErrorMsg = (TextView) findViewById(R.id.usernameErrorMessage);
-		passwordErrorMsg = (TextView) findViewById(R.id.passwordErrorMessage);
+		// usernameErrorMsg = (TextView)
+		// findViewById(R.id.usernameErrorMessage);
+		// passwordErrorMsg = (TextView)
+		// findViewById(R.id.passwordErrorMessage);
 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
@@ -55,7 +64,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		if (validateForm())
 		{
 			Log.i("tag", "Logging in ........");
-			SessionHandler session = new SessionHandler(this);
+			SessionHandler session = new SessionHandler(getApplicationContext(), this);
 			try
 			{
 				session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
@@ -66,7 +75,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 					case CustomException.INVALID_URL:
 					case CustomException.NETWORK_NOT_FOUND:
 					case CustomException.NO_INTERNET_CONNECTIVITY:
-						CustomException.showToastError(getApplicationContext(), e);
+						CustomException.showToastError(context, e);
 						break;
 					case CustomException.USERNAME_INVALID:
 						showUsernameError(e.getErrorMsg());
@@ -147,8 +156,8 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		usernameEditText.setHighlightColor(Color.RED);
 		usernameEditText.setHint("Username invalid");
 		usernameEditText.setHintTextColor(Color.RED);
-		usernameErrorMsg.setText(errorMsg);
-		usernameErrorMsg.setVisibility(View.VISIBLE);
+		// usernameErrorMsg.setText(errorMsg);
+		// usernameErrorMsg.setVisibility(View.VISIBLE);
 	}
 
 	private void showPasswordError(String errorMsg)
@@ -156,8 +165,21 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		passwordEditText.setHighlightColor(Color.RED);
 		passwordEditText.setHint("Password invalid");
 		passwordEditText.setHintTextColor(Color.RED);
-		passwordErrorMsg.setText(errorMsg);
-		passwordErrorMsg.setVisibility(View.VISIBLE);
+		// passwordErrorMsg.setText(errorMsg);
+		// passwordErrorMsg.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onLoginFailed()
+	{
+		CustomException.showToastError(getApplicationContext(), new CustomException(CustomException.LOGIN_ERROR));
+	}
+
+	@Override
+	public void onLoginSuccess()
+	{
+		Toast.makeText(getApplicationContext(), "Successfully Logged in", Toast.LENGTH_LONG).show();
+		finish();
 	}
 
 }
