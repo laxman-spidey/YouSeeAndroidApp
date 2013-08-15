@@ -9,7 +9,6 @@ import android.util.Log;
 
 public class SessionHandler implements Chef
 {
-	private Activity activity;
 	private Context context;
 	private String username;
 	private String password;
@@ -21,15 +20,15 @@ public class SessionHandler implements Chef
 	private static final String KEY_PASSWORD = "password";
 	private static final String KEY_SESSION_ID = "sessionID";
 
-	public SessionHandler(Activity activity)
+	public SessionHandler(Context context)
 	{
-		this.activity = activity;
-		context = activity.getApplicationContext();
+		this.context = context;
 	}
 
 	private SharedPreferences getLoginSharedPrefs()
 	{
-		return activity.getApplicationContext().getSharedPreferences(LOGIN_DATA, Activity.MODE_PRIVATE);
+
+		return context.getSharedPreferences(LOGIN_DATA, Activity.MODE_PRIVATE);
 	}
 
 	private boolean getLoginCredentials(String username, String password)
@@ -52,6 +51,7 @@ public class SessionHandler implements Chef
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString(KEY_USERNAME, username);
 		editor.putString(KEY_PASSWORD, password);
+		editor.commit();
 
 	}
 
@@ -84,6 +84,7 @@ public class SessionHandler implements Chef
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString("SESSION_ID", sessionId);
 		this.sessionID = sessionId;
+		editor.commit();
 
 	}
 
