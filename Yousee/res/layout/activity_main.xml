@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C9C9C9" >
+    android:background="@color/custom_grey" >
 
     <ListView
         android:id="@+id/opportunityListview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#C9C9C9"
-        android:divider="#C9C9C9"
+        android:background="@color/custom_grey"
+        android:divider="@color/custom_grey"
         android:dividerHeight="8dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp" >
@@ -38,13 +38,14 @@
                 android:childDivider="@color/divider"
                 android:divider="@color/divider"
                 android:dividerHeight="1dp"
-                android:groupIndicator="@drawable/expandable_list_indicator" >
+                android:groupIndicator="@drawable/expandable_list_indicator"
+                android:paddingBottom="45dp" >
             </ExpandableListView>
 
             <Button
                 android:id="@+id/updateButton"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_gravity="bottom"
                 android:text="Update" />
         </FrameLayout>
