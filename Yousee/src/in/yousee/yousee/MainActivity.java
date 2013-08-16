@@ -31,6 +31,7 @@ import com.actionbarsherlock.view.Window;
 public class MainActivity extends SherlockActivity implements OnItemClickListener
 {
 
+	private static final String LOG_TAG = "tag";
 	private FrameLayout filterFrame;
 	private Button updateButton;
 	ListView listview;
@@ -41,24 +42,20 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		// setSupportProgressBarIndeterminate(false);
-		// setSupportProgressBarIndeterminate(true);
-		// requestWindowFeature(Window.FEATURE_PROGRESS);
-		// setSupportProgressBarVisibility(true);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		Log.i(LOG_TAG, "progress bar : true");
+		setSupportProgressBarIndeterminate(true);
+		setSupportProgressBarIndeterminateVisibility(true);
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 		setContentView(R.layout.activity_main);
+
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
 
-		initiateExpandableList();
-
 		buildOpportunityListForTheFirstTime();
-		// sendRequest();
-		// sendTestRequest();
+
+		initiateExpandableList();
 	}
 
 	private void buildOpportunityListForTheFirstTime()
@@ -70,21 +67,36 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 			listBuilder.cook();
 		} catch (CustomException e)
 		{
+			//testing
+			buildOpportunityList(null);
+			//testing
 			CustomException.showToastError(getApplicationContext(), e);
 		}
 	}
 
-	public void createOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
+	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
 	{
 
 		// Log.i("tag", "creating");
+		//this.proxyList = proxyList;
+		
+		// ------------testing app with no network connection---------
+		proxyList = new ArrayList<ProxyOpportunityItem>();
+		for (int i = 0; i < 10; i++)
+		{
+			ProxyOpportunityItem testItem = new ProxyOpportunityItem(1, "kjfklsdjfkhsdkjfhsd", "Education", "", "jfskldjhfksdfkjsydjfknsdjkhfkjsdnfjsdhjkfhksdgkjsdgkjsdnjkshfkjsd");
+			proxyList.add(testItem);
+		}
+		// ------------testing app with no network connection---------//
+		
+		
 		this.proxyList = proxyList;
 		listview = (ListView) findViewById(R.id.opportunityListview);
 
 		String[] titles = new String[proxyList.size()];
 		int[] types = new int[proxyList.size()];
 		int index = 0;
-		Iterator it = proxyList.iterator();
+		Iterator<ProxyOpportunityItem> it = proxyList.iterator();
 		while (it.hasNext())
 		{
 			ProxyOpportunityItem item = (ProxyOpportunityItem) it.next();
@@ -98,6 +110,8 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);
+		Log.i(LOG_TAG, "progress bar : false");
+		setSupportProgressBarIndeterminateVisibility(false);
 
 	}
 
@@ -108,22 +122,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 			@Override
 			public void onClick(View v)
 			{
-				Iterator<FilterGroupInfo> it = filterGroupList.iterator();
-				while (it.hasNext())
-				{
-					FilterGroupInfo group = it.next();
-					Log.i("tag", "+" + group.getName());
-					Iterator<FilterChildInfo> childIterator = group.getProductList().iterator();
-					while (childIterator.hasNext())
-					{
-						FilterChildInfo child = childIterator.next();
-						if (child.isChecked())
-						{
-							Log.i("tag", "	" + child.getName());
-						}
-					}
-
-				}
+				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
 				try
@@ -166,11 +165,6 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 			filterFrame.setVisibility(View.VISIBLE);
 		else
 			filterFrame.setVisibility(View.INVISIBLE);
-	}
-
-	public void sendRequest()
-	{
-
 	}
 
 	private LinkedHashMap<String, FilterGroupInfo> filterCatagories = new LinkedHashMap<String, FilterGroupInfo>();
@@ -331,11 +325,6 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
-
-	public void fancyThat(View v)
-	{
-		v.getBackground().setAlpha(50);
 	}
 
 	@Override

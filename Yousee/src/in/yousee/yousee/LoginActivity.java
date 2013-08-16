@@ -3,6 +3,7 @@ package in.yousee.yousee;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import in.yousee.yousee.model.CustomException;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,16 +12,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends SherlockActivity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
+public class LoginActivity extends Activity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
 {
-	
+
 	private Context context;
-	
 
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -32,8 +33,12 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_form);
+
+		context = getApplicationContext();
 		instantiate();
 
 	}
@@ -64,7 +69,7 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 		if (validateForm())
 		{
 			Log.i("tag", "Logging in ........");
-			SessionHandler session = new SessionHandler(getApplicationContext(), this);
+			SessionHandler session = new SessionHandler(context, this);
 			try
 			{
 				session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
@@ -172,14 +177,14 @@ public class LoginActivity extends SherlockActivity implements OnClickListener, 
 	@Override
 	public void onLoginFailed()
 	{
-		CustomException.showToastError(getApplicationContext(), new CustomException(CustomException.LOGIN_ERROR));
+		CustomException.showToastError(context, new CustomException(CustomException.LOGIN_ERROR));
 	}
 
 	@Override
 	public void onLoginSuccess()
 	{
-		Toast.makeText(getApplicationContext(), "Successfully Logged in", Toast.LENGTH_LONG).show();
-		finish();
+		Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+		// finish();
 	}
 
 }

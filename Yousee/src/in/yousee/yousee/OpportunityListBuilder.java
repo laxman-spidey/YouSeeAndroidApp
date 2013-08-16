@@ -63,6 +63,7 @@ public class OpportunityListBuilder implements Chef
 
 	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
+		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + fileName);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
 		Log.i("tag", "+hfksjdhfldhfjkghdfjkgdkjfhgjkdhfjgkhdfjkghjkdfhgkjdshfg");
@@ -132,7 +133,7 @@ public class OpportunityListBuilder implements Chef
 			e.printStackTrace();
 		}
 		Log.i("tag", "item list length = " + proxyItemList.size());
-		activity.createOpportunityListView(proxyItemList);
+		activity.buildOpportunityList(proxyItemList);
 
 	}
 

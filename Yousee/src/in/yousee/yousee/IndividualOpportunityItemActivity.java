@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
@@ -22,6 +23,7 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.individual_opportunity_item);
 		String jsonString = getIntent().getExtras().getString("result");
@@ -49,15 +51,18 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		String sessionId = null;
 		if (sessionHandler.getSessionId(sessionId))
 		{
-			Log.i("tag", "sessionID = " +sessionId);
+			Log.i("tag", "sessionID = " + sessionId);
+			Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
+
 			commit();
-			
+
 		} else
 		{
-			//showLoginScreen();
+			Log.i("tag", "Entering Login screen");
+			showLoginScreen();
 		}
 
-		showLoginScreen();
+		// showLoginScreen();
 	}
 
 	public void commit()
@@ -67,11 +72,11 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 	public void showLoginScreen()
 	{
-
 		Intent intent = new Intent();
 		Log.i("tag", "showing LoginScreen");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivity(intent);
+
 	}
 
 }

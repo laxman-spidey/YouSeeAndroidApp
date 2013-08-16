@@ -3,7 +3,7 @@
     package="in.yousee.yousee"
     android:versionCode="1"
     android:versionName="1.0" >
- 
+
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="17" />
@@ -29,7 +29,10 @@
         </activity>
         <activity android:name="in.yousee.yousee.IndividualOpportunityItemActivity" >
         </activity>
-        <activity android:name="in.yousee.yousee.LoginFragment" >
+        <activity
+            android:name="in.yousee.yousee.LoginActivity"
+            android:theme="@android:style/Theme.Dialog" >
         </activity>
     </application>
+
 </manifest>
