@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class SessionHandler implements Chef
+public class SessionHandler extends Chef
 {
 	private Context context;
 	private String username;

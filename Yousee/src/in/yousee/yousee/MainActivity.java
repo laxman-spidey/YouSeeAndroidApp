@@ -28,7 +28,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
-public class MainActivity extends SherlockActivity implements OnItemClickListener
+public class MainActivity extends SherlockActivity implements OnItemClickListener, OnResponseRecievedListener
 {
 
 	private static final String LOG_TAG = "tag";
@@ -61,7 +61,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	private void buildOpportunityListForTheFirstTime()
 	{
 		Log.i("tag", "building opportunity list");
-		listBuilder = new OpportunityListBuilder(this);
+		listBuilder = new OpportunityListBuilder(this, getApplicationContext());
 		try
 		{
 			throw new CustomException("fsd");
@@ -128,7 +128,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 			{
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
-				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
+				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this, getApplicationContext());
 				try
 				{
 					listBuilder.cook();
@@ -362,6 +362,14 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		intent.setClass(this, IndividualOpportunityItemActivity.class);
 		intent.putExtra("result", proxyList.get(position).toJsonString());
 		startActivity(intent);
+
+	}
+
+	@Override
+	public void onResponseRecieved(Object response)
+	{
+		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
+		buildOpportunityList(responseObject);
 
 	}
 

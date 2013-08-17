@@ -2,7 +2,7 @@ package in.yousee.yousee;
 
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
-public class IndividualOpportunityItemBuilder implements Chef
+public class IndividualOpportunityItemBuilder extends Chef
 {
 	IndividualOpportunityItemActivity sourceActivity;
 	ProxyOpportunityItem proxy;

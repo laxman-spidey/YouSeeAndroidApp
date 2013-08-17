@@ -20,26 +20,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-public class OpportunityListBuilder implements Chef
+public class OpportunityListBuilder extends Chef
 {
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
 
-	protected HttpPost postRequest;
-
-	private MainActivity activity;
+	private OnResponseRecievedListener listener;
+	private Context context;
 	private String fileName = "volunteering_opportunities.php";
 
-	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, MainActivity activity)
+	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener, Context context)
 	{
-		this.activity = (MainActivity) activity;
+		this.listener = listener;
+		this.context = context;
 		assembleRequest(filterGroupList);
 
 	}
 
-	public OpportunityListBuilder(Activity activity)
+	public OpportunityListBuilder(OnResponseRecievedListener listener, Context context)
 	{
-		this.activity = (MainActivity) activity;
+		this.listener = listener;
+		this.context = context;
 		assembleRequest();
 
 	}
@@ -58,6 +59,7 @@ public class OpportunityListBuilder implements Chef
 		{
 			e.printStackTrace();
 		}
+		cacheRequest(postRequest);
 
 	}
 
@@ -100,7 +102,7 @@ public class OpportunityListBuilder implements Chef
 	@Override
 	public void cook() throws CustomException
 	{
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(activity.getApplicationContext());
+		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}
 
@@ -133,7 +135,7 @@ public class OpportunityListBuilder implements Chef
 			e.printStackTrace();
 		}
 		Log.i("tag", "item list length = " + proxyItemList.size());
-		activity.buildOpportunityList(proxyItemList);
+		listener.onResponseRecieved(proxyItemList);
 
 	}
 
