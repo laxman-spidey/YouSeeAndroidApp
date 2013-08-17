@@ -61,11 +61,14 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	private void buildOpportunityListForTheFirstTime()
 	{
 		Log.i("tag", "building opportunity list");
-		listBuilder = new OpportunityListBuilder(this, getApplicationContext());
+		if (listBuilder == null)
+		{
+			listBuilder = new OpportunityListBuilder(this, getApplicationContext());
+		}
 		try
 		{
-			throw new CustomException("fsd");
-			// listBuilder.cook();
+			// throw new CustomException("fsd");
+			listBuilder.cook();
 		} catch (CustomException e)
 		{
 			promptRetry();
@@ -145,17 +148,20 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 
 	private void promptRetry()
 	{
+
 		Intent intent = new Intent();
 		intent.setClass(this, RetryActivity.class);
-		startActivityForResult(intent, RESULT_OK);
+		startActivityForResult(intent, 1);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		requestCode = RESULT_OK;
+		// Log.i(LOG_TAG, "retrying");
+		// requestCode = RESULT_OK;
 		if (requestCode == RESULT_OK)
 		{
+			buildOpportunityListForTheFirstTime();
 			Log.i(LOG_TAG, "retrying");
 		} else
 		{

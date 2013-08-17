@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class RetryActivity extends Activity
+public class RetryActivity extends Activity implements OnClickListener
 {
 
 	@Override
@@ -16,7 +18,8 @@ public class RetryActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_retry);
 
-		// Button retryButton = (Button) findViewById(R.id.retryButton);
+		Button retryButton = (Button) findViewById(R.id.retryButton);
+		retryButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -26,6 +29,13 @@ public class RetryActivity extends Activity
 		// present.
 		getMenuInflater().inflate(R.menu.retry, menu);
 		return true;
+	}
+
+	@Override
+	public void onClick(View v)
+	{
+		setResult(RESULT_OK, new Intent("Retry"));
+		finish();
 	}
 
 }
