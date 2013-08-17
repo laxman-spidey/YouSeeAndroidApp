@@ -27,10 +27,20 @@
         </activity>
         <activity android:name="in.yousee.yousee.MainActivity" >
         </activity>
-        <activity android:name="in.yousee.yousee.IndividualOpportunityItemActivity" >
+        <activity
+            android:name="in.yousee.yousee.IndividualOpportunityItemActivity"
+            android:parentActivityName="in.yousee.yousee.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.yousee.yousee.MainActivity" />
         </activity>
         <activity
             android:name="in.yousee.yousee.LoginActivity"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="in.yousee.yousee.RetryActivity"
+            android:label="@string/title_activity_retry"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
     </application>

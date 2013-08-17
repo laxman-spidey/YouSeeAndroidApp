@@ -1,10 +1,7 @@
 package in.yousee.yousee;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
 import in.yousee.yousee.model.CustomException;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class LoginActivity extends Activity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
 {
@@ -39,6 +38,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		setContentView(R.layout.login_form);
 
 		context = getApplicationContext();
+
 		instantiate();
 
 	}

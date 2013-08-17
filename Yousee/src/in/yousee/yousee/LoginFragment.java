@@ -3,8 +3,10 @@ package in.yousee.yousee;
 import in.yousee.yousee.model.CustomException;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragment;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginFragment extends SherlockFragment implements OnClickListener, OnFocusChangeListener
+public class LoginFragment extends SherlockDialogFragment implements OnClickListener, OnFocusChangeListener
 {
 	EditText usernameEditText;
 	EditText passwordEditText;
@@ -29,10 +31,22 @@ public class LoginFragment extends SherlockFragment implements OnClickListener, 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.login_form, container, false);
+		View view = inflater.inflate(R.layout.login_form, container, false);
+		instantiate(view);
+		return view;
 	}
 
-	public void instantiate()
+	
+	
+	@Override
+	public void onAttach(Activity activity)
+	{
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
+	}
+
+
+	public void instantiate(View view)
 	{
 		View layout = getView();
 		usernameEditText = (EditText) layout.findViewById(R.id.username);

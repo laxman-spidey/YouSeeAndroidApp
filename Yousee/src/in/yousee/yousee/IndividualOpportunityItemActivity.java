@@ -3,6 +3,7 @@ package in.yousee.yousee;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 
 public class IndividualOpportunityItemActivity extends SherlockActivity implements OnClickListener
 {
@@ -77,6 +79,19 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivity(intent);
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+			{
+			// Respond to the action bar's Up/Home button
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+			}
+		return super.onOptionsItemSelected(item);
 	}
 
 }

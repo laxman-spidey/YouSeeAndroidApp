@@ -64,13 +64,16 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		listBuilder = new OpportunityListBuilder(this);
 		try
 		{
-			listBuilder.cook();
+			throw new CustomException("fsd");
+			// listBuilder.cook();
 		} catch (CustomException e)
 		{
-			//testing
-			buildOpportunityList(null);
-			//testing
-			CustomException.showToastError(getApplicationContext(), e);
+			promptRetry();
+			// testing
+			// buildOpportunityList(null);
+			// testing
+			// CustomException.showToastError(getApplicationContext(),
+			// e);
 		}
 	}
 
@@ -78,18 +81,19 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	{
 
 		// Log.i("tag", "creating");
-		//this.proxyList = proxyList;
-		
-		// ------------testing app with no network connection---------
-		proxyList = new ArrayList<ProxyOpportunityItem>();
-		for (int i = 0; i < 10; i++)
-		{
-			ProxyOpportunityItem testItem = new ProxyOpportunityItem(1, "kjfklsdjfkhsdkjfhsd", "Education", "", "jfskldjhfksdfkjsydjfknsdjkhfkjsdnfjsdhjkfhksdgkjsdgkjsdnjkshfkjsd");
-			proxyList.add(testItem);
-		}
-		// ------------testing app with no network connection---------//
-		
-		
+		// this.proxyList = proxyList;
+		/*
+		 * // ------------testing app with no network
+		 * connection--------- proxyList = new
+		 * ArrayList<ProxyOpportunityItem>(); for (int i = 0; i < 10;
+		 * i++) { ProxyOpportunityItem testItem = new
+		 * ProxyOpportunityItem(1, "kjfklsdjfkhsdkjfhsd", "Education",
+		 * "",
+		 * "jfskldjhfksdfkjsydjfknsdjkhfkjsdnfjsdhjkfhksdgkjsdgkjsdnjkshfkjsd"
+		 * ); proxyList.add(testItem); } // ------------testing app with
+		 * no network connection---------//
+		 */
+
 		this.proxyList = proxyList;
 		listview = (ListView) findViewById(R.id.opportunityListview);
 
@@ -131,11 +135,33 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 				} catch (CustomException e)
 				{
 					CustomException.showToastError(getApplicationContext(), e);
+
 				}
 
 			}
 		});
 
+	}
+
+	private void promptRetry()
+	{
+		Intent intent = new Intent();
+		intent.setClass(this, RetryActivity.class);
+		startActivityForResult(intent, RESULT_OK);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		requestCode = RESULT_OK;
+		if (requestCode == RESULT_OK)
+		{
+			Log.i(LOG_TAG, "retrying");
+		} else
+		{
+			Log.i(LOG_TAG, "Cancelled");
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private boolean filterMenuVisibility = false;
