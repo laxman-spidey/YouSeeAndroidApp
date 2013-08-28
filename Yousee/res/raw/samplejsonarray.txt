@@ -1,0 +1,58 @@
+{
+	activityList :
+	[
+		{
+			"activityId" : "12345",
+			"fromDate" : "jan 2, 2013",
+			"toDate": "jan 2, 2013",
+			"fromTime" : "10:20",
+			"toTime" : "10:40",
+			"location" : "panjagutta",
+			"city" : "hyd",
+			"volReq" : "10"
+		},
+		{
+			"activityId" : "12345",
+			"fromDate" : "jan 2, 2013",
+			"toDate": "jan 2, 2013",
+			"fromTime" : "10:20",
+			"toTime" : "10:40",
+			"location" : "panjagutta",
+			"city" : "hyd",
+			"volReq" : "10"
+		},
+		{
+			"activityId" : "12345",
+			"fromDate" : "jan 2, 2013",
+			"toDate": "jan 2, 2013",
+			"fromTime" : "10:20",
+			"toTime" : "10:40",
+			"location" : "panjagutta",
+			"city" : "hyd",
+			"volReq" : "10"
+		},
+
+		{
+			"activityId" : "12345",
+			"fromDate" : "jan 2, 2013",
+			"toDate": "jan 2, 2013",
+			"fromTime" : "10:20",
+			"toTime" : "10:40",
+			"location" : "panjagutta",
+			"city" : "hyd",
+			"volReq" : "10"
+		},
+
+		{
+			"activityId" : "12345",
+			"fromDate" : "jan 2, 2013",
+			"toDate": "jan 2, 2013",
+			"fromTime" : "10:20",
+			"toTime" : "10:40",
+			"location" : "panjagutta",
+			"city" : "hyd",
+			"volReq" : "10"
+		}
+
+	]
+}

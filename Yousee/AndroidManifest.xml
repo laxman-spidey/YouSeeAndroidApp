@@ -38,6 +38,8 @@
             android:name="in.yousee.yousee.LoginActivity"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
+        <activity android:name="in.yousee.yousee.RegistrationActivity" >
+        </activity>
         <activity
             android:name="in.yousee.yousee.RetryActivity"
             android:label="@string/title_activity_retry"

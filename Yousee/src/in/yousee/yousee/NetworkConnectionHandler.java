@@ -20,7 +20,7 @@ import android.util.Log;
 
 /**
  * 
- * NetworkConnectionHandler.java Purpose: Connects to server, recieves response
+ * NetworkConnectionHandler.java Purpose: Connects to server, receives response
  * and passes it to class which implements class Chef
  * 
  * @author Laxman
@@ -33,7 +33,7 @@ public class NetworkConnectionHandler implements Runnable
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://192.168.80.1:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;

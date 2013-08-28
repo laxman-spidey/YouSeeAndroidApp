@@ -114,7 +114,7 @@ public class OpportunityListBuilder extends Chef
 		ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
 		try
 		{
-			Log.i("tag", "JSONlist length ");
+			Log.i("tag", "JSONlist length " +result);
 			json = new JSONObject(result);
 			int resultCount = json.getInt("resultCount");
 			String totalCount = json.getString("totalCount");
