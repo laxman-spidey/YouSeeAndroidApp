@@ -19,38 +19,37 @@ import android.util.Log;
 public class RealOpportunityItem extends ProxyOpportunityItem
 {
 
-	private static final String TAG_ACTIVITY_LIST = "activityList";
-	private ArrayList<ActivitySchedule> activityScheduleList;
+	private static final String TAG_SCHEDULE_LIST = "activityList";
+	private ArrayList<OpportunitySchedule> opportunityScheduleList;
 
-	public RealOpportunityItem(int id, String title, String opportunityType, String partner, String description, ArrayList<ActivitySchedule> activityScheduleList)
+	public RealOpportunityItem(int id, String title, String opportunityType, String partner, String description, ArrayList<OpportunitySchedule> activityScheduleList)
 	{
 		super(id, title, opportunityType, partner, description);
-		this.activityScheduleList = activityScheduleList;
+		this.opportunityScheduleList = activityScheduleList;
 	}
 
-	public RealOpportunityItem(ProxyOpportunityItem proxyItem, ArrayList<ActivitySchedule> activityScheduleList)
+	public RealOpportunityItem(ProxyOpportunityItem proxyItem, ArrayList<OpportunitySchedule> activityScheduleList)
 	{
 		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
-
-		this.activityScheduleList = activityScheduleList;
+		this.opportunityScheduleList = activityScheduleList;
 	}
 
 	public RealOpportunityItem(ProxyOpportunityItem proxyItem, String JSONString)
 	{
 		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
-		activityScheduleList = new ArrayList<RealOpportunityItem.ActivitySchedule>();
+		opportunityScheduleList = new ArrayList<RealOpportunityItem.OpportunitySchedule>();
 		parseJSON(JSONString);
 
 	}
 
-	public ArrayList<ActivitySchedule> getActivityScheduleList()
+	public ArrayList<OpportunitySchedule> getActivityScheduleList()
 	{
-		return activityScheduleList;
+		return opportunityScheduleList;
 	}
 
-	public void setActivityScheduleList(ArrayList<ActivitySchedule> activityScheduleList)
+	public void setActivityScheduleList(ArrayList<OpportunitySchedule> activityScheduleList)
 	{
-		this.activityScheduleList = activityScheduleList;
+		this.opportunityScheduleList = activityScheduleList;
 	}
 
 	@Override
@@ -60,23 +59,22 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		try
 		{
 			JSONObject obj = new JSONObject(JSONString);
-			array = obj.getJSONArray(TAG_ACTIVITY_LIST);
+			array = obj.getJSONArray(TAG_SCHEDULE_LIST);
 
 			for (int i = 0; i < array.length(); i++)
 			{
 				Log.i("tag", "" + i);
 				JSONObject item = (JSONObject) array.get(i);
-				activityScheduleList.add(new ActivitySchedule(item));
+				opportunityScheduleList.add(new OpportunitySchedule(item));
 
 			}
 		} catch (JSONException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public class ActivitySchedule implements JSONParsable
+	public class OpportunitySchedule implements JSONParsable
 	{
 		private static final String TAG_ACTIVITY_ID = "activityId";
 		private static final String TAG_FROM_DATE = "fromDate";
@@ -87,17 +85,17 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		private static final String TAG_CITY = "city"; 
 		private static final String TAG_VOL_REQ = "volReq";
 
-		private int activityId;
+		private int opportunityId;
 		private Date fromDate, toDate;
 		private Date fromTime, toTime;
 		private String location;
 		private String city;
 		private int volReq;
 
-		public ActivitySchedule(int activityId, Date fromDate, Date toDate, Date fromTime, Date toTime, String location, String city, int volReq)
+		public OpportunitySchedule(int activityId, Date fromDate, Date toDate, Date fromTime, Date toTime, String location, String city, int volReq)
 		{
 			super();
-			this.activityId = activityId;
+			this.opportunityId = activityId;
 			this.fromDate = fromDate;
 			this.toDate = toDate;
 			this.fromTime = fromTime;
@@ -107,19 +105,19 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 			this.volReq = volReq;
 		}
 
-		public ActivitySchedule(JSONObject jsonObject)
+		public OpportunitySchedule(JSONObject jsonObject)
 		{
 			parseJSON(jsonObject);
 		}
 
-		public int getActivityId()
+		public int getOpportunityId()
 		{
-			return activityId;
+			return opportunityId;
 		}
 
-		public void setActivityId(int activityId)
+		public void setOpportunityId(int opportunityId)
 		{
-			this.activityId = activityId;
+			this.opportunityId = opportunityId;
 		}
 
 		public Date getFromDate()
@@ -189,8 +187,14 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 
 		public String getFromTimeString()
 		{
-			SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-			return df.format(this.fromTime);
+			if(toTime == null)
+			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+				return df.format(this.fromTime);
+			}
+			else
+				return "";
+			
 		}
 
 		public void setFromTime(Date fromTime)
@@ -219,25 +223,32 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 
 		public String getToTimeString()
 		{
-			Log.i("tag", toTime.toString());
-			SimpleDateFormat df = new SimpleDateFormat("hh:ss", Locale.ENGLISH);
-			return df.format(this.toTime);
+			if(toTime == null)
+			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:ss", Locale.ENGLISH);
+				return df.format(this.toTime);
+			}
+			else
+				return "";
 		}
 
 		public void setToTime(Date toTime)
 		{
+			
 			this.toTime = toTime;
 		}
 
 		public void setToTime(String toTime)
 		{
-			SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+			
 			try
 			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
 				this.toTime = df.parse(toTime);
 			} catch (ParseException e)
 			{
 				// TODO Auto-generated catch block
+				this.toTime = null;
 				e.printStackTrace();
 			}
 		}
@@ -277,8 +288,8 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		{
 			try
 			{
-				Log.i("tag","json added..");
-				this.activityId = JSONObject.getInt(TAG_ACTIVITY_ID);
+				Log.i("tag",JSONObject.toString());
+				this.opportunityId = JSONObject.getInt(TAG_ACTIVITY_ID);
 				setFromDate(JSONObject.getString(TAG_FROM_DATE));
 				setToDate(JSONObject.getString(TAG_TO_DATE));
 				setFromTime(JSONObject.getString(TAG_FROM_TIME));
@@ -288,7 +299,6 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 				setVolReq(JSONObject.getInt(TAG_VOL_REQ));
 			} catch (JSONException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

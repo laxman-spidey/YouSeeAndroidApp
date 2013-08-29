@@ -1,5 +1,9 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.model.CustomException;
+import in.yousee.yousee.model.ProxyOpportunityItem;
+import in.yousee.yousee.model.RealOpportunityItem;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,15 +16,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
-import in.yousee.yousee.R.id;
-import in.yousee.yousee.model.ProxyOpportunityItem;
-import in.yousee.yousee.model.RealOpportunityItem;
-import in.yousee.yousee.model.RealOpportunityItem.ActivitySchedule;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +34,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-public class IndividualOpportunityItemActivity extends SherlockActivity implements OnClickListener
+public class IndividualOpportunityItemActivity extends SherlockActivity implements OnClickListener, OnResponseRecievedListener
 {
 	ProxyOpportunityItem proxyOpportunityItem;
 	ImageView image;
@@ -55,6 +54,15 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		String jsonString = getIntent().getExtras().getString("result");
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
+		IndividualOpportunityItemBuilder builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
+		try
+		{
+			builder.cook();
+		} catch (CustomException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
 		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
@@ -186,18 +194,7 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 		String JSONString = new String();
 		JSONString = testJSONString();
-		RealOpportunityItem realItem = new RealOpportunityItem(proxyOpportunityItem, JSONString);
-
-		ArrayList<RealOpportunityItem.ActivitySchedule> scheduleList = realItem.getActivityScheduleList();
-		check = new boolean[scheduleList.size()];
-		Iterator<RealOpportunityItem.ActivitySchedule> iterator = scheduleList.iterator();
-		while (iterator.hasNext())
-		{
-			Log.i(LOG_TAG, "adding.....");
-			View view = buildScheduleCard(iterator.next());
-			layout.addView(view);
-		}
-
+		
 		// /////////////////////
 	}
 
@@ -241,7 +238,7 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 	}
 
-	public View buildScheduleCard(RealOpportunityItem.ActivitySchedule schedule) throws ParseException
+	public View buildScheduleCard(RealOpportunityItem.OpportunitySchedule schedule) throws ParseException
 	{
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.schedule_card, layout, false);
@@ -378,6 +375,31 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		}
 
 		return sb.toString();
+	}
+
+	@Override
+	public void onResponseRecieved(Object response)
+	{
+		RealOpportunityItem realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
+
+		ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
+		check = new boolean[scheduleList.size()];
+		Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
+		while (iterator.hasNext())
+		{
+			Log.i(LOG_TAG, "adding.....");
+			View view = null;
+			try
+			{
+				view = buildScheduleCard(iterator.next());
+			} catch (ParseException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			layout.addView(view);
+		}
+
 	}
 
 }
