@@ -3,6 +3,8 @@ package in.yousee.yousee.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class SessionData implements JSONParsable
 {
 	private final String TAG_SESSION_ID = "sessionId";
@@ -24,6 +26,7 @@ public class SessionData implements JSONParsable
 	{
 		try
 		{
+			Log.i("tag", JSONString);
 			parseJSON(new JSONObject(JSONString));
 		} catch (JSONException e)
 		{

@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-public class IndividualOpportunityItemActivity extends SherlockActivity implements OnClickListener, OnResponseRecievedListener
+public class IndividualOpportunityItemActivity extends RetryableActivity implements OnClickListener, OnResponseRecievedListener
 {
 	ProxyOpportunityItem proxyOpportunityItem;
 	ImageView image;
@@ -42,6 +42,7 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 	TextView descriptionTextView;
 	ArrayList<View> activityList;
 	static boolean selectall = false;
+	static final int LOGIN_REQUEST = 1000;
 
 	private static final String LOG_TAG = "tag";
 
@@ -55,14 +56,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
-		try
-		{
-			builder.cook();
-		} catch (CustomException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		requestSenderChef = builder;
+		super.sendRequest();
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
 		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
@@ -86,7 +81,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		try
 		{
 			tokkatest();
-		} catch (ParseException e)
+		}
+		catch (ParseException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,44 +95,45 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 	public void onClick(View v)
 	{
 		switch (v.getId())
+		{
+		case R.id.applyButton:
+			SessionHandler sessionHandler = new SessionHandler(this);
+			String sessionId = null;
+			if (sessionHandler.getSessionId(sessionId))
 			{
-			case R.id.applyButton:
-				SessionHandler sessionHandler = new SessionHandler(this);
-				String sessionId = null;
-				if (sessionHandler.getSessionId(sessionId))
-				{
-					Log.i("tag", "sessionID = " + sessionId);
-					Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
+				Log.i("tag", "sessionID = " + sessionId);
+				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
 
-					commit();
+				commit();
 
-				} else
-				{
-					Log.i("tag", "Entering Login screen");
-					showLoginScreen();
-				}
-
-				break;
-			case R.id.selectAll:
-				selectall = !(selectall);
-				if (selectall == true)
-				{
-					Log.i(LOG_TAG,"selectall");
-					selectAll();
-					v.setBackgroundResource(R.drawable.deselectall);
-				}
-				else
-				{
-					Log.i(LOG_TAG,"de-selectall");
-					deselectAll();
-					v.setBackgroundResource(R.drawable.selectall);
-				}
-				
-				break;
-
-			default:
-				break;
 			}
+			else
+			{
+				Log.i("tag", "Entering Login screen");
+				showLoginScreen();
+			}
+
+			break;
+		case R.id.selectAll:
+			selectall = !(selectall);
+			if (selectall == true)
+			{
+				Log.i(LOG_TAG, "selectall");
+				selectAll();
+				v.setBackgroundResource(R.drawable.deselectall);
+			}
+			else
+			{
+				Log.i(LOG_TAG, "de-selectall");
+				deselectAll();
+				v.setBackgroundResource(R.drawable.selectall);
+			}
+
+			break;
+
+		default:
+			break;
+		}
 
 		// showLoginScreen();
 	}
@@ -151,20 +148,35 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		Intent intent = new Intent();
 		Log.i("tag", "showing LoginScreen");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, LOGIN_REQUEST);
 
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Log.i("tag", "request code : "+requestCode+"  , resultcode : "+resultCode);
+		if (requestCode == LOGIN_REQUEST)
+		{
+			if (resultCode == RESULT_OK)
+			{
+				commit();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+		// super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId())
-			{
-			// Respond to the action bar's Up/Home button
-			case android.R.id.home:
-				NavUtils.navigateUpFromSameTask(this);
-				return true;
-			}
+		{
+		// Respond to the action bar's Up/Home button
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -194,48 +206,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 
 		String JSONString = new String();
 		JSONString = testJSONString();
-		
+
 		// /////////////////////
-	}
-
-	public View add() throws ParseException
-	{
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.schedule_card, layout, false);
-		check[i] = false;
-		map.put(rowView, i++);
-		activityList.add(rowView);
-		TextView textView = (TextView) rowView.findViewById(R.id.title);
-
-		String string = "10:20";
-		SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-		Date date = df.parse(string);
-		Log.i(LOG_TAG, df.format(date));
-
-		// String string = "10:20";
-		// SimpleDateFormat df = new SimpleDateFormat("hh:mm",
-		// Locale.ENGLISH);
-		// Date date = new
-		// SimpleDateFormat("hh:mm",Locale.ENGLISH).parse(string);
-
-		TextView todate = (TextView) rowView.findViewById(R.id.date);
-		todate.setText(df.format(date));
-
-		textView.setText("Schedule #" + i);
-		rowView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v)
-			{
-				int x = map.get(v);
-				check[x] = !(check[x]);
-				setScheduleSelected(v, check[x]);
-				Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
-
-			}
-		});
-		return rowView;
-
 	}
 
 	public View buildScheduleCard(RealOpportunityItem.OpportunitySchedule schedule) throws ParseException
@@ -309,7 +281,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		if (check)
 		{
 			imgView.setVisibility(View.VISIBLE);
-		} else
+		}
+		else
 		{
 			imgView.setVisibility(View.INVISIBLE);
 		}
@@ -349,7 +322,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 		try
 		{
 			res = readIt(is);
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -392,7 +366,8 @@ public class IndividualOpportunityItemActivity extends SherlockActivity implemen
 			try
 			{
 				view = buildScheduleCard(iterator.next());
-			} catch (ParseException e)
+			}
+			catch (ParseException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();

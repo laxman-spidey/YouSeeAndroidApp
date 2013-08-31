@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 public class OpportunityListBuilder extends Chef
@@ -27,7 +28,6 @@ public class OpportunityListBuilder extends Chef
 
 	private OnResponseRecievedListener listener;
 	private Context context;
-	private String fileName = "volunteering_opportunities.php";
 
 	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener, Context context)
 	{
@@ -48,14 +48,15 @@ public class OpportunityListBuilder extends Chef
 	@Override
 	public void assembleRequest()
 	{
-		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + fileName);
+		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
 
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		} catch (UnsupportedEncodingException e)
+		}
+		catch (UnsupportedEncodingException e)
 		{
 			e.printStackTrace();
 		}
@@ -65,7 +66,7 @@ public class OpportunityListBuilder extends Chef
 
 	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
-		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + fileName);
+		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
 		Log.i("tag", "+hfksjdhfldhfjkghdfjkgdkjfhgjkdhfjgkhdfjkghjkdfhgkjdshfg");
@@ -77,22 +78,35 @@ public class OpportunityListBuilder extends Chef
 			// nameValuePairs.add(new
 			// BasicNameValuePair(group.getName(), "true"));
 			Iterator<FilterChildInfo> childIterator = group.getProductList().iterator();
+			boolean isOneOfChildChecked = false;
+			String string = "";
 			while (childIterator.hasNext())
 			{
 				FilterChildInfo child = childIterator.next();
+
 				if (child.isChecked())
 				{
-					Log.i("tag", " " + group.getName() + ": " + child.getName());
-					nameValuePairs.add(new BasicNameValuePair(group.getName(), child.getName()));
+					isOneOfChildChecked = true;
+					string += child.getName() + ",";
+					//Log.i("tag", " " + group.getName() + ": " + child.getName());
 				}
+
+			}
+			if (isOneOfChildChecked)
+			{
+				string = string.substring(0, string.length() - 1);
+
+				nameValuePairs.add(new BasicNameValuePair(group.getName(), "" + string));
 			}
 
 		}
+		Log.i("tag", "name value pairs " + nameValuePairs.toString());
 
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		} catch (UnsupportedEncodingException e)
+		}
+		catch (UnsupportedEncodingException e)
 		{
 			e.printStackTrace();
 		}
@@ -103,6 +117,7 @@ public class OpportunityListBuilder extends Chef
 	public void cook() throws CustomException
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
+
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}
 
@@ -111,10 +126,11 @@ public class OpportunityListBuilder extends Chef
 	{
 
 		JSONObject json;
+		Log.i("tag", "dfmjsdk result ; " + result);
 		ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
 		try
 		{
-			Log.i("tag", "JSONlist length " +result);
+			Log.i("tag", "JSONlist length " + result);
 			json = new JSONObject(result);
 			int resultCount = json.getInt("resultCount");
 			String totalCount = json.getString("totalCount");
@@ -127,7 +143,8 @@ public class OpportunityListBuilder extends Chef
 				proxyItemList.add(new ProxyOpportunityItem(list.getJSONObject(i)));
 			}
 
-		} catch (JSONException e)
+		}
+		catch (JSONException e)
 
 		{
 			Log.i("tag", "exception caught");

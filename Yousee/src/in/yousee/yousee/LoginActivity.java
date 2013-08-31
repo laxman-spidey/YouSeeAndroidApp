@@ -60,7 +60,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		loginButton.setOnClickListener(this);
 		RegisterButton.setOnClickListener(this);
 
-		usernameEditText.setText("gunaranjan");
+		usernameEditText.setText("vivek");
 		passwordEditText.setText("password");
 
 	}
@@ -77,24 +77,26 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 				try
 				{
 					session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-				} catch (CustomException e)
+					onLoginSuccess();
+				}
+				catch (CustomException e)
 				{
 					switch (e.errorCode)
-						{
-						case CustomException.INVALID_URL:
-						case CustomException.NETWORK_NOT_FOUND:
-						case CustomException.NO_INTERNET_CONNECTIVITY:
-							CustomException.showToastError(context, e);
-							break;
-						case CustomException.USERNAME_INVALID:
-							showUsernameError(e.getErrorMsg());
-							break;
-						case CustomException.PASSWORD_INVALID:
-							showPasswordError(e.getErrorMsg());
+					{
+					case CustomException.INVALID_URL:
+					case CustomException.NETWORK_NOT_FOUND:
+					case CustomException.NO_INTERNET_CONNECTIVITY:
+						CustomException.showToastError(context, e);
+						break;
+					case CustomException.USERNAME_INVALID:
+						showUsernameError(e.getErrorMsg());
+						break;
+					case CustomException.PASSWORD_INVALID:
+						showPasswordError(e.getErrorMsg());
 
-						default:
-							break;
-						}
+					default:
+						break;
+					}
 
 				}
 
@@ -112,16 +114,16 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		if (hasFocus == false)
 		{
 			switch (v.getId())
-				{
-				case R.id.username:
-					validateUsername();
-					break;
-				case R.id.password:
-					validatePassword();
-					break;
-				default:
-					break;
-				}
+			{
+			case R.id.username:
+				validateUsername();
+				break;
+			case R.id.password:
+				validatePassword();
+				break;
+			default:
+				break;
+			}
 
 		}
 
@@ -142,7 +144,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		{
 			showUsernameError("Please Enter Username");
 			return false;
-		} else
+		}
+		else
 		{
 			showUsernameError("");
 			return true;
@@ -157,7 +160,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 
 			showPasswordError("Please Enter password");
 			return false;
-		} else
+		}
+		else
 		{
 			showPasswordError("");
 			return true;
@@ -191,9 +195,11 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 	@Override
 	public void onLoginSuccess()
 	{
-		Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
-		// finish();
+		Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();;
+		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
+		finish();
 	}
+
 	private void showRegistrationForm()
 	{
 

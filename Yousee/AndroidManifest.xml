@@ -25,10 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="in.yousee.yousee.MainActivity" >
+        <activity
+            android:name="in.yousee.yousee.MainActivity"
+            android:configChanges="orientation" >
         </activity>
         <activity
             android:name="in.yousee.yousee.IndividualOpportunityItemActivity"
+            android:configChanges="orientation"
             android:parentActivityName="in.yousee.yousee.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -36,12 +39,14 @@
         </activity>
         <activity
             android:name="in.yousee.yousee.LoginActivity"
+            android:configChanges="orientation"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
         <activity android:name="in.yousee.yousee.RegistrationActivity" >
         </activity>
         <activity
             android:name="in.yousee.yousee.RetryActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_retry"
             android:theme="@android:style/Theme.Dialog" >
         </activity>

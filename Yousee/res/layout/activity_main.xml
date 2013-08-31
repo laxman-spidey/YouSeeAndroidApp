@@ -28,6 +28,7 @@
             android:layout_gravity="top|right"
             android:background="@drawable/border"
             android:minWidth="200dp"
+            android:padding="2dp"
             android:visibility="invisible" >
 
             <ExpandableListView
@@ -38,6 +39,7 @@
                 android:childDivider="@color/divider"
                 android:divider="@color/divider"
                 android:dividerHeight="1dp"
+                
                 android:groupIndicator="@drawable/expandable_list_indicator"
                 android:paddingBottom="45dp" >
             </ExpandableListView>

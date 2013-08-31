@@ -144,6 +144,7 @@ public class SessionHandler extends Chef
 		{
 			setLoginCredentials(username, password);
 			setSessionId(sessionData.getSessionId());
+			
 			loginFeatureClient.onLoginSuccess();
 		} else
 		{

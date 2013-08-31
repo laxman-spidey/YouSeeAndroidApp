@@ -196,7 +196,7 @@ public class NetworkConnectionHandler implements Runnable
 		{
 			Log.i("tag", "download Started");
 			HttpClient httpclient = new DefaultHttpClient();
-
+			Log.i("tag", "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"+readIt(postRequest.getEntity().getContent()));
 			HttpResponse response = httpclient.execute(postRequest);
 			is = response.getEntity().getContent();
 			String contentAsString = readIt(is);

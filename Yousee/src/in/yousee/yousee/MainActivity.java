@@ -28,10 +28,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
-public class MainActivity extends SherlockActivity implements OnItemClickListener, OnResponseRecievedListener
+public class MainActivity extends RetryableActivity implements OnItemClickListener, OnResponseRecievedListener
 {
 
-	private static final String LOG_TAG = "tag";
 	private FrameLayout filterFrame;
 	private Button updateButton;
 	ListView listview;
@@ -65,19 +64,9 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		{
 			listBuilder = new OpportunityListBuilder(this, getApplicationContext());
 		}
-		try
-		{
-			// throw new CustomException("fsd");
-			listBuilder.cook();
-		} catch (CustomException e)
-		{
-			promptRetry();
-			// testing
-			// buildOpportunityList(null);
-			// testing
-			// CustomException.showToastError(getApplicationContext(),
-			// e);
-		}
+		requestSenderChef = listBuilder;
+		sendRequest();
+
 	}
 
 	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
@@ -132,42 +121,13 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this, getApplicationContext());
-				try
-				{
-					listBuilder.cook();
-				} catch (CustomException e)
-				{
-					CustomException.showToastError(getApplicationContext(), e);
 
-				}
+				requestSenderChef = listBuilder;
+				sendRequest();
 
 			}
 		});
 
-	}
-
-	private void promptRetry()
-	{
-
-		Intent intent = new Intent();
-		intent.setClass(this, RetryActivity.class);
-		startActivityForResult(intent, 1);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		// Log.i(LOG_TAG, "retrying");
-		// requestCode = RESULT_OK;
-		if (requestCode == RESULT_OK)
-		{
-			buildOpportunityListForTheFirstTime();
-			Log.i(LOG_TAG, "retrying");
-		} else
-		{
-			Log.i(LOG_TAG, "Cancelled");
-		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private boolean filterMenuVisibility = false;
@@ -177,16 +137,16 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	{
 
 		switch (item.getItemId())
-			{
-			case R.id.action_filter:
-				filterMenuVisibility = !(filterMenuVisibility);
-				showFilterMenu(filterMenuVisibility);
+		{
+		case R.id.action_filter:
+			filterMenuVisibility = !(filterMenuVisibility);
+			showFilterMenu(filterMenuVisibility);
 
-				break;
+			break;
 
-			default:
-				break;
-			}
+		default:
+			break;
+		}
 		return true;
 	}
 
@@ -216,7 +176,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 		myList.setAdapter(listAdapter);
 
 		Log.i("tag", "before expand all");
-		// expand all Groups
+		// expand all Groupsrevenge
 		expandAll();
 
 		// add new item to the List
@@ -291,9 +251,10 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 			// get the child info
 			FilterChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
 			// display it or do something with it
-			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_SHORT).show();
+
 			CheckBox checkBox = detailInfo.getCheckBox();
 			checkBox.setChecked(!checkBox.isChecked());
+			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName() + "  , " + checkBox.isChecked(), Toast.LENGTH_SHORT).show();
 			return false;
 		}
 
@@ -374,6 +335,7 @@ public class MainActivity extends SherlockActivity implements OnItemClickListene
 	@Override
 	public void onResponseRecieved(Object response)
 	{
+		Toast.makeText(getApplicationContext(), "response recieved", Toast.LENGTH_LONG).show();
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 		buildOpportunityList(responseObject);
 
