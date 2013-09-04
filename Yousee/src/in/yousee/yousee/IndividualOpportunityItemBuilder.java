@@ -28,6 +28,7 @@ public class IndividualOpportunityItemBuilder extends Chef
 		this.sourceActivity = sourceActivity;
 		listener = sourceActivity;
 		this.proxy=proxy;
+		super.requestCode = Chef.OPPORTUNITY_SCHEDULE_LIST_REQUEST_CODE;
 		assembleRequest();
 
 	}

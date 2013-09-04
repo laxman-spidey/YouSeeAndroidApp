@@ -1,13 +1,8 @@
 package in.yousee.yousee;
 
-import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 import in.yousee.yousee.model.RealOpportunityItem;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class IndividualOpportunityItemActivity extends RetryableActivity implements OnClickListener, OnResponseRecievedListener
@@ -42,13 +38,14 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	TextView descriptionTextView;
 	ArrayList<View> activityList;
 	static boolean selectall = false;
-	static final int LOGIN_REQUEST = 1000;
+	RealOpportunityItem realItem;
 
 	private static final String LOG_TAG = "tag";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		setContentView(R.layout.individual_opportunity_item);
@@ -56,8 +53,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
-		requestSenderChef = builder;
-		super.sendRequest();
+		super.requestSenderChef = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
 		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
@@ -78,16 +74,156 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 		// deselectAllButton.setOnClickListener(this);
 
 		activityList = new ArrayList<View>();
-		try
+		super.sendRequest();
+
+	}
+
+	public void commit()
+	{
+		Log.i("tag", "committed");
+	}
+
+	LinearLayout layout;
+	int i = 0;
+	HashMap<View, Integer> map;
+	ArrayList<Boolean> checkList;
+	boolean checkedState[];
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public void onResponseRecieved(Object response)
+	{
+		if (super.refresh == true)
 		{
-			tokkatest();
+			refreshActivityScheduleList();
 		}
-		catch (ParseException e)
+		realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
+		ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
+		checkedState = new boolean[scheduleList.size()];
+		layout = (LinearLayout) findViewById(R.id.rootLay);
+		checkList = new ArrayList<Boolean>();
+		map = new HashMap<View, Integer>();
+		Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
+		while (iterator.hasNext())
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.i(LOG_TAG, "adding.....");
+			View view = null;
+			try
+			{
+				view = buildScheduleCard(iterator.next());
+			}
+			catch (ParseException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			layout.addView(view);
 		}
-		super.onCreate(savedInstanceState);
+		setSupportProgressBarIndeterminateVisibility(false);
+
+	}
+
+	public View buildScheduleCard(RealOpportunityItem.OpportunitySchedule schedule) throws ParseException
+	{
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		ViewGroup rowView = (ViewGroup) inflater.inflate(R.layout.schedule_card, layout, false);
+
+		checkedState[i] = false;
+		map.put(rowView, i++);
+		activityList.add(rowView);
+
+		String string = "10:20";
+		SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+		Date datex = df.parse(string);
+		Log.i(LOG_TAG, df.format(datex));
+
+		TextView textView = (TextView) rowView.findViewById(R.id.title);
+		textView.setText("Schedule #" + i);
+
+		TextView date = (TextView) rowView.findViewById(R.id.date);
+		date.setText(schedule.getFromDateString() + " - " + schedule.getToDateString());
+
+		TextView time = (TextView) rowView.findViewById(R.id.time);
+		time.setText(schedule.getFromTimeString() + " - " + schedule.getToTimeString());
+
+		TextView area = (TextView) rowView.findViewById(R.id.area);
+		area.setText(schedule.getCity() + ", " + schedule.getLocation());
+
+		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
+		volReq.setText("Volunteers required :" + schedule.getVolReq());
+
+		rowView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v)
+			{
+				int x = map.get(v);
+				checkedState[x] = !(checkedState[x]);
+				setScheduleSelected(v, checkedState[x]);
+				Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
+
+			}
+		});
+		return rowView;
+
+	}
+
+	private void refreshActivityScheduleList()
+	{
+
+		layout.removeAllViewsInLayout();
+		checkList.removeAll(checkList);
+		activityList.removeAll(activityList);
+		i = 0;
+		map.clear();
+
+	}
+
+	private void selectAll()
+	{
+		Iterator<View> it = activityList.iterator();
+		int i = 0;
+		while (it.hasNext())
+		{
+			checkedState[i++] = true;
+			View view = (View) it.next();
+			setScheduleSelected(view, true);
+
+		}
+	}
+
+	private void deselectAll()
+	{
+		Iterator<View> it = activityList.iterator();
+		int i = 0;
+		while (it.hasNext())
+		{
+			checkedState[i++] = false;
+			View view = (View) it.next();
+			setScheduleSelected(view, false);
+
+		}
+	}
+
+	private void setScheduleSelected(View v, boolean check)
+	{
+		ImageView imgView = (ImageView) v.findViewById(R.id.selectView);
+
+		if (check)
+		{
+			imgView.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			imgView.setVisibility(View.INVISIBLE);
+		}
 
 	}
 
@@ -135,12 +271,6 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 			break;
 		}
 
-		// showLoginScreen();
-	}
-
-	public void commit()
-	{
-		Log.i("tag", "committed");
 	}
 
 	public void showLoginScreen()
@@ -148,28 +278,14 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 		Intent intent = new Intent();
 		Log.i("tag", "showing LoginScreen");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
-		startActivityForResult(intent, LOGIN_REQUEST);
+		startActivity(intent);
 
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		Log.i("tag", "request code : "+requestCode+"  , resultcode : "+resultCode);
-		if (requestCode == LOGIN_REQUEST)
-		{
-			if (resultCode == RESULT_OK)
-			{
-				commit();
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-		// super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		super.onOptionsItemSelected(item);
 		switch (item.getItemId())
 		{
 		// Respond to the action bar's Up/Home button
@@ -177,203 +293,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	LinearLayout layout;
-	int i = 0;
-	HashMap<View, Integer> map;
-	ArrayList<Boolean> checkList;
-	boolean check[];
-
-	public void tokkatest() throws ParseException
-	{
-		layout = (LinearLayout) findViewById(R.id.rootLay);
-		checkList = new ArrayList<Boolean>();
-		map = new HashMap<View, Integer>();
-		/*
-		 * check = new boolean[7]; layout.addView(add());
-		 * layout.addView(add()); layout.addView(add());
-		 * layout.addView(add()); layout.addView(add());
-		 * layout.addView(add()); layout.addView(add());
-		 */
-		// String JSONString = new String();
-		// String string = "Jan 2, 2013";
-		// Date date = new SimpleDateFormat("mmm d, yyyy",
-		// Locale.ENGLISH).parse(string);
-
-		// ////////////////////
-
-		String JSONString = new String();
-		JSONString = testJSONString();
-
-		// /////////////////////
-	}
-
-	public View buildScheduleCard(RealOpportunityItem.OpportunitySchedule schedule) throws ParseException
-	{
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.schedule_card, layout, false);
-		check[i] = false;
-		map.put(rowView, i++);
-		activityList.add(rowView);
-
-		String string = "10:20";
-		SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-		Date datex = df.parse(string);
-		Log.i(LOG_TAG, df.format(datex));
-
-		TextView textView = (TextView) rowView.findViewById(R.id.title);
-		textView.setText("Schedule #" + i);
-
-		TextView date = (TextView) rowView.findViewById(R.id.date);
-		date.setText(schedule.getFromDateString() + " - " + schedule.getToDateString());
-
-		TextView time = (TextView) rowView.findViewById(R.id.time);
-		time.setText(schedule.getFromTimeString() + " - " + schedule.getToTimeString());
-
-		TextView area = (TextView) rowView.findViewById(R.id.area);
-		area.setText(schedule.getCity() + ", " + schedule.getLocation());
-
-		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
-		volReq.setText("Volunteers req" + schedule.getVolReq());
-
-		rowView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v)
-			{
-				int x = map.get(v);
-				check[x] = !(check[x]);
-				setScheduleSelected(v, check[x]);
-				Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
-
-			}
-		});
-		return rowView;
-
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState)
-	{
-
-		super.onSaveInstanceState(outState);
-		outState.putBooleanArray("activitySelections", check);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState)
-	{
-		super.onRestoreInstanceState(savedInstanceState);
-		check = savedInstanceState.getBooleanArray("activitySelections");
-		for (int i = 0; i < check.length; i++)
-		{
-			setScheduleSelected(activityList.get(i), check[i]);
-		}
-
-	}
-
-	private void setScheduleSelected(View v, boolean check)
-	{
-		ImageView imgView = (ImageView) v.findViewById(R.id.selectView);
-
-		if (check)
-		{
-			imgView.setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			imgView.setVisibility(View.INVISIBLE);
-		}
-
-	}
-
-	private void selectAll()
-	{
-		Iterator<View> it = activityList.iterator();
-		int i = 0;
-		while (it.hasNext())
-		{
-			check[i++] = true;
-			View view = (View) it.next();
-			setScheduleSelected(view, true);
-
-		}
-	}
-
-	private void deselectAll()
-	{
-		Iterator<View> it = activityList.iterator();
-		int i = 0;
-		while (it.hasNext())
-		{
-			check[i++] = false;
-			View view = (View) it.next();
-			setScheduleSelected(view, false);
-
-		}
-	}
-
-	private String testJSONString()
-	{
-		InputStream is = getResources().openRawResource(R.raw.samplejsonarray);
-		String res = null;
-		try
-		{
-			res = readIt(is);
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-
-	}
-
-	private String readIt(InputStream stream) throws IOException
-	{
-
-		InputStreamReader is = new InputStreamReader(stream);
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = new BufferedReader(is);
-		String read = br.readLine();
-
-		while (read != null)
-		{
-			// System.out.println(read);
-			sb.append(read);
-			read = br.readLine();
-
-		}
-
-		return sb.toString();
-	}
-
-	@Override
-	public void onResponseRecieved(Object response)
-	{
-		RealOpportunityItem realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
-
-		ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
-		check = new boolean[scheduleList.size()];
-		Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
-		while (iterator.hasNext())
-		{
-			Log.i(LOG_TAG, "adding.....");
-			View view = null;
-			try
-			{
-				view = buildScheduleCard(iterator.next());
-			}
-			catch (ParseException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			layout.addView(view);
-		}
+		return true;
 
 	}
 

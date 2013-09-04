@@ -91,5 +91,9 @@ public class CustomException extends Exception implements JSONParsable
 	{
 		Toast.makeText(context, e.getErrorMsg(), Toast.LENGTH_LONG).show();
 	}
+	public static void showToastError(Context context, String string)
+	{
+		Toast.makeText(context, string, Toast.LENGTH_LONG).show();
+	}
 
 }

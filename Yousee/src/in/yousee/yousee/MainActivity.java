@@ -41,10 +41,6 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	protected void onCreate(Bundle savedInstanceState)
 	{
 
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		Log.i(LOG_TAG, "progress bar : true");
-		setSupportProgressBarIndeterminate(true);
-		setSupportProgressBarIndeterminateVisibility(true);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -53,7 +49,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		setUpdateButtonOnClickListener();
 
 		buildOpportunityListForTheFirstTime();
-
+		sendLoginRequest();
 		initiateExpandableList();
 	}
 
@@ -66,6 +62,59 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		}
 		requestSenderChef = listBuilder;
 		sendRequest();
+
+	}
+
+	@Override
+	public void sendRequest()
+	{
+		setSupportProgressBarIndeterminateVisibility(true);
+		try
+		{
+
+			Log.i(LOG_TAG, "cooking");
+			requestSenderChef.cook();
+		}
+		catch (CustomException e)
+		{
+			if (requestSenderChef.requestCode == Chef.LOGIN_REQUEST_CODE)
+			{
+				Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				promptRetry(e.getErrorMsg());
+			}
+			e.printStackTrace();
+		}
+	}
+
+	public void sendLoginRequest()
+	{
+		try
+		{
+			
+			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
+			if (sessionHandler.isSessionIdExists() == true)
+			{
+				Log.i(LOG_TAG, "sessionId doesn't exist");
+				if (sessionHandler.isLoginCredentialsExists() == true)
+				{
+					Log.i(LOG_TAG, "login data doesn't exist");
+					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
+					sessionHandler.loginExec();
+				}
+				else
+					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
+				
+			}
+		}
+		catch (CustomException e)
+		{
+
+			Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
+
+		}
 
 	}
 
@@ -135,7 +184,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
+		super.onOptionsItemSelected(item);
 		switch (item.getItemId())
 		{
 		case R.id.action_filter:
@@ -315,7 +364,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-
+		super.onCreateOptionsMenu(menu);
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
@@ -335,9 +384,10 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public void onResponseRecieved(Object response)
 	{
-		Toast.makeText(getApplicationContext(), "response recieved", Toast.LENGTH_LONG).show();
+		
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 		buildOpportunityList(responseObject);
+		setSupportProgressBarIndeterminateVisibility(false);
 
 	}
 

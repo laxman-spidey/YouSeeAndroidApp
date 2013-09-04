@@ -13,6 +13,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,11 +74,11 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 			if (validateForm())
 			{
 				Log.i("tag", "Logging in ........");
-				SessionHandler session = new SessionHandler(context, this);
+				SessionHandler session = new SessionHandler(getApplicationContext(), this);
 				try
 				{
 					session.loginExec(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-					onLoginSuccess();
+
 				}
 				catch (CustomException e)
 				{
@@ -186,16 +187,26 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		// passwordErrorMsg.setVisibility(View.VISIBLE);
 	}
 
+	private void addErrorMsg(String errorMsg)
+	{
+		
+		TextView errorView = (TextView) findViewById(R.id.loginErrorTextView);
+		errorView.setText(errorMsg);
+		errorView.setVisibility(View.VISIBLE);
+
+	}
+
 	@Override
 	public void onLoginFailed()
 	{
+		addErrorMsg(new CustomException(CustomException.LOGIN_ERROR).getErrorMsg());
 		CustomException.showToastError(context, new CustomException(CustomException.LOGIN_ERROR));
 	}
 
 	@Override
 	public void onLoginSuccess()
 	{
-		Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();;
+		Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
 		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
 		finish();
 	}

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SessionHandler extends Chef
 {
@@ -17,7 +18,8 @@ public class SessionHandler extends Chef
 	private String userID;
 	private String userType;
 	private UsesLoginFeature loginFeatureClient;
-	
+	private static final String DEBUG_TAG = "tag";
+
 	private static final String LOGIN_DATA = "login_data";
 	private static final String KEY_USERNAME = "username";
 	private static final String KEY_PASSWORD = "password";
@@ -27,12 +29,12 @@ public class SessionHandler extends Chef
 	{
 		this.context = context;
 	}
+
 	public SessionHandler(Context context, UsesLoginFeature usesLoginFeature)
 	{
 		this.loginFeatureClient = usesLoginFeature;
 		this.context = context;
 	}
-	
 
 	private SharedPreferences getLoginSharedPrefs()
 	{
@@ -80,7 +82,8 @@ public class SessionHandler extends Chef
 		SharedPreferences sharedPrefs = getLoginSharedPrefs();
 		if (isSessionIdExists())
 		{
-			sessionId = sharedPrefs.getString("SESSION_ID", null);
+			Log.i(DEBUG_TAG, "session id exixsts");
+			sessionId = sharedPrefs.getString("SESSION_ID", "error");
 			return true;
 		}
 		return false;
@@ -90,23 +93,23 @@ public class SessionHandler extends Chef
 	private void setSessionId(String sessionId)
 	{
 		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		Log.i(DEBUG_TAG, "got prefernces");
 		SharedPreferences.Editor editor = sharedPrefs.edit();
+		Log.i(DEBUG_TAG, "created editor");
 		editor.putString("SESSION_ID", sessionId);
 		this.sessionID = sessionId;
 		editor.commit();
 
 	}
 
-	private boolean isSessionIdExists()
+	public boolean isSessionIdExists()			
 	{
 
 		SharedPreferences sharedPrefs = getLoginSharedPrefs();
-		if (sharedPrefs.contains(KEY_SESSION_ID))
-		{
-			return true;
-		}
-		return false;
-	}
+		CustomException.showToastError(context, "session "+sharedPrefs.contains(KEY_SESSION_ID));
+		return sharedPrefs.contains(KEY_SESSION_ID);
+		
+	};
 
 	public void loginExec() throws CustomException
 	{
@@ -123,11 +126,12 @@ public class SessionHandler extends Chef
 	public void loginExec(String username, String password) throws CustomException
 	{
 		int statusCode = 0;
+		super.requestCode = Chef.LOGIN_REQUEST_CODE;
 
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 
 		Log.i("tag", "connection available");
-		
+
 		LoginRequestHandler request = new LoginRequestHandler(username, password);
 		networkHandler.sendRequest(request.buildRequest(), this);
 
@@ -140,16 +144,28 @@ public class SessionHandler extends Chef
 	public void serveResponse(String result)
 	{
 		SessionData sessionData = new SessionData(result);
+		Log.i(DEBUG_TAG, "serving response");
 		if (sessionData.isSuccess())
 		{
+			Log.i(DEBUG_TAG, "login success");
 			setLoginCredentials(username, password);
+			Log.i(DEBUG_TAG, "login data set");
 			setSessionId(sessionData.getSessionId());
-			
-			loginFeatureClient.onLoginSuccess();
-		} else
+			Log.i(DEBUG_TAG, "setting session id");
+			String sessionId=null;;
+			if(getSessionId(sessionId))
+			{
+				Log.i(DEBUG_TAG, "viewing session id");
+				Toast.makeText(context, "Successfully logged in "+sessionId, Toast.LENGTH_SHORT).show();
+			}
+			else
+				Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
+			//loginFeatureClient.onLoginSuccess();
+		}
+		else
 		{
-			loginFeatureClient.onLoginFailed();
-			
+			//loginFeatureClient.onLoginFailed();
+
 		}
 	}
 

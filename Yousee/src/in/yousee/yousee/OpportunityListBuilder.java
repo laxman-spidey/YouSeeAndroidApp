@@ -33,6 +33,7 @@ public class OpportunityListBuilder extends Chef
 	{
 		this.listener = listener;
 		this.context = context;
+		super.requestCode=Chef.OPPORTUNITY_LIST_REQUEST_CODE;
 		assembleRequest(filterGroupList);
 
 	}
