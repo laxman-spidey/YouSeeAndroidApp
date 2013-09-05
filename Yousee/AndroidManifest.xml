@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
         <activity
-            android:name="in.yousee.yousee.WelcomeActivity"
+            android:name="in.yousee.yousee.RegistrationActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +42,7 @@
             android:configChanges="orientation"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
-        <activity android:name="in.yousee.yousee.RegistrationActivity" >
+        <activity android:name="in.yousee.yousee.WelcomeActivity" >
         </activity>
         <activity
             android:name="in.yousee.yousee.RetryActivity"

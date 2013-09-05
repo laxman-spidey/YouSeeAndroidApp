@@ -2,7 +2,7 @@ package in.yousee.yousee;
 
 import in.yousee.yousee.model.CustomException;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
@@ -11,14 +11,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class RetryableActivity extends SherlockActivity
+public class RetryableActivity extends SherlockFragmentActivity
 {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setSupportProgressBarIndeterminate(true);
+		//setSupportProgressBarIndeterminate(true);
+		setSupportProgressBarIndeterminateVisibility(false);
 		super.onCreate(savedInstanceState);
 	}
 

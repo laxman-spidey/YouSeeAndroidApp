@@ -17,17 +17,16 @@ import android.util.Log;
 public class IndividualOpportunityItemBuilder extends Chef
 {
 	private static final String TAG_ACTIVITY_ID = "activity_id";
-	IndividualOpportunityItemActivity sourceActivity;
+
 	ProxyOpportunityItem proxy;
 	HttpPost postRequest;
 	OnResponseRecievedListener listener;
-	
 
-	public IndividualOpportunityItemBuilder(ProxyOpportunityItem proxy, IndividualOpportunityItemActivity sourceActivity)
+	public IndividualOpportunityItemBuilder(ProxyOpportunityItem proxy, OnResponseRecievedListener responseListener)
 	{
-		this.sourceActivity = sourceActivity;
-		listener = sourceActivity;
-		this.proxy=proxy;
+
+		listener = responseListener;
+		this.proxy = proxy;
 		super.requestCode = Chef.OPPORTUNITY_SCHEDULE_LIST_REQUEST_CODE;
 		assembleRequest();
 
@@ -38,12 +37,13 @@ public class IndividualOpportunityItemBuilder extends Chef
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_SCHEDULE);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, ""+proxy.getId()));
-		
+		nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
+
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		} catch (UnsupportedEncodingException e)
+		}
+		catch (UnsupportedEncodingException e)
 		{
 			e.printStackTrace();
 		}
@@ -53,7 +53,7 @@ public class IndividualOpportunityItemBuilder extends Chef
 	@Override
 	public void cook() throws CustomException
 	{
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(sourceActivity);
+		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
 		networkHandler.sendRequest(postRequest, this);
 
 	}

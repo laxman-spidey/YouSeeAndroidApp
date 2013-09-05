@@ -81,6 +81,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	public void commit()
 	{
 		Log.i("tag", "committed");
+		showLoginScreen();
 	}
 
 	LinearLayout layout;
@@ -295,6 +296,13 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 		}
 		return true;
 
+	}
+
+	@Override
+	public Context getContext()
+	{
+		return this.getApplicationContext();
+		
 	}
 
 }

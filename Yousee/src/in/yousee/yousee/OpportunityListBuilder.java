@@ -27,21 +27,20 @@ public class OpportunityListBuilder extends Chef
 	private String TAG_UPDATE = "update";
 
 	private OnResponseRecievedListener listener;
-	private Context context;
 
-	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener, Context context)
+	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener)
 	{
 		this.listener = listener;
-		this.context = context;
-		super.requestCode=Chef.OPPORTUNITY_LIST_REQUEST_CODE;
+
+		super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
 		assembleRequest(filterGroupList);
 
 	}
 
-	public OpportunityListBuilder(OnResponseRecievedListener listener, Context context)
+	public OpportunityListBuilder(OnResponseRecievedListener listener)
 	{
 		this.listener = listener;
-		this.context = context;
+
 		assembleRequest();
 
 	}
@@ -89,7 +88,8 @@ public class OpportunityListBuilder extends Chef
 				{
 					isOneOfChildChecked = true;
 					string += child.getName() + ",";
-					//Log.i("tag", " " + group.getName() + ": " + child.getName());
+					// Log.i("tag", " " + group.getName() +
+					// ": " + child.getName());
 				}
 
 			}
@@ -117,7 +117,7 @@ public class OpportunityListBuilder extends Chef
 	@Override
 	public void cook() throws CustomException
 	{
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
+		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
 
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}

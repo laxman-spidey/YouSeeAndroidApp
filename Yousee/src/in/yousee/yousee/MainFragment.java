@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,12 +72,13 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 	private void buildOpportunityListForTheFirstTime()
 	{
 		Log.i("tag", "building opportunity list");
-		listBuilder = new OpportunityListBuilder(this, getActivity().getApplicationContext());
+		listBuilder = new OpportunityListBuilder(this);
 		try
 		{
 			throw new CustomException("fsd");
 			// listBuilder.cook();
-		} catch (CustomException e)
+		}
+		catch (CustomException e)
 		{
 			// testing
 			// buildOpportunityList(null);
@@ -136,11 +138,12 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 			{
 
 				showFilterMenu(false);
-				listBuilder = new OpportunityListBuilder(filterGroupList, MainFragment.this, getActivity().getApplicationContext());
+				listBuilder = new OpportunityListBuilder(filterGroupList, MainFragment.this);
 				try
 				{
 					listBuilder.cook();
-				} catch (CustomException e)
+				}
+				catch (CustomException e)
 				{
 					CustomException.showToastError(getActivity().getApplicationContext(), e);
 
@@ -158,16 +161,16 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 	{
 
 		switch (item.getItemId())
-			{
-			case R.id.action_filter:
-				filterMenuVisibility = !(filterMenuVisibility);
-				showFilterMenu(filterMenuVisibility);
+		{
+		case R.id.action_filter:
+			filterMenuVisibility = !(filterMenuVisibility);
+			showFilterMenu(filterMenuVisibility);
 
-				break;
+			break;
 
-			default:
-				break;
-			}
+		default:
+			break;
+		}
 		return true;
 	}
 
@@ -338,7 +341,8 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 		Log.i("tag", "item clicked " + position);
 
 		Intent intent = new Intent();
-		//intent.setClass(this, IndividualOpportunityItemActivity.class);
+		// intent.setClass(this,
+		// IndividualOpportunityItemActivity.class);
 		intent.putExtra("result", proxyList.get(position).toJsonString());
 		startActivity(intent);
 
@@ -350,6 +354,13 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 		buildOpportunityList(responseObject);
 
+	}
+
+	@Override
+	public Context getContext()
+	{
+		// TODO Auto-generated method stub
+		return this.getActivity().getApplicationContext();
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +59,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		Log.i("tag", "building opportunity list");
 		if (listBuilder == null)
 		{
-			listBuilder = new OpportunityListBuilder(this, getApplicationContext());
+			listBuilder = new OpportunityListBuilder(this);
 		}
 		requestSenderChef = listBuilder;
 		sendRequest();
@@ -93,7 +94,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	{
 		try
 		{
-			
+
 			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
 			if (sessionHandler.isSessionIdExists() == true)
 			{
@@ -106,7 +107,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 				}
 				else
 					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
-				
+
 			}
 		}
 		catch (CustomException e)
@@ -169,7 +170,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 			{
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
-				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this, getApplicationContext());
+				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
 
 				requestSenderChef = listBuilder;
 				sendRequest();
@@ -384,10 +385,17 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public void onResponseRecieved(Object response)
 	{
-		
+
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 		buildOpportunityList(responseObject);
 		setSupportProgressBarIndeterminateVisibility(false);
+
+	}
+
+	@Override
+	public Context getContext()
+	{
+		return this.getApplicationContext();
 
 	}
 
