@@ -10,15 +10,16 @@ import com.actionbarsherlock.view.Window;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
-public class RetryableActivity extends SherlockFragmentActivity
+public class RetryableActivity extends SherlockFragmentActivity implements UsesLoginFeature
 {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		//setSupportProgressBarIndeterminate(true);
+		// setSupportProgressBarIndeterminate(true);
 		setSupportProgressBarIndeterminateVisibility(false);
 		super.onCreate(savedInstanceState);
 	}
@@ -49,13 +50,13 @@ public class RetryableActivity extends SherlockFragmentActivity
 		setSupportProgressBarIndeterminateVisibility(true);
 		try
 		{
-			
+
 			Log.i(LOG_TAG, "cooking");
 			requestSenderChef.cook();
 		}
 		catch (CustomException e)
 		{
-			
+
 			promptRetry(e.getErrorMsg());
 			e.printStackTrace();
 		}
@@ -71,7 +72,7 @@ public class RetryableActivity extends SherlockFragmentActivity
 		{
 			if (resultCode == RESULT_OK)
 			{
-				sendRequest();
+				reloadActivity();
 			}
 		}
 		setSupportProgressBarIndeterminateVisibility(false);
@@ -86,13 +87,75 @@ public class RetryableActivity extends SherlockFragmentActivity
 		case R.id.action_refresh:
 			refresh = true;
 			Log.i(LOG_TAG, "refreshing.............................................................");
-			sendRequest();
+			reloadActivity();
 			break;
-
+		case R.id.action_login:
+			Log.i(LOG_TAG, "Log in");
+			sendLoginRequest();
+		case R.id.action_register:
+			showRegistrationForm();
 		default:
 			break;
 		}
 		return true;
+	}
+
+	
+	public void sendLoginRequest()
+	{
+		try
+		{
+
+			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
+			if (sessionHandler.isSessionIdExists() == true)
+			{
+				Log.i(LOG_TAG, "sessionId doesn't exist");
+				if (sessionHandler.isLoginCredentialsExists() == true)
+				{
+					Log.i(LOG_TAG, "login data doesn't exist");
+					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
+					sessionHandler.loginExec();
+				}
+				else
+					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
+
+			}
+		}
+		catch (CustomException e)
+		{
+
+			Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
+
+		}
+
+	}
+	private void showRegistrationForm()
+	{
+
+		Intent intent = new Intent();
+		Log.i("tag", "showing Registration Activity");
+		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
+		startActivity(intent);
+	}
+	
+
+	private void reloadActivity()
+	{
+		sendRequest();
+	}
+
+	@Override
+	public void onLoginFailed()
+	{
+		;
+	}
+
+	@Override
+	public void onLoginSuccess()
+	{
+		SessionHandler.isLoggedIn = true;
+		reloadActivity();
+		
 	}
 
 }

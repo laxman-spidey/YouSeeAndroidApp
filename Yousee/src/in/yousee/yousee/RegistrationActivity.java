@@ -1,8 +1,11 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.model.RegistrationFormObject;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,14 +19,15 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 
-public class RegistrationActivity extends RetryableActivity implements OnFocusChangeListener, OnClickListener
+public class RegistrationActivity extends RetryableActivity implements OnFocusChangeListener, OnClickListener, OnResponseRecievedListener
 {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
-	{ 
+	{
 		super.onCreate(savedInstanceState);
-		setSupportProgressBarIndeterminateVisibility(false); 
+		setSupportProgressBarIndeterminateVisibility(false);
 		getWindow().setTitle("Registration");
 		getWindow().setTitleColor(getResources().getColor(R.color.red));
 		setContentView(R.layout.registration_form);
@@ -62,13 +66,16 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 	private void instantiateAllFields()
 	{
 		firstName = (EditText) findViewById(R.id.regFirstName);
+		firstName.setText("fsadhgfsd");
 		lastName = (EditText) findViewById(R.id.regLastName);
+		lastName.setText("fsadhgfsd");
 		email = (EditText) findViewById(R.id.regEmail);
+		email.setText("mittu.thefire@gmail.com");
 		password = (EditText) findViewById(R.id.regPassword);
-	
+		password.setText("fsadhgfsd");
 
 		dob = (EditText) findViewById(R.id.regDob);
-		
+
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
 		registerButton.setOnClickListener(this);
 		dob.setOnFocusChangeListener(this);
@@ -77,13 +84,18 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 
 	private boolean validateForm()
 	{
-		boolean success = true;
-		if (isEmpty(firstName) &&  isEmpty(dob) && isEmpty(password) && isEmpty(lastName) && validateEmail(email) )
+
+		Log.i(LOG_TAG, "first : " + firstName.getId());
+		Log.i(LOG_TAG, "last : " + lastName.getId());
+		Log.i(LOG_TAG, "email : " + email.getId());
+		Log.i(LOG_TAG, "dob : " + dob.getId());
+		Log.i(LOG_TAG, "password : " + password.getId());
+		if (!isEmpty(firstName) && !isEmpty(dob) && !isEmpty(password) && !isEmpty(lastName) && validateEmail(email))
 		{
-			success = true;
+			return true;
 		}
 
-		return success;
+		return false;
 	}
 
 	private boolean isEmpty(EditText field)
@@ -94,7 +106,11 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 			showErrorInField(field, "this field can't be empty");
 			return true;
 		}
-		return false;
+		else
+		{
+			Log.i(LOG_TAG, "non empty id: " + field.getId());
+			return false;
+		}
 	}
 
 	/**
@@ -115,11 +131,24 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 		String emailString = emailField.getText().toString();
 		pattern = Pattern.compile(EMAIL_PATTERN);
 		matcher = pattern.matcher(emailString);
-		if ((matcher.matches()))
-			return true;
+		if (!isEmpty(emailField))
+		{
+			if ((matcher.matches()))
+			{
+				Log.i(LOG_TAG, "matched email id ");
+				return true;
+			}
+			else
+			{
+				Log.i(LOG_TAG, "not matched email id ");
+				
+				showErrorInField(emailField, "invalid email format");
+				return false;
+			}
+		}
 		else
 		{
-			showErrorInField(emailField, "invalid email format");
+			Log.i(LOG_TAG, "email id empty");
 			return false;
 		}
 
@@ -127,26 +156,52 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 
 	private void showErrorInField(EditText field, String errorMsg)
 	{
+		field.setText("");
 		field.setHint(errorMsg);
-		field.setTextSize(12);
+
 		field.setHintTextColor(getResources().getColor(R.color.red));
-		
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		return true;
 	}
 
 	@Override
 	public void onClick(View v)
 	{
-		if(validateForm())
+		if (validateForm())
 			submitRegistration();
 		else
 			Log.i(LOG_TAG, "biscuittttttttttttttt..");
-			
-		
+
 	}
-	
+
 	private void submitRegistration()
 	{
+		RegistrationFormObject regFormObject = new RegistrationFormObject();
+		regFormObject.setFirstName(firstName.getText().toString());
+		regFormObject.setLastname(lastName.getText().toString());
+		regFormObject.setEmail(email.getText().toString());
+		regFormObject.setPassword(password.getText().toString());
+		regFormObject.setDob(dob.getText().toString());
+		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
+		requestSenderChef = registrationProcessor;
+		sendRequest();
+	}
+
+	@Override
+	public void onResponseRecieved(Object response)
+	{
 		
+	}
+
+	@Override
+	public Context getContext()
+	{
+		return this.getApplicationContext();
 	}
 
 }

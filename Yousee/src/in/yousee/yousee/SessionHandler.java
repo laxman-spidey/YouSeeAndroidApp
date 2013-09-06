@@ -19,6 +19,7 @@ public class SessionHandler extends Chef
 	private String userType;
 	private UsesLoginFeature loginFeatureClient;
 	private static final String DEBUG_TAG = "tag";
+	public static boolean isLoggedIn = false;
 
 	private static final String LOGIN_DATA = "login_data";
 	private static final String KEY_USERNAME = "username";

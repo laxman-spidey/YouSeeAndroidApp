@@ -119,7 +119,8 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 			{
 				view = buildScheduleCard(iterator.next());
 			}
-			catch (ParseException e)
+			catch (ParseException e)// ImageButton deselectAllButton = (ImageButton)
+					// findViewById(R.id.deselectAll); e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -33,7 +33,7 @@ public class NetworkConnectionHandler implements Runnable
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://10.42.0.1:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;

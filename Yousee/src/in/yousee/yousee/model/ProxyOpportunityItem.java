@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
+import android.widget.Toast;
 
 public class ProxyOpportunityItem implements JSONParsable
 {
@@ -125,7 +126,7 @@ public class ProxyOpportunityItem implements JSONParsable
 			Log.i("tag", this.title);
 		} catch (JSONException e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

@@ -90,34 +90,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		}
 	}
 
-	public void sendLoginRequest()
-	{
-		try
-		{
-
-			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-			if (sessionHandler.isSessionIdExists() == true)
-			{
-				Log.i(LOG_TAG, "sessionId doesn't exist");
-				if (sessionHandler.isLoginCredentialsExists() == true)
-				{
-					Log.i(LOG_TAG, "login data doesn't exist");
-					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
-					sessionHandler.loginExec();
-				}
-				else
-					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
-
-			}
-		}
-		catch (CustomException e)
-		{
-
-			Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
-
-		}
-
-	}
+	
 
 	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
 	{

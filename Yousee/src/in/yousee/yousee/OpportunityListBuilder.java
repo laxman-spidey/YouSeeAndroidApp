@@ -118,7 +118,6 @@ public class OpportunityListBuilder extends Chef
 	public void cook() throws CustomException
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
-
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}
 
