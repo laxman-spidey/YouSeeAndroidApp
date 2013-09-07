@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 import in.yousee.yousee.model.RealOpportunityItem;
 
@@ -39,6 +40,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	ArrayList<View> activityList;
 	static boolean selectall = false;
 	RealOpportunityItem realItem;
+	
 
 	private static final String LOG_TAG = "tag";
 
@@ -280,8 +282,19 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 		Intent intent = new Intent();
 		Log.i("tag", "showing LoginScreen");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
 
+	}
+
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if(requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
+		{
+			commit();
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override

@@ -1,9 +1,11 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.CustomException;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
@@ -14,13 +16,16 @@ import android.widget.Toast;
 
 public class RetryableActivity extends SherlockFragmentActivity implements UsesLoginFeature
 {
-	
+
+	MenuItem loginMenuItem;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		// setSupportProgressBarIndeterminate(true);
 		setSupportProgressBarIndeterminateVisibility(false);
+
 		super.onCreate(savedInstanceState);
 	}
 
@@ -29,11 +34,16 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	{
 		// TODO Auto-generated method stub
 		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
+		loginMenuItem = (MenuItem) menu.findItem(R.id.action_login);
+		if (SessionHandler.isLoggedIn)
+			loginMenuItem.setTitle("Logout");
+		else
+			loginMenuItem.setTitle("Login");
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	public boolean refresh = false;
-	public static final int REQUEST_RETRY = 1001;
+
 	public static final String LOG_TAG = "tag";
 	protected Chef requestSenderChef;
 
@@ -42,7 +52,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		Intent intent = new Intent();
 		intent.setClass(this, RetryActivity.class);
 		intent.putExtra("errorMsg", msg);
-		startActivityForResult(intent, REQUEST_RETRY);
+		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_RETRY);
 	}
 
 	public void sendRequest()
@@ -50,8 +60,6 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		setSupportProgressBarIndeterminateVisibility(true);
 		try
 		{
-
-			Log.i(LOG_TAG, "cooking");
 			requestSenderChef.cook();
 		}
 		catch (CustomException e)
@@ -68,12 +76,16 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	{
 		// Log.i(LOG_TAG, "retrying");
 		// requestCode = RESULT_OK;
-		if (requestCode == REQUEST_RETRY)
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_RETRY)
 		{
 			if (resultCode == RESULT_OK)
 			{
 				reloadActivity();
 			}
+		}
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)
+		{
+
 		}
 		setSupportProgressBarIndeterminateVisibility(false);
 		super.onActivityResult(requestCode, resultCode, data);
@@ -90,24 +102,41 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 			reloadActivity();
 			break;
 		case R.id.action_login:
-			Log.i(LOG_TAG, "Log in");
-			sendLoginRequest();
+			if (!(SessionHandler.isLoggedIn))
+			{
+				if (sendLoginRequest())
+					setloginMenuItem(true);
+			}
+			else
+			{
+				logout();
+			}
+			break;
 		case R.id.action_register:
 			showRegistrationForm();
+			break;
 		default:
 			break;
 		}
 		return true;
 	}
 
-	
-	public void sendLoginRequest()
+	private void setloginMenuItem(boolean loggedIn)
+	{
+
+		if (loggedIn)
+			loginMenuItem.setTitle("Logout");
+		else
+			loginMenuItem.setTitle("Login");
+	}
+
+	public boolean sendLoginRequest()
 	{
 		try
 		{
 
 			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-			if (sessionHandler.isSessionIdExists() == true)
+			if (sessionHandler.isSessionIdExists() == false)
 			{
 				Log.i(LOG_TAG, "sessionId doesn't exist");
 				if (sessionHandler.isLoginCredentialsExists() == true)
@@ -115,20 +144,54 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 					Log.i(LOG_TAG, "login data doesn't exist");
 					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
 					sessionHandler.loginExec();
+					SessionHandler.isLoggedIn = true;
+					return true;
 				}
 				else
+				{
+					showLoginScreen();
 					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
+					return false;
+				}
 
+			}
+			else
+			{
+
+				return false;
 			}
 		}
 		catch (CustomException e)
 		{
 
 			Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
+			return false;
 
 		}
 
 	}
+
+	private boolean logout()
+	{
+		try
+		{
+
+			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
+			sessionHandler.logout();
+			SessionHandler.isLoggedIn = false;
+			setloginMenuItem(false);
+			return true;
+		}
+		catch (CustomException e)
+		{
+
+			Toast.makeText(getApplicationContext(), "Error occured.", Toast.LENGTH_SHORT).show();
+			return false;
+
+		}
+
+	}
+
 	private void showRegistrationForm()
 	{
 
@@ -137,7 +200,6 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
 		startActivity(intent);
 	}
-	
 
 	private void reloadActivity()
 	{
@@ -155,7 +217,16 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	{
 		SessionHandler.isLoggedIn = true;
 		reloadActivity();
-		
+
+	}
+
+	public void showLoginScreen()
+	{
+		Intent intent = new Intent();
+		Log.i("tag", "showing LoginScreen");
+		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
+		startActivity(intent);
+
 	}
 
 }

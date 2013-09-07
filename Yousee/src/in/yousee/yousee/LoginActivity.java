@@ -189,7 +189,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 
 	private void addErrorMsg(String errorMsg)
 	{
-		
+
 		TextView errorView = (TextView) findViewById(R.id.loginErrorTextView);
 		errorView.setText(errorMsg);
 		errorView.setVisibility(View.VISIBLE);
@@ -219,5 +219,4 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
 		startActivity(intent);
 	}
-
 }

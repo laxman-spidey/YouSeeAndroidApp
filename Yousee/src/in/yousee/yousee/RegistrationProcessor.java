@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.ServerFiles;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.RegistrationFormObject;
 
@@ -11,6 +12,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
+
 
 import android.util.Log;
 
