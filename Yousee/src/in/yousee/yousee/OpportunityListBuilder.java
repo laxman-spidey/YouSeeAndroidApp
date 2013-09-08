@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.constants.ServerFiles;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
@@ -34,7 +35,7 @@ public class OpportunityListBuilder extends Chef
 	{
 		this.listener = listener;
 
-		super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
+		//super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
 		assembleRequest(filterGroupList);
 
 	}
@@ -62,13 +63,14 @@ public class OpportunityListBuilder extends Chef
 		{
 			e.printStackTrace();
 		}
-		cacheRequest(postRequest);
+		
 
 	}
 
 	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
+		super.setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
 		Log.i("tag", "+hfksjdhfldhfjkghdfjkgdkjfhgjkdhfjgkhdfjkghjkdfhgkjdshfg");
@@ -124,7 +126,7 @@ public class OpportunityListBuilder extends Chef
 	}
 
 	@Override
-	public void serveResponse(String result)
+	public void serveResponse(String result, int requestCode)
 	{
 
 		JSONObject json;
@@ -154,7 +156,7 @@ public class OpportunityListBuilder extends Chef
 			e.printStackTrace();
 		}
 		Log.i("tag", "item list length = " + proxyItemList.size());
-		listener.onResponseRecieved(proxyItemList);
+		listener.onResponseRecieved(proxyItemList,  requestCode);
 
 	}
 

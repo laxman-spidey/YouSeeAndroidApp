@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.constants.ServerFiles;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
@@ -12,7 +13,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-
 
 import android.util.Log;
 
@@ -29,7 +29,8 @@ public class IndividualOpportunityItemBuilder extends Chef
 
 		listener = responseListener;
 		this.proxy = proxy;
-		super.requestCode = Chef.OPPORTUNITY_SCHEDULE_LIST_REQUEST_CODE;
+		// super.requestCode =
+		// Chef.OPPORTUNITY_SCHEDULE_LIST_REQUEST_CODE;
 		assembleRequest();
 
 	}
@@ -38,6 +39,8 @@ public class IndividualOpportunityItemBuilder extends Chef
 	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_SCHEDULE);
+		super.setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST);
+
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
 
@@ -49,7 +52,7 @@ public class IndividualOpportunityItemBuilder extends Chef
 		{
 			e.printStackTrace();
 		}
-		cacheRequest(postRequest);
+		// cacheRequest(postRequest);
 	}
 
 	@Override
@@ -61,10 +64,9 @@ public class IndividualOpportunityItemBuilder extends Chef
 	}
 
 	@Override
-	public void serveResponse(String result)
+	public void serveResponse(String result, int requestCode)
 	{
-		Log.i("tag", "fahjsdhfsgdfjhsdjkfgsd");
-		listener.onResponseRecieved(result);
+		listener.onResponseRecieved(result, requestCode);
 	}
 
 }

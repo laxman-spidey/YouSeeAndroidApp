@@ -65,7 +65,7 @@ public class RegistrationProcessor extends Chef
 	}
 
 	@Override
-	public void serveResponse(String result)
+	public void serveResponse(String result, int requestCode)
 	{
 		Log.i("tag", "result is = " + result);
 	}

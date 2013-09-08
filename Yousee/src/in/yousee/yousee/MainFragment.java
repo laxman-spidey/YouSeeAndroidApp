@@ -349,7 +349,7 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 	}
 
 	@Override
-	public void onResponseRecieved(Object response)
+	public void onResponseRecieved(Object response, int requestCode)
 	{
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 		buildOpportunityList(responseObject);

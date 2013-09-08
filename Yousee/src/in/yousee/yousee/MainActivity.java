@@ -77,8 +77,8 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 			requestSenderChef.cook();
 		}
 		catch (CustomException e)
-		{
-			if (requestSenderChef.requestCode == Chef.LOGIN_REQUEST_CODE)
+		{/*
+			if ()
 			{
 				Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
 			}
@@ -86,6 +86,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 			{
 				promptRetry(e.getErrorMsg());
 			}
+			*/
 			e.printStackTrace();
 		}
 	}
@@ -356,7 +357,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	}
 
 	@Override
-	public void onResponseRecieved(Object response)
+	public void onResponseRecieved(Object response, int requestCode)
 	{
 
 		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;

@@ -67,7 +67,8 @@ public class NetworkConnectionHandler implements Runnable
 			Log.i("tag", "network connection is available");
 			return true;
 
-		} else
+		}
+		else
 		{
 			throw new CustomException(CustomException.NETWORK_NOT_FOUND);
 		}
@@ -146,11 +147,11 @@ public class NetworkConnectionHandler implements Runnable
 	 * @param <Sring>
 	 *                output
 	 */
-	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, String>
+	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, HttpResponse>
 	{
 
 		@Override
-		protected String doInBackground(HttpPost... postRequests)
+		protected HttpResponse doInBackground(HttpPost... postRequests)
 		{
 
 			// params comes from the execute() call: params[0] is
@@ -158,17 +159,18 @@ public class NetworkConnectionHandler implements Runnable
 			try
 			{
 				return downloadUrl(postRequests[0]);
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
-				return "Unable to retrieve web page. URL may be invalid.";
+				return null;
 			}
 		}
 
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
-		protected void onPostExecute(String result)
+		protected void onPostExecute(HttpResponse response)
 		{
-			onResponseRecieved(result);
+			onResponseRecieved(response);
 		}
 	}
 
@@ -177,42 +179,63 @@ public class NetworkConnectionHandler implements Runnable
 	 * server.
 	 */
 
-	public void onResponseRecieved(String webContentResult)
+	public void onResponseRecieved(HttpResponse response)
 	{
+		String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
+		int requestCode = new Integer(requestCodeString).intValue();
+		InputStream is = null;
+		String contentAsString = null;
+		try
+		{
+			is = response.getEntity().getContent();
+			contentAsString = readIt(is);
+		}
+		catch (IllegalStateException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 
-		listener.serveResponse(webContentResult);
+		listener.serveResponse(contentAsString, requestCode);
 
 	}
 
 	/**
-	 * This method connects to Server and downloads Response String is
-	 * extracted from Body of response
+	 * This method connects to Server and downloads Response is returned
 	 */
-	private String downloadUrl(HttpPost postRequest) throws IOException
+	private HttpResponse downloadUrl(HttpPost postRequest) throws IOException
 	{
 		InputStream is = null;
 
-		try
-		{
-			Log.i("tag", "download Started");
-			HttpClient httpclient = new DefaultHttpClient();
-			Log.i("tag", "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"+readIt(postRequest.getEntity().getContent()));
-			HttpResponse response = httpclient.execute(postRequest);
-			is = response.getEntity().getContent();
-			String contentAsString = readIt(is);
-			Log.i("tag", "download completed");
-			return contentAsString;
+		Log.i("tag", "download Started");
+		HttpClient httpclient = new DefaultHttpClient();
 
-			// Makes sure that the InputStream is closed after the
-			// app is
-			// finished using it.
-		} finally
-		{
-			if (is != null)
-			{
-				is.close();
-			}
-		}
+		HttpResponse response = httpclient.execute(postRequest);
+		return response;
+
+		// Makes sure that the InputStream is closed after the
+		// app is
+		// finished using it.
 
 	}
 

@@ -193,7 +193,7 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 	}
 
 	@Override
-	public void onResponseRecieved(Object response)
+	public void onResponseRecieved(Object response, int requestCode)
 	{
 		
 	}

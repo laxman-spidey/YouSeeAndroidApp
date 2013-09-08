@@ -1,9 +1,16 @@
 package in.yousee.yousee;
 
-import org.apache.http.client.methods.HttpPost;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
 import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.constants.ServerFiles;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.SessionData;
@@ -143,14 +150,27 @@ public class SessionHandler extends Chef
 	{
 		Log.i("tag", "loginExec(username, password)");
 		int statusCode = 0;
-		super.requestCode = Chef.LOGIN_REQUEST_CODE;
 
 		this.username = username;
 		this.password = password;
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 
-		LoginRequestHandler request = new LoginRequestHandler(username, password);
-		networkHandler.sendRequest(request.buildRequest(), this);
+		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGIN_EXEC);
+		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs.add(new BasicNameValuePair("username", username));
+		nameValuePairs.add(new BasicNameValuePair("password", password));
+
+		try
+		{
+			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+
+		networkHandler.sendRequest(postRequest, this);
 
 		setSessionId(sessionID);
 		setLoginCredentials(username, password);
@@ -171,13 +191,14 @@ public class SessionHandler extends Chef
 	{
 		Log.i("tag", "sendLogoutRequestToServer()");
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
+		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 		networkHandler.sendRequest(postRequest, this);
 
 	}
 
 	@Override
-	public void serveResponse(String result)
+	public void serveResponse(String result, int requestCode)
 	{
 		SessionData sessionData = new SessionData(result);
 		Log.i(SESSION_DEBUG_TAG, "serving response");

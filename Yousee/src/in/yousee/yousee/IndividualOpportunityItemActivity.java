@@ -100,7 +100,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	}
 
 	@Override
-	public void onResponseRecieved(Object response)
+	public void onResponseRecieved(Object response, int requestCode)
 	{
 		if (super.refresh == true)
 		{
