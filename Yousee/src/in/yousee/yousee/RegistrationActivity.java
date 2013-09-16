@@ -1,11 +1,15 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.constants.RequestCodes;
+import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.RegistrationFormObject;
 
 import java.net.ResponseCache;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
@@ -64,6 +69,7 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 	EditText email;
 	EditText password;
 	EditText dob;
+	TextView errorField;
 
 	private void instantiateAllFields()
 	{
@@ -78,6 +84,7 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 
 		dob = (EditText) findViewById(R.id.regDob);
 
+		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
 		registerButton.setOnClickListener(this);
 		dob.setOnFocusChangeListener(this);
@@ -114,6 +121,7 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 			return false;
 		}
 	}
+
 	// CustomException.showToastError(context, new
 	// CustomException(CustomException.LOGIN_ERROR));
 
@@ -150,23 +158,51 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 				return false;
 			}
 		}
-		else	
+		else
 		{
 			Log.i(LOG_TAG, "email id empty");
 			return false;
 		}
 
 	}
-	
+
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-		SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
-		sessionHandler.serveResponse((String)response, RequestCodes.NETWORK_REQUEST_LOGIN);
+		int responseCode;
+		Log.i(LOG_TAG, (String) response);
+		try
+		{
+			JSONObject obj = new JSONObject((String) response);
+			responseCode = obj.getInt(Chef.TAG_NETWORK_RESULT_CODE);
+			if (responseCode == CustomException.SUCCESS_CODE)
+			{
+				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
+				sessionHandler.serveResponse((String) response, RequestCodes.NETWORK_REQUEST_LOGIN);
+			}
+			else if(responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
+			{
+				Toast.makeText(getApplicationContext(), "Email, you have entered is already taken, Try with another Email", Toast.LENGTH_LONG).show();
+				//errorField.setText("Email, you have entered is already taken, Try with another Email");
+				//errorField.setVisibility(View.VISIBLE);
+			}
+			else if(responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
+			{
+				Toast.makeText(getApplicationContext(), "Something went wrong, Please try submitting again.", Toast.LENGTH_LONG).show();
+			}
+
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
+
 	public Context getContext()
 	{
 		return getApplicationContext();
-		
+
 	}
 
 	private void showErrorInField(EditText field, String errorMsg)
@@ -175,8 +211,8 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 		field.setHint(errorMsg);
 
 		field.setHintTextColor(Color.RED);
-				// CustomException.showToastError(context, new
-				// CustomException(CustomException.LOGIN_ERROR));sources().getColor(R.color.red));
+		// CustomException.showToastError(context, new
+		// CustomException(CustomException.LOGIN_ERROR));sources().getColor(R.color.red));
 
 	}
 
@@ -208,7 +244,7 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 		requestSenderChef = registrationProcessor;
 		sendRequest();
 	}
-		
+
 	@Override
 	public void onLoginFailed()
 	{

@@ -27,7 +27,6 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		// setSupportProgressBarIndeterminate(true);
 		setSupportProgressBarIndeterminateVisibility(false);
-		
 
 		super.onCreate(savedInstanceState);
 	}
@@ -39,16 +38,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 
 		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
 		this.menu = menu;
-		loginMenuItem = (MenuItem) menu.findItem(R.id.action_login);
-		if (SessionHandler.isLoggedIn)
-		{
-			loginMenuItem.setTitle("Logout");
-			menu.removeItem(R.id.action_register);
-		}
-		else
-		{
-			loginMenuItem.setTitle("Login");
-		}
+		setMenuState(SessionHandler.isSessionIdExists(getApplicationContext()));
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -114,15 +104,11 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 			reloadActivity();
 			break;
 		case R.id.action_login:
-			if (!(SessionHandler.isLoggedIn))
-			{
-				if (sendLoginRequest(true))
-					setMenuState(true);
-			}
-			else
-			{
-				logout();
-			}
+			sendLoginRequest(true);
+
+			break;
+		case R.id.action_logout:
+			logout();
 			break;
 		case R.id.action_register:
 			showRegistrationForm();
@@ -135,17 +121,22 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 
 	private void setMenuState(boolean loggedIn)
 	{
-
-		MenuItem loginMenu = menu.getItem(R.id.action_login);
+		Log.i(LOG_TAG, "login status " + loggedIn);
+		MenuItem loginMenu = menu.findItem(R.id.action_login);
+		MenuItem registerMenu = menu.findItem(R.id.action_register);
+		MenuItem logoutMenu = menu.findItem(R.id.action_logout);
 		if (loggedIn)
 		{
-			loginMenu.setTitle("Logout");
-			menu.removeItem(R.id.action_register);
+			loginMenu.setVisible(false);
+			registerMenu.setVisible(false);
+			logoutMenu.setVisible(true);
+
 		}
 		else
 		{
-			loginMenu.setTitle("Login");
-
+			loginMenu.setVisible(true);
+			registerMenu.setVisible(true);
+			logoutMenu.setVisible(false);
 		}
 
 	}
@@ -156,15 +147,15 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		{
 
 			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-			if (sessionHandler.isSessionIdExists() == false)
+			if (SessionHandler.isSessionIdExists(getApplicationContext()) == false)
 			{
 				Log.i(LOG_TAG, "sessionId doesn't exist");
-				if (sessionHandler.isLoginCredentialsExists() == true)
+				if (SessionHandler.isLoginCredentialsExists(getApplicationContext()) == true)
 				{
 					Log.i(LOG_TAG, "login data doesn't exist");
 					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
 					sessionHandler.loginExec();
-					SessionHandler.isLoggedIn = true;
+
 					return true;
 				}
 				else
@@ -201,8 +192,6 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 
 			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
 			sessionHandler.logout(this);
-
-			setMenuState(false);
 			return true;
 		}
 		catch (CustomException e)
@@ -239,6 +228,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	public void onLoginSuccess()
 	{
 		SessionHandler.isLoggedIn = true;
+		setMenuState(true);
 		Toast.makeText(getContext(), "logged in successfully.", Toast.LENGTH_SHORT).show();
 		reloadActivity();
 

@@ -34,10 +34,12 @@ public class WelcomeActivity extends Activity
 						sleep(100);
 						waited += 100;
 					}
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 					// do nothing
-				} finally
+				}
+				finally
 				{
 					finish();
 					showMainActivity();
@@ -46,35 +48,13 @@ public class WelcomeActivity extends Activity
 			}
 		};
 		splashThread.start();
-		/*
-		SessionHandler session = new SessionHandler(this);
-		Log.i("tag", "new thread started");
-		session.loginExec();
-		*/
-		
-		
-	}
-
-	private void getSessionDataIfExists()
-	{
-		SessionHandler session = new SessionHandler(this);
-
-		if (session.getSessionId(sessionId))
-			;
-		else if (session.isLoginCredentialsExists())
-		{
-			//session.loginExec();
-		} else
-		{
-			sessionId = "guestId";
-		}
 
 	}
 
 	public void showMainActivity()
 	{
 
-		Log.i("tag","in Show menu activity");
+		Log.i("tag", "in Show menu activity");
 		Intent intent = new Intent();
 		intent.putExtra("sessionId", sessionId);
 		intent.setClass(this, in.yousee.yousee.MainActivity.class);

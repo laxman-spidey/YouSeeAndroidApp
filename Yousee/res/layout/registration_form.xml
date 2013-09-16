@@ -59,6 +59,15 @@
             android:onClick="showDatePickerDialog"
             android:text="aifdhsdf" />
 
+        <TextView
+            android:id="@+id/regErrorTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:lines="2"
+            android:text="TextView"
+            android:textColor="@color/red"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/regSubmit"
             android:layout_width="wrap_content"

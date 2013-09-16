@@ -13,19 +13,20 @@ public class CustomException extends Exception implements JSONParsable
 	 */
 	private static final long serialVersionUID = 1234567890;
 
-	public static final int ERROR_USERNAME_INVALID = 1;
-	public static final int ERROR_PASSWORD_INVALID = 2;
-	public static final int ERROR_NETWORK_NOT_FOUND = 3;
-	public static final int ERROR_NO_INTERNET_CONNECTIVITY = 4;
-	public static final int ERROR_INVALID_URL = 5;
-	public static final int ERROR_LOGIN_ERROR = 6;
-	public static final int ERROR_CUSTOM = 7;
+	public static final int ERROR_USERNAME_INVALID = 11;
+	public static final int ERROR_PASSWORD_INVALID = 12;
+	public static final int ERROR_NETWORK_NOT_FOUND = 13;
+	public static final int ERROR_NO_INTERNET_CONNECTIVITY = 14;
+	public static final int ERROR_INVALID_URL = 15;
+	public static final int ERROR_LOGIN_ERROR = 16;
+	public static final int ERROR_CUSTOM = 17;
 	public static final int IO_ERROR = -1;
+	
 	
 	public static final int REGISTRATION_EMAIL_ALREADY_TAKEN = 120;
 	public static final int REGISTRATION_USERNAME_EXISTS= 121;
-	public static final int REGISTRATION_ERROR_CODE = 122;
-	public static final int REGISTRATION_SUCCESS_CODE = 100;
+	public static final int ERROR_CODE = 0;
+	public static final int SUCCESS_CODE = 1;
 	
 	
 

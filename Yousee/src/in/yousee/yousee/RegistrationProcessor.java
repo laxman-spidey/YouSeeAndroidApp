@@ -76,7 +76,7 @@ public class RegistrationProcessor extends Chef
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_REGISTER)
 		{
-
+			
 			responseListener.onResponseRecieved(result, requestCode);
 		}
 		Log.i("tag", "result is = " + result);

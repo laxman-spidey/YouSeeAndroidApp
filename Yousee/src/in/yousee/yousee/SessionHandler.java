@@ -49,7 +49,7 @@ public class SessionHandler extends Chef
 		this.context = context;
 	}
 
-	private SharedPreferences getLoginSharedPrefs()
+	private static SharedPreferences getLoginSharedPrefs(Context context)
 	{
 
 		return context.getSharedPreferences(LOGIN_DATA, Activity.MODE_PRIVATE);
@@ -58,9 +58,9 @@ public class SessionHandler extends Chef
 	private boolean getLoginCredentials(String username, String password)
 	{
 		Log.i(SESSION_DEBUG_TAG, "in getLogin credentials----------------------------------");
-		if (isLoginCredentialsExists())
+		if (isLoginCredentialsExists(context))
 		{
-			SharedPreferences sharedPrefs = getLoginSharedPrefs();
+			SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 			username = sharedPrefs.getString(KEY_USERNAME, null);
 			Log.i(SESSION_DEBUG_TAG, "username " + username);
 			password = sharedPrefs.getString(KEY_PASSWORD, null);
@@ -73,7 +73,7 @@ public class SessionHandler extends Chef
 
 	private void setLoginCredentials(String username, String password)
 	{
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString(KEY_USERNAME, username);
 		editor.putString(KEY_PASSWORD, password);
@@ -81,10 +81,11 @@ public class SessionHandler extends Chef
 
 	}
 
-	public boolean isLoginCredentialsExists()
+	public static boolean isLoginCredentialsExists(Context context)
 	{
 		Log.i(SESSION_DEBUG_TAG, "is LoginCredentialExists()");
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+
 		if (sharedPrefs.contains(KEY_USERNAME) && sharedPrefs.contains(KEY_PASSWORD))
 		{
 			Log.i(SESSION_DEBUG_TAG, "returning true");
@@ -98,8 +99,8 @@ public class SessionHandler extends Chef
 	public boolean getSessionId(String sessionId)
 	{
 		Log.i(SESSION_DEBUG_TAG, "getsessionId()");
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
-		if (isSessionIdExists())
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		if (isSessionIdExists(context))
 		{
 
 			sessionId = sharedPrefs.getString(KEY_SESSION_ID, "error");
@@ -114,7 +115,7 @@ public class SessionHandler extends Chef
 	private void setSessionId(String sessionId)
 	{
 		Log.i(SESSION_DEBUG_TAG, "setsessionId()");
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 
@@ -125,10 +126,10 @@ public class SessionHandler extends Chef
 
 	}
 
-	public boolean isSessionIdExists()
+	public static boolean isSessionIdExists(Context context)
 	{
 		Log.i(SESSION_DEBUG_TAG, "isSessionIdExists()");
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		Log.i(SESSION_DEBUG_TAG, "returning " + sharedPrefs.contains(KEY_SESSION_ID));
 		return sharedPrefs.contains(KEY_SESSION_ID);
 
@@ -156,8 +157,8 @@ public class SessionHandler extends Chef
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGIN_EXEC);
-		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
 		nameValuePairs = new ArrayList<NameValuePair>(2);
+		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
 		nameValuePairs.add(new BasicNameValuePair("username", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 
@@ -182,6 +183,7 @@ public class SessionHandler extends Chef
 		this.logoutListener = listener;
 		Log.i("tag", "sendLogoutRequestToServer()");
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
+		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 		networkHandler.sendRequest(postRequest, this);
@@ -225,7 +227,7 @@ public class SessionHandler extends Chef
 		else if (requestCode == RequestCodes.NETWORK_REQUEST_LOGOUT)
 		{
 			Log.i(SESSION_DEBUG_TAG, "logging out");
-			SharedPreferences sharedPrefs = getLoginSharedPrefs();
+			SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 			SharedPreferences.Editor editor = sharedPrefs.edit();
 			editor.remove(KEY_SESSION_ID);
 			editor.commit();
