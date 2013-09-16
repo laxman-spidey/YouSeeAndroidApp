@@ -80,48 +80,4 @@ public class WelcomeActivity extends Activity
 		intent.setClass(this, in.yousee.yousee.MainActivity.class);
 		startActivity(intent);
 	}
-
-	@Override
-	protected void onDestroy()
-	{
-		Log.i("tag","onDestroy");
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onPause()
-	{
-		Log.i("tag","onPause");
-		super.onPause();
-	}
-
-	@Override
-	protected void onRestart()
-	{
-		Log.i("tag","onRestart");
-		super.onRestart();
-	}
-
-	@Override
-	protected void onResume()
-	{
-		Log.i("tag","onResume");
-		super.onResume();
-	}
-
-	@Override
-	protected void onStart()
-	{
-		Log.i("tag","onStart");
-		super.onStart();
-	}
-
-	@Override
-	protected void onStop()
-	{
-		// TODO Auto-generated method stub
-		super.onStop();
-	}
-	
-
 }

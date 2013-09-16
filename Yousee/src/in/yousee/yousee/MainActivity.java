@@ -24,10 +24,8 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
 
 public class MainActivity extends RetryableActivity implements OnItemClickListener, OnResponseRecievedListener
 {
@@ -49,8 +47,12 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
 
+		if(SessionHandler.isLoggedIn)
+		{
+			Toast.makeText(getApplicationContext(), "hi",  Toast.LENGTH_SHORT).show();
+		}
 		buildOpportunityListForTheFirstTime();
-		sendLoginRequest();
+		sendLoginRequest(false);
 		initiateExpandableList();
 	}
 
@@ -64,31 +66,6 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		requestSenderChef = listBuilder;
 		sendRequest();
 
-	}
-
-	@Override
-	public void sendRequest()
-	{
-		setSupportProgressBarIndeterminateVisibility(true);
-		try
-		{
-
-			Log.i(LOG_TAG, "cooking");
-			requestSenderChef.cook();
-		}
-		catch (CustomException e)
-		{/*
-			if ()
-			{
-				Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
-			}
-			else
-			{
-				promptRetry(e.getErrorMsg());
-			}
-			*/
-			e.printStackTrace();
-		}
 	}
 
 	
@@ -359,11 +336,14 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-
-		ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
-		buildOpportunityList(responseObject);
-		setSupportProgressBarIndeterminateVisibility(false);
-
+		// if (requestCode ==
+		// RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
+		{
+			ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
+			buildOpportunityList(responseObject);
+			setSupportProgressBarIndeterminateVisibility(false);
+		}
+		super.onResponseRecieved(response, requestCode);
 	}
 
 	@Override

@@ -6,17 +6,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
+import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * 
@@ -33,7 +42,7 @@ public class NetworkConnectionHandler implements Runnable
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://10.42.0.1:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.109:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
@@ -42,7 +51,6 @@ public class NetworkConnectionHandler implements Runnable
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
-
 	}
 
 	/**
@@ -70,7 +78,8 @@ public class NetworkConnectionHandler implements Runnable
 		}
 		else
 		{
-			throw new CustomException(CustomException.NETWORK_NOT_FOUND);
+			Log.i("tag", "throwing exception");
+			throw new CustomException(CustomException.ERROR_NETWORK_NOT_FOUND);
 		}
 
 	}
@@ -84,7 +93,7 @@ public class NetworkConnectionHandler implements Runnable
 	 * 
 	 * @param Chef
 	 *                assigned to a global variable listener. a method of
-	 *                this class is called after recieving response
+	 *                this class is called after receiving response
 	 * 
 	 * @throws CustomException
 	 * @see in.yousee.yousee.model.CustomException
@@ -94,6 +103,7 @@ public class NetworkConnectionHandler implements Runnable
 		this.listener = listener;
 		this.postRequest = postRequest;
 		downloadwebContent = new DownloadWebpageTask();
+
 		if (NetworkConnectionHandler.isNetworkConnected(context))
 		{
 			downloadwebContent.execute(postRequest);
@@ -111,7 +121,7 @@ public class NetworkConnectionHandler implements Runnable
 	 * 
 	 * @param Chef
 	 *                assigned to a global variable listener. a method of
-	 *                this class is called after recieving response
+	 *                this class is called after receiving response
 	 * 
 	 * @throws CustomException
 	 * @see in.yousee.yousee.model.CustomException
@@ -121,8 +131,24 @@ public class NetworkConnectionHandler implements Runnable
 		this.listener = listener;
 		this.postRequest = postRequest;
 		Thread networkThread = new Thread(this);
+		try
+		{
+			Log.i("tag", "fksdjklfjskdhfkjshd");
+			Log.i("tag", readIt(postRequest.getEntity().getContent()));
+		}
+		catch (IllegalStateException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (NetworkConnectionHandler.isNetworkConnected(context))
 		{
+			Log.i("tag", "before Started");
 			downloadwebContent = new DownloadWebpageTask();
 			networkThread.start();
 		}
@@ -153,17 +179,28 @@ public class NetworkConnectionHandler implements Runnable
 		@Override
 		protected HttpResponse doInBackground(HttpPost... postRequests)
 		{
-
-			// params comes from the execute() call: params[0] is
-			// the url.
 			try
 			{
+				// Log.i("tag", "cannot retrieve : "
+				// +postRequests[0].getURI().toString());
 				return downloadUrl(postRequests[0]);
 			}
 			catch (IOException e)
 			{
+				Log.i("tag", "cannot retrieve");
+				// HttpResponse response = new
+				// BasicHttpResponse(null,
+				// CustomException.IO_ERROR,
+				// "IO error Occured");
+				// Toast.makeText(context,
+				// "IOException occured",
+				// Toast.LENGTH_SHORT).show();
+
+				e.printStackTrace();
+
 				return null;
 			}
+
 		}
 
 		// onPostExecute displays the results of the AsyncTask.
@@ -172,51 +209,87 @@ public class NetworkConnectionHandler implements Runnable
 		{
 			onResponseRecieved(response);
 		}
+
 	}
 
 	/**
-	 * This method is called whenever the response is recieved from the
+	 * This method is called whenever the response is received from the
 	 * server.
 	 */
 
 	public void onResponseRecieved(HttpResponse response)
 	{
-		String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
-		int requestCode = new Integer(requestCodeString).intValue();
-		InputStream is = null;
-		String contentAsString = null;
-		try
+		int requestCode = 0;
+		int resultCode = 0;
+
+		if (response != null)
 		{
-			is = response.getEntity().getContent();
-			contentAsString = readIt(is);
-		}
-		catch (IllegalStateException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally
-		{
-			if (is != null)
+			Log.i("tag", response.toString());
+			// get all headers
+			Header[] headers = response.getAllHeaders();
+			for (Header header : headers)
 			{
+				System.out.println("Key : " + header.getName() + " ,Value : " + header.getValue());
+			}
+
+			if (response.containsHeader(Chef.TAG_NETWORK_REQUEST_CODE))
+			{
+
+				String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
+				String str[] = requestCodeString.split(",");
+				// String resultCodeString =
+				// response.getFirstHeader(Chef.TAG_NETWORK_RESULT_CODE).getValue();
+				Log.i("tag", "requestCodeString = " + str[0]);
+				requestCode = Integer.valueOf(requestCodeString);
+				// resultCode =
+				// Integer.valueOf(resultCodeString);
+
+				InputStream is = null;
+				String contentAsString = null;
 				try
 				{
-					is.close();
+					is = response.getEntity().getContent();
+					contentAsString = readIt(is);
+
+				}
+				catch (IllegalStateException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-		}
+				finally
+				{
+					if (is != null)
+					{
+						try
+						{
+							is.close();
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated
+							// catch
+							// block
+							e.printStackTrace();
+						}
+					}
+				}
 
-		listener.serveResponse(contentAsString, requestCode);
+				listener.serveResponse(contentAsString, requestCode);
+			}
+			else
+				Toast.makeText(context, "Something went wrong,", Toast.LENGTH_LONG).show();
+
+		}
+		else
+		{
+			Toast.makeText(context, "Something went wrong, Click on refresh.", Toast.LENGTH_LONG).show();
+		}
 
 	}
 

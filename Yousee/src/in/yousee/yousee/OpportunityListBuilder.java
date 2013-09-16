@@ -18,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +34,7 @@ public class OpportunityListBuilder extends Chef
 	{
 		this.listener = listener;
 
-		//super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
+		// super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
 		assembleRequest(filterGroupList);
 
 	}
@@ -52,7 +51,9 @@ public class OpportunityListBuilder extends Chef
 	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		
+		nameValuePairs = new ArrayList<NameValuePair>(2);
+		setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
 
 		try
@@ -129,35 +130,41 @@ public class OpportunityListBuilder extends Chef
 	public void serveResponse(String result, int requestCode)
 	{
 
-		JSONObject json;
-		Log.i("tag", "dfmjsdk result ; " + result);
-		ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
-		try
+		//if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
-			Log.i("tag", "JSONlist length " + result);
-			json = new JSONObject(result);
-			int resultCount = json.getInt("resultCount");
-			String totalCount = json.getString("totalCount");
-
-			JSONArray list = json.getJSONArray("list");
-			Log.i("tag", "JSONlist length " + list.toString());
-			for (int i = 0; i < list.length(); i++)
+			JSONObject json;
+			Log.i("tag", "dfmjsdk result ; " + result);
+			ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
+			try
 			{
-				Log.i("tag", "" + i);
-				proxyItemList.add(new ProxyOpportunityItem(list.getJSONObject(i)));
+				Log.i("tag", "JSONlist length " + result);
+				json = new JSONObject(result);
+				int resultCount = json.getInt("resultCount");
+				String totalCount = json.getString("totalCount");
+
+				JSONArray list = json.getJSONArray("list");
+				Log.i("tag", "JSONlist length " + list.toString());
+				for (int i = 0; i < list.length(); i++)
+				{
+					Log.i("tag", "" + i);
+					proxyItemList.add(new ProxyOpportunityItem(list.getJSONObject(i)));
+				}
+
 			}
+			catch (JSONException e)
 
+			{
+				Log.i("tag", "exception caught");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Log.i("tag", "item list length = " + proxyItemList.size());
+			listener.onResponseRecieved(proxyItemList, requestCode);
 		}
-		catch (JSONException e)
-
+		//else
 		{
-			Log.i("tag", "exception caught");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//listener.onResponseRecieved(result, requestCode);
 		}
-		Log.i("tag", "item list length = " + proxyItemList.size());
-		listener.onResponseRecieved(proxyItemList,  requestCode);
-
 	}
 
 }

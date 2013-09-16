@@ -84,15 +84,15 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 				{
 					switch (e.errorCode)
 					{
-					case CustomException.INVALID_URL:
-					case CustomException.NETWORK_NOT_FOUND:
-					case CustomException.NO_INTERNET_CONNECTIVITY:
+					case CustomException.ERROR_INVALID_URL:
+					case CustomException.ERROR_NETWORK_NOT_FOUND:
+					case CustomException.ERROR_NO_INTERNET_CONNECTIVITY:
 						CustomException.showToastError(context, e);
 						break;
-					case CustomException.USERNAME_INVALID:
+					case CustomException.ERROR_USERNAME_INVALID:
 						showUsernameError(e.getErrorMsg());
 						break;
-					case CustomException.PASSWORD_INVALID:
+					case CustomException.ERROR_PASSWORD_INVALID:
 						showPasswordError(e.getErrorMsg());
 
 					default:
@@ -199,8 +199,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 	@Override
 	public void onLoginFailed()
 	{
-		addErrorMsg(new CustomException(CustomException.LOGIN_ERROR).getErrorMsg());
-		CustomException.showToastError(context, new CustomException(CustomException.LOGIN_ERROR));
+		addErrorMsg(new CustomException(CustomException.ERROR_LOGIN_ERROR).getErrorMsg());
+		CustomException.showToastError(context, new CustomException(CustomException.ERROR_LOGIN_ERROR));
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public class SessionHandler extends Chef
 	private String userID;
 	private String userType;
 	private UsesLoginFeature loginFeatureClient;
+	private OnResponseRecievedListener logoutListener;
 	private static final String SESSION_DEBUG_TAG = "session_tag";
 	public static boolean isLoggedIn = false;
 
@@ -102,7 +103,7 @@ public class SessionHandler extends Chef
 		{
 
 			sessionId = sharedPrefs.getString(KEY_SESSION_ID, "error");
-			Log.i(SESSION_DEBUG_TAG, "session id exixsts = " + sessionId);
+			Log.i(SESSION_DEBUG_TAG, "sessiocheppan id exixsts = " + sessionId);
 			return true;
 		}
 		Log.i(SESSION_DEBUG_TAG, "session id false");
@@ -149,7 +150,6 @@ public class SessionHandler extends Chef
 	public void loginExec(String username, String password) throws CustomException
 	{
 		Log.i("tag", "loginExec(username, password)");
-		int statusCode = 0;
 
 		this.username = username;
 		this.password = password;
@@ -157,7 +157,7 @@ public class SessionHandler extends Chef
 
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGIN_EXEC);
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs = new ArrayList<NameValuePair>(2);
 		nameValuePairs.add(new BasicNameValuePair("username", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 
@@ -177,18 +177,9 @@ public class SessionHandler extends Chef
 
 	}
 
-	public void logout() throws CustomException
+	public void logout(OnResponseRecievedListener listener) throws CustomException
 	{
-		Log.i(SESSION_DEBUG_TAG, "logging out");
-		SharedPreferences sharedPrefs = getLoginSharedPrefs();
-		SharedPreferences.Editor editor = sharedPrefs.edit();
-		editor.remove(KEY_SESSION_ID);
-		editor.commit();
-		sendLogoutRequestToServer();
-	}
-
-	private void sendLogoutRequestToServer() throws CustomException
-	{
+		this.logoutListener = listener;
 		Log.i("tag", "sendLogoutRequestToServer()");
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
@@ -200,30 +191,45 @@ public class SessionHandler extends Chef
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
-		SessionData sessionData = new SessionData(result);
-		Log.i(SESSION_DEBUG_TAG, "serving response");
-		if (sessionData.isSuccess())
+		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGIN)
 		{
-			Log.i(SESSION_DEBUG_TAG, "login success");
-			setLoginCredentials(username, password);
-			Log.i(SESSION_DEBUG_TAG, "login data set");
-			setSessionId(sessionData.getSessionId());
-			Log.i(SESSION_DEBUG_TAG, "setting session id");
-			String sessionId = null;
-			getLoginCredentials(username, password);
-			getSessionId(sessionId);
-			if (getSessionId(sessionId))
+			SessionData sessionData = new SessionData(result);
+			Log.i(SESSION_DEBUG_TAG, "serving response");
+			if (sessionData.isSuccess())
 			{
-				Log.i(SESSION_DEBUG_TAG, "viewing session id");
-				Toast.makeText(context, "Successfully logged in " + sessionId, Toast.LENGTH_SHORT).show();
+				Log.i(SESSION_DEBUG_TAG, "login success");
+				setLoginCredentials(username, password);
+				Log.i(SESSION_DEBUG_TAG, "login data set");
+				setSessionId(sessionData.getSessionId());
+				Log.i(SESSION_DEBUG_TAG, "setting session id");
+				String sessionId = null;
+				getLoginCredentials(username, password);
+				getSessionId(sessionId);
+				if (getSessionId(sessionId))
+				{
+					Log.i(SESSION_DEBUG_TAG, "viewing session id");
+					Toast.makeText(context, "Successfully logged in " + sessionId, Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
+				}
+				loginFeatureClient.onLoginSuccess();
 			}
 			else
-				Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
-			// loginFeatureClient.onLoginSuccess();
+			{
+				loginFeatureClient.onLoginFailed();
+
+			}
 		}
-		else
+		else if (requestCode == RequestCodes.NETWORK_REQUEST_LOGOUT)
 		{
-			// loginFeatureClient.onLoginFailed();
+			Log.i(SESSION_DEBUG_TAG, "logging out");
+			SharedPreferences sharedPrefs = getLoginSharedPrefs();
+			SharedPreferences.Editor editor = sharedPrefs.edit();
+			editor.remove(KEY_SESSION_ID);
+			editor.commit();
+			logoutListener.onResponseRecieved(null, requestCode);
 
 		}
 	}

@@ -9,15 +9,17 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class RetryableActivity extends SherlockFragmentActivity implements UsesLoginFeature
+public class RetryableActivity extends SherlockFragmentActivity implements UsesLoginFeature, OnResponseRecievedListener
 {
 
 	MenuItem loginMenuItem;
+	Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -25,6 +27,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		// setSupportProgressBarIndeterminate(true);
 		setSupportProgressBarIndeterminateVisibility(false);
+		
 
 		super.onCreate(savedInstanceState);
 	}
@@ -33,12 +36,19 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		// TODO Auto-generated method stub
+
 		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
+		this.menu = menu;
 		loginMenuItem = (MenuItem) menu.findItem(R.id.action_login);
 		if (SessionHandler.isLoggedIn)
+		{
 			loginMenuItem.setTitle("Logout");
+			menu.removeItem(R.id.action_register);
+		}
 		else
+		{
 			loginMenuItem.setTitle("Login");
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -58,6 +68,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	public void sendRequest()
 	{
 		setSupportProgressBarIndeterminateVisibility(true);
+
 		try
 		{
 			requestSenderChef.cook();
@@ -65,6 +76,7 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		catch (CustomException e)
 		{
 
+			Log.i(LOG_TAG, "network not connected exception found");
 			promptRetry(e.getErrorMsg());
 			e.printStackTrace();
 		}
@@ -104,8 +116,8 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		case R.id.action_login:
 			if (!(SessionHandler.isLoggedIn))
 			{
-				if (sendLoginRequest())
-					setloginMenuItem(true);
+				if (sendLoginRequest(true))
+					setMenuState(true);
 			}
 			else
 			{
@@ -121,16 +133,24 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		return true;
 	}
 
-	private void setloginMenuItem(boolean loggedIn)
+	private void setMenuState(boolean loggedIn)
 	{
 
+		MenuItem loginMenu = menu.getItem(R.id.action_login);
 		if (loggedIn)
-			loginMenuItem.setTitle("Logout");
+		{
+			loginMenu.setTitle("Logout");
+			menu.removeItem(R.id.action_register);
+		}
 		else
-			loginMenuItem.setTitle("Login");
+		{
+			loginMenu.setTitle("Login");
+
+		}
+
 	}
 
-	public boolean sendLoginRequest()
+	public boolean sendLoginRequest(boolean loginMenuClicked)
 	{
 		try
 		{
@@ -149,7 +169,10 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 				}
 				else
 				{
-					showLoginScreen();
+					if (loginMenuClicked)
+					{
+						showLoginScreen();
+					}
 					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
 					return false;
 				}
@@ -177,9 +200,9 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		{
 
 			SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-			sessionHandler.logout();
-			SessionHandler.isLoggedIn = false;
-			setloginMenuItem(false);
+			sessionHandler.logout(this);
+
+			setMenuState(false);
 			return true;
 		}
 		catch (CustomException e)
@@ -209,13 +232,14 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 	@Override
 	public void onLoginFailed()
 	{
-		;
+		Toast.makeText(getContext(), "Login Failed.", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onLoginSuccess()
 	{
 		SessionHandler.isLoggedIn = true;
+		Toast.makeText(getContext(), "logged in successfully.", Toast.LENGTH_SHORT).show();
 		reloadActivity();
 
 	}
@@ -227,6 +251,24 @@ public class RetryableActivity extends SherlockFragmentActivity implements UsesL
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivity(intent);
 
+	}
+
+	@Override
+	public void onResponseRecieved(Object response, int requestCode)
+	{
+		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGOUT)
+		{
+			SessionHandler.isLoggedIn = false;
+			Toast.makeText(getApplicationContext(), "Successfully Logged out.", Toast.LENGTH_LONG).show();
+		}
+
+	}
+
+	@Override
+	public Context getContext()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -40,7 +41,6 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	ArrayList<View> activityList;
 	static boolean selectall = false;
 	RealOpportunityItem realItem;
-	
 
 	private static final String LOG_TAG = "tag";
 
@@ -83,7 +83,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	public void commit()
 	{
 		Log.i("tag", "committed");
-		showLoginScreen();
+		// showLoginScreen();
 	}
 
 	LinearLayout layout;
@@ -102,34 +102,41 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-		if (super.refresh == true)
+		// if (requestCode ==
+		// RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST)
 		{
-			refreshActivityScheduleList();
-		}
-		realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
-		ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
-		checkedState = new boolean[scheduleList.size()];
-		layout = (LinearLayout) findViewById(R.id.rootLay);
-		checkList = new ArrayList<Boolean>();
-		map = new HashMap<View, Integer>();
-		Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
-		while (iterator.hasNext())
-		{
-			Log.i(LOG_TAG, "adding.....");
-			View view = null;
-			try
+			if (super.refresh == true)
 			{
-				view = buildScheduleCard(iterator.next());
+				refreshActivityScheduleList();
 			}
-			catch (ParseException e)// ImageButton deselectAllButton = (ImageButton)
-					// findViewById(R.id.deselectAll); e)
+			realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
+			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
+			checkedState = new boolean[scheduleList.size()];
+			layout = (LinearLayout) findViewById(R.id.rootLay);
+			checkList = new ArrayList<Boolean>();
+			map = new HashMap<View, Integer>();
+			Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
+			while (iterator.hasNext())
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.i(LOG_TAG, "adding.....");
+				View view = null;
+				try
+				{
+					view = buildScheduleCard(iterator.next());
+				}
+				catch (ParseException e)// ImageButton
+							// deselectAllButton =
+							// (ImageButton)
+				// findViewById(R.id.deselectAll); e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				layout.addView(view);
 			}
-			layout.addView(view);
+			setSupportProgressBarIndeterminateVisibility(false);
 		}
-		setSupportProgressBarIndeterminateVisibility(false);
+		super.onResponseRecieved(response, requestCode);
 
 	}
 
@@ -219,13 +226,19 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	private void setScheduleSelected(View v, boolean check)
 	{
 		ImageView imgView = (ImageView) v.findViewById(R.id.selectView);
+		// LinearLayout imgView= (LinearLayout)
+		// v.findViewById(R.id.selectViewLayout);
+		// LinearLayout card = (LinearLayout) v.findViewById(R.id.card);
 
 		if (check)
 		{
+			// card.setBackgroundResource(R.drawable.disabled_card);
 			imgView.setVisibility(View.VISIBLE);
+
 		}
 		else
 		{
+			// card.setBackgroundResource(R.drawable.border);
 			imgView.setVisibility(View.INVISIBLE);
 		}
 
@@ -239,7 +252,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 		case R.id.applyButton:
 			SessionHandler sessionHandler = new SessionHandler(this);
 			String sessionId = null;
-			if (sessionHandler.getSessionId(sessionId))
+			if (sessionHandler.isLoggedIn)
 			{
 				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
@@ -286,11 +299,10 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 
 	}
 
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if(requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
 		{
 			commit();
 		}
@@ -316,7 +328,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	public Context getContext()
 	{
 		return this.getApplicationContext();
-		
+
 	}
 
 }

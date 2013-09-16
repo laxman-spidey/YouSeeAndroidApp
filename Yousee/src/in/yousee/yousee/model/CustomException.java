@@ -13,13 +13,21 @@ public class CustomException extends Exception implements JSONParsable
 	 */
 	private static final long serialVersionUID = 1234567890;
 
-	public static final int USERNAME_INVALID = 1;
-	public static final int PASSWORD_INVALID = 2;
-	public static final int NETWORK_NOT_FOUND = 3;
-	public static final int NO_INTERNET_CONNECTIVITY = 4;
-	public static final int INVALID_URL = 5;
-	public static final int LOGIN_ERROR = 6;
-	public static final int CUSTOM_ERROR = 7;
+	public static final int ERROR_USERNAME_INVALID = 1;
+	public static final int ERROR_PASSWORD_INVALID = 2;
+	public static final int ERROR_NETWORK_NOT_FOUND = 3;
+	public static final int ERROR_NO_INTERNET_CONNECTIVITY = 4;
+	public static final int ERROR_INVALID_URL = 5;
+	public static final int ERROR_LOGIN_ERROR = 6;
+	public static final int ERROR_CUSTOM = 7;
+	public static final int IO_ERROR = -1;
+	
+	public static final int REGISTRATION_EMAIL_ALREADY_TAKEN = 120;
+	public static final int REGISTRATION_USERNAME_EXISTS= 121;
+	public static final int REGISTRATION_ERROR_CODE = 122;
+	public static final int REGISTRATION_SUCCESS_CODE = 100;
+	
+	
 
 	private String errorMsg;
 	public int errorCode;
@@ -32,7 +40,7 @@ public class CustomException extends Exception implements JSONParsable
 	}
 	public CustomException(String errorMsg)
 	{
-		setErrorCode(CUSTOM_ERROR);
+		setErrorCode(ERROR_CUSTOM);
 		setErrorMsg(errorMsg);
 	}
 
@@ -40,19 +48,19 @@ public class CustomException extends Exception implements JSONParsable
 	{
 		switch (errorCode)
 			{
-			case USERNAME_INVALID:
+			case ERROR_USERNAME_INVALID:
 				setErrorMsg("Username invalid");
 				break;
-			case PASSWORD_INVALID:
+			case ERROR_PASSWORD_INVALID:
 				setErrorMsg("Password invalid");
 				break;
-			case NETWORK_NOT_FOUND:
+			case ERROR_NETWORK_NOT_FOUND:
 				setErrorMsg("No network found. Please enable wifi or mobile data and try again.");
 				break;
-			case NO_INTERNET_CONNECTIVITY:
+			case ERROR_NO_INTERNET_CONNECTIVITY:
 				setErrorMsg("Your device is not connected to internet.");
 				break;
-			case LOGIN_ERROR:
+			case ERROR_LOGIN_ERROR:
 				setErrorMsg("Details you have entered are incorrect.");
 				break;
 			default:

@@ -16,63 +16,67 @@ import java.text.SimpleDateFormat;
 import android.text.format.Time;
 import android.util.Log;
 
-public class RealOpportunityItem extends ProxyOpportunityItem {
+public class RealOpportunityItem extends ProxyOpportunityItem
+{
 
 	private static final String TAG_SCHEDULE_LIST = "activityList";
 	private ArrayList<OpportunitySchedule> opportunityScheduleList;
 
-	public RealOpportunityItem(int id, String title, String opportunityType,
-			String partner, String description,
-			ArrayList<OpportunitySchedule> activityScheduleList) {
+	public RealOpportunityItem(int id, String title, String opportunityType, String partner, String description, ArrayList<OpportunitySchedule> activityScheduleList)
+	{
 		super(id, title, opportunityType, partner, description);
 		this.opportunityScheduleList = activityScheduleList;
 	}
 
-	public RealOpportunityItem(ProxyOpportunityItem proxyItem,
-			ArrayList<OpportunitySchedule> activityScheduleList) {
-		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem
-				.getOpportunityType(), proxyItem.getPartner(), proxyItem
-				.getDescription());
+	public RealOpportunityItem(ProxyOpportunityItem proxyItem, ArrayList<OpportunitySchedule> activityScheduleList)
+	{
+		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
 		this.opportunityScheduleList = activityScheduleList;
 	}
 
-	public RealOpportunityItem(ProxyOpportunityItem proxyItem, String JSONString) {
-		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem
-				.getOpportunityType(), proxyItem.getPartner(), proxyItem
-				.getDescription());
+	public RealOpportunityItem(ProxyOpportunityItem proxyItem, String JSONString)
+	{
+		super(proxyItem.getId(), proxyItem.getTitle(), proxyItem.getOpportunityType(), proxyItem.getPartner(), proxyItem.getDescription());
 		opportunityScheduleList = new ArrayList<RealOpportunityItem.OpportunitySchedule>();
 		parseJSON(JSONString);
 
 	}
 
-	public ArrayList<OpportunitySchedule> getActivityScheduleList() {
+	public ArrayList<OpportunitySchedule> getActivityScheduleList()
+	{
 		return opportunityScheduleList;
 	}
 
-	public void setActivityScheduleList(
-			ArrayList<OpportunitySchedule> activityScheduleList) {
+	public void setActivityScheduleList(ArrayList<OpportunitySchedule> activityScheduleList)
+	{
 		this.opportunityScheduleList = activityScheduleList;
 	}
 
 	@Override
-	public void parseJSON(String JSONString) {
+	public void parseJSON(String JSONString)
+	{
 		JSONArray array;
-		try {
+		try
+		{
 			JSONObject obj = new JSONObject(JSONString);
 			array = obj.getJSONArray(TAG_SCHEDULE_LIST);
 
-			for (int i = 0; i < array.length(); i++) {
+			for (int i = 0; i < array.length(); i++)
+			{
 				Log.i("tag", "" + i);
 				JSONObject item = (JSONObject) array.get(i);
 				opportunityScheduleList.add(new OpportunitySchedule(item));
 
 			}
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	public class OpportunitySchedule implements JSONParsable {
+	public class OpportunitySchedule implements JSONParsable
+	{
 		private static final String TAG_OPPORTUNITY_ID = "opportunityId";
 		private static final String TAG_FROM_DATE = "fromDate";
 		private static final String TAG_TO_DATE = "toDate";
@@ -89,9 +93,8 @@ public class RealOpportunityItem extends ProxyOpportunityItem {
 		private String city;
 		private int volReq;
 
-		public OpportunitySchedule(int activityId, Date fromDate, Date toDate,
-				Date fromTime, Date toTime, String location, String city,
-				int volReq) {
+		public OpportunitySchedule(int activityId, Date fromDate, Date toDate, Date fromTime, Date toTime, String location, String city, int volReq)
+		{
 			super();
 			this.opportunityId = activityId;
 			this.fromDate = fromDate;
@@ -103,80 +106,96 @@ public class RealOpportunityItem extends ProxyOpportunityItem {
 			this.volReq = volReq;
 		}
 
-		public OpportunitySchedule(JSONObject jsonObject) {
+		public OpportunitySchedule(JSONObject jsonObject)
+		{
 			parseJSON(jsonObject);
 		}
 
-		public int getOpportunityId() {
+		public int getOpportunityId()
+		{
 			return opportunityId;
 		}
 
-		public void setOpportunityId(int opportunityId) {
+		public void setOpportunityId(int opportunityId)
+		{
 			this.opportunityId = opportunityId;
 		}
 
-		public Date getFromDate() {
+		public Date getFromDate()
+		{
 			return fromDate;
 		}
 
-		public String getFromDateString() {
-			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy",
-					Locale.ENGLISH);
+		public String getFromDateString()
+		{
+			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
 			return df.format(this.fromDate);
 		}
 
-		public void setFromDate(Date fromDate) {
+		public void setFromDate(Date fromDate)
+		{
 			this.fromDate = fromDate;
 		}
 
-		public void setFromDate(String fromDate) {
+		public void setFromDate(String fromDate)
+		{
 
-			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy",
-					Locale.ENGLISH);
-			try {
+			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+			try
+			{
 				this.fromDate = df.parse(fromDate);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		public Date getToDate() {
+		public Date getToDate()
+		{
 			return toDate;
 		}
 
-		public String getToDateString() {
-			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy",
-					Locale.ENGLISH);
+		public String getToDateString()
+		{
+			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
 			return df.format(this.toDate);
 		}
 
-		public void setToDate(Date toDate) {
+		public void setToDate(Date toDate)
+		{
 			this.toDate = toDate;
 		}
 
-		public void setToDate(String fromDate) {
+		public void setToDate(String fromDate)
+		{
 
-			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy",
-					Locale.ENGLISH);
-			try {
+			SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+			try
+			{
 				this.toDate = df.parse(fromDate);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		public Date getFromTime() {
+		public Date getFromTime()
+		{
 			return fromTime;
 		}
 
-		public String getFromTimeString() {
-			if (toTime != null) {
-				SimpleDateFormat df = new SimpleDateFormat("hh:mm",
-						Locale.ENGLISH);
+		public String getFromTimeString()
+		{
+			if (toTime != null)
+			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
 				return df.format(this.fromTime);
-			} else
+			}
+			else
 				return "";
 
 		}
@@ -186,75 +205,94 @@ public class RealOpportunityItem extends ProxyOpportunityItem {
 			this.fromTime = fromTime;
 		}
 
-		public void setFromTime(String fromTime) {
+		public void setFromTime(String fromTime)
+		{
 			SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-			try {
+			try
+			{
 
 				this.fromTime = df.parse(fromTime);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		public Date getToTime() {
+		public Date getToTime()
+		{
 			return toTime;
 		}
 
-		public String getToTimeString() {
-			if (toTime != null) {
-				SimpleDateFormat df = new SimpleDateFormat("hh:ss",
-						Locale.ENGLISH);
+		public String getToTimeString()
+		{
+			if (toTime != null)
+			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:ss", Locale.ENGLISH);
 				return df.format(this.toTime);
-			} else
+			}
+			else
 				return "";
 		}
 
-		public void setToTime(Date toTime) {
+		public void setToTime(Date toTime)
+		{
 
 			this.toTime = toTime;
 		}
 
-		public void setToTime(String toTime) {
+		public void setToTime(String toTime)
+		{
 
-			try {
-				SimpleDateFormat df = new SimpleDateFormat("hh:mm",
-						Locale.ENGLISH);
+			try
+			{
+				SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
 				this.toTime = df.parse(toTime);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e)
+			{
 				// TODO Auto-generated catch block
 				this.toTime = null;
 				e.printStackTrace();
 			}
 		}
 
-		public String getLocation() {
+		public String getLocation()
+		{
 			return location;
 		}
 
-		public void setLocation(String location) {
+		public void setLocation(String location)
+		{
 			this.location = location;
 		}
 
-		public String getCity() {
+		public String getCity()
+		{
 			return city;
 		}
 
-		public void setCity(String city) {
+		public void setCity(String city)
+		{
 			this.city = city;
 		}
 
-		public int getVolReq() {
+		public int getVolReq()
+		{
 			return volReq;
 		}
 
-		public void setVolReq(int volReq) {
+		public void setVolReq(int volReq)
+		{
 			this.volReq = volReq;
 		}
 
 		@Override
-		public void parseJSON(JSONObject JSONObject) {
-			try {
+		public void parseJSON(JSONObject JSONObject)
+		{
+			try
+			{
 				Log.i("tag", JSONObject.toString());
 				this.opportunityId = JSONObject.getInt(TAG_OPPORTUNITY_ID);
 				setFromDate(JSONObject.getString(TAG_FROM_DATE));
@@ -264,7 +302,9 @@ public class RealOpportunityItem extends ProxyOpportunityItem {
 				setLocation(JSONObject.getString(TAG_LOCATION));
 				setCity(JSONObject.getString(TAG_CITY));
 				setVolReq(JSONObject.getInt(TAG_VOL_REQ));
-			} catch (JSONException e) {
+			}
+			catch (JSONException e)
+			{
 				e.printStackTrace();
 			}
 		}

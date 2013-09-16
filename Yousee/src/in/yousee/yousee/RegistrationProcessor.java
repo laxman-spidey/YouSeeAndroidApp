@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.constants.ServerFiles;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.RegistrationFormObject;
@@ -12,9 +13,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-
+import android.app.Activity;
+import android.content.Intent;
+import android.location.GpsStatus.Listener;
 import android.util.Log;
+import android.widget.Toast;
 
 public class RegistrationProcessor extends Chef
 {
@@ -39,7 +45,8 @@ public class RegistrationProcessor extends Chef
 	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.PROCESS_REGISTRATION);
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs = new ArrayList<NameValuePair>();
+		setRequestCode(RequestCodes.NETWORK_REQUEST_REGISTER);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTNAME, regForm.getFirstName()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_LASTNAME, regForm.getLastname()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_EMAIL, regForm.getEmail()));
@@ -61,12 +68,17 @@ public class RegistrationProcessor extends Chef
 	{
 		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(responseListener.getContext());
 		connectionHandler.sendRequest(postRequest, this);
-		
+
 	}
 
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
+		if (requestCode == RequestCodes.NETWORK_REQUEST_REGISTER)
+		{
+
+			responseListener.onResponseRecieved(result, requestCode);
+		}
 		Log.i("tag", "result is = " + result);
 	}
 

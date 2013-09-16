@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/navigation_refresh"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="Refresh"/>
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_menu_login"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="Logout"/>
+
+
+</menu>

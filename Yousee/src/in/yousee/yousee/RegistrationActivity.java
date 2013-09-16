@@ -1,27 +1,29 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.RegistrationFormObject;
 
+import java.net.ResponseCache;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-public class RegistrationActivity extends RetryableActivity implements OnFocusChangeListener, OnClickListener, OnResponseRecievedListener
+public class RegistrationActivity extends RetryableActivity implements OnFocusChangeListener, OnClickListener, UsesLoginFeature, OnResponseRecievedListener
 {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -112,6 +114,8 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 			return false;
 		}
 	}
+	// CustomException.showToastError(context, new
+	// CustomException(CustomException.LOGIN_ERROR));
 
 	/**
 	 * Validate hex with regular expression
@@ -141,17 +145,28 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 			else
 			{
 				Log.i(LOG_TAG, "not matched email id ");
-				
+
 				showErrorInField(emailField, "invalid email format");
 				return false;
 			}
 		}
-		else
+		else	
 		{
 			Log.i(LOG_TAG, "email id empty");
 			return false;
 		}
 
+	}
+	
+	public void onResponseRecieved(Object response, int requestCode)
+	{
+		SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
+		sessionHandler.serveResponse((String)response, RequestCodes.NETWORK_REQUEST_LOGIN);
+	}
+	public Context getContext()
+	{
+		return getApplicationContext();
+		
 	}
 
 	private void showErrorInField(EditText field, String errorMsg)
@@ -159,7 +174,9 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 		field.setText("");
 		field.setHint(errorMsg);
 
-		field.setHintTextColor(getResources().getColor(R.color.red));
+		field.setHintTextColor(Color.RED);
+				// CustomException.showToastError(context, new
+				// CustomException(CustomException.LOGIN_ERROR));sources().getColor(R.color.red));
 
 	}
 
@@ -191,17 +208,18 @@ public class RegistrationActivity extends RetryableActivity implements OnFocusCh
 		requestSenderChef = registrationProcessor;
 		sendRequest();
 	}
-
+		
 	@Override
-	public void onResponseRecieved(Object response, int requestCode)
+	public void onLoginFailed()
 	{
 		
 	}
 
 	@Override
-	public Context getContext()
+	public void onLoginSuccess()
 	{
-		return this.getApplicationContext();
+		Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
+		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
+		finish();
 	}
-
 }

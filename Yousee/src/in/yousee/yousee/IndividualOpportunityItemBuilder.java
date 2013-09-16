@@ -21,7 +21,6 @@ public class IndividualOpportunityItemBuilder extends Chef
 	private static final String TAG_ACTIVITY_ID = "activity_id";
 
 	ProxyOpportunityItem proxy;
-	HttpPost postRequest;
 	OnResponseRecievedListener listener;
 
 	public IndividualOpportunityItemBuilder(ProxyOpportunityItem proxy, OnResponseRecievedListener responseListener)
@@ -39,9 +38,9 @@ public class IndividualOpportunityItemBuilder extends Chef
 	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_SCHEDULE);
-		super.setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST);
+		nameValuePairs = new ArrayList<NameValuePair>();
+		setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST);
 
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
 
 		try
@@ -60,12 +59,12 @@ public class IndividualOpportunityItemBuilder extends Chef
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
 		networkHandler.sendRequest(postRequest, this);
-
 	}
 
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
+
 		listener.onResponseRecieved(result, requestCode);
 	}
 

@@ -9,6 +9,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".RetryActivity" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_border"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/abs__ab_solid_dark_holo" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Login"
+            android:textColor="@android:color/tertiary_text_light"
+            android:textSize="30sp" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/errorMsg"
         android:layout_width="wrap_content"
