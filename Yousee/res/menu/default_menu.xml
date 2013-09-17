@@ -14,7 +14,7 @@
         android:title="Login"/>
        <item
         android:id="@+id/action_register"
-        android:icon="@drawable/ic_menu_login"
+        android:icon="@drawable/ic_menu_new_member"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         android:title="Register"/>
