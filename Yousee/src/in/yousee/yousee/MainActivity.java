@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
@@ -27,7 +28,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MainActivity extends RetryableActivity implements OnItemClickListener, OnResponseRecievedListener
+public class MainActivity extends YouseeCustomActivity implements OnItemClickListener, OnResponseRecievedListener
 {
 
 	private FrameLayout filterFrame;
@@ -47,9 +48,9 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
 
-		if(SessionHandler.isLoggedIn)
+		if (SessionHandler.isLoggedIn)
 		{
-			Toast.makeText(getApplicationContext(), "hi",  Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "hi", Toast.LENGTH_SHORT).show();
 		}
 		buildOpportunityListForTheFirstTime();
 		sendLoginRequest(false);
@@ -67,8 +68,6 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 		sendRequest();
 
 	}
-
-	
 
 	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
 	{
@@ -336,8 +335,7 @@ public class MainActivity extends RetryableActivity implements OnItemClickListen
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-		// if (requestCode ==
-		// RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
+		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
 			ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
 			buildOpportunityList(responseObject);

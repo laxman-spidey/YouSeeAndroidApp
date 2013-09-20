@@ -42,7 +42,7 @@ public class NetworkConnectionHandler implements Runnable
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://192.168.1.2:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
@@ -228,7 +228,9 @@ public class NetworkConnectionHandler implements Runnable
 			if (response.containsHeader(Chef.TAG_NETWORK_REQUEST_CODE))
 			{
 
+				
 				String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
+				Log.i("tag", "requestCode : "+requestCodeString);
 				requestCode = Integer.valueOf(requestCodeString);
 
 				InputStream is = null;
@@ -266,7 +268,7 @@ public class NetworkConnectionHandler implements Runnable
 						}
 					}
 				}
-
+				Log.i("tag", "content string : "+contentAsString);
 				listener.serveResponse(contentAsString, requestCode);
 			}
 			else

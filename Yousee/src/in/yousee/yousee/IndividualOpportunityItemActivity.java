@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class IndividualOpportunityItemActivity extends RetryableActivity implements OnClickListener, OnResponseRecievedListener
+public class IndividualOpportunityItemActivity extends YouseeCustomActivity implements OnClickListener, OnResponseRecievedListener
 {
 	ProxyOpportunityItem proxyOpportunityItem;
 	ImageView image;
@@ -102,8 +102,7 @@ public class IndividualOpportunityItemActivity extends RetryableActivity impleme
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-		// if (requestCode ==
-		// RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST)
+		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST)
 		{
 			if (super.refresh == true)
 			{

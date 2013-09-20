@@ -6,6 +6,7 @@
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         android:title="Refresh"/>
+    
     <item
         android:id="@+id/action_login"
         android:icon="@drawable/ic_menu_login"

@@ -88,8 +88,13 @@ public class SessionHandler extends Chef
 
 		if (sharedPrefs.contains(KEY_USERNAME) && sharedPrefs.contains(KEY_PASSWORD))
 		{
-			Log.i(SESSION_DEBUG_TAG, "returning true");
-			return true;
+			if (!(sharedPrefs.getString(KEY_USERNAME, "").equals("")) && !(sharedPrefs.getString(KEY_PASSWORD, "").equals("")))
+			{
+				Log.i(SESSION_DEBUG_TAG, "returning true");
+				return true;
+			}
+			Log.i(SESSION_DEBUG_TAG, "returning false");
+			return false;
 		}
 		Log.i(SESSION_DEBUG_TAG, "returning false");
 		return false;
@@ -122,7 +127,7 @@ public class SessionHandler extends Chef
 		editor.putString(KEY_SESSION_ID, sessionId);
 		this.sessionID = sessionId;
 		editor.commit();
-		Log.i(SESSION_DEBUG_TAG, "sessionId set to = " + sharedPrefs.getString(KEY_SESSION_ID, "error"));
+		Log.i(SESSION_DEBUG_TAG, "sessionId set to = " + sharedPrefs.getString(KEY_SESSION_ID, ""));
 
 	}
 
@@ -130,8 +135,14 @@ public class SessionHandler extends Chef
 	{
 		Log.i(SESSION_DEBUG_TAG, "isSessionIdExists()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
-		Log.i(SESSION_DEBUG_TAG, "returning " + sharedPrefs.contains(KEY_SESSION_ID));
-		return sharedPrefs.contains(KEY_SESSION_ID);
+		
+		if (sharedPrefs.contains(KEY_SESSION_ID) && sharedPrefs.getString(KEY_SESSION_ID, "").equals(""))
+		{
+			Log.i(SESSION_DEBUG_TAG, "returning " + true);
+			return true;
+		}
+		Log.i(SESSION_DEBUG_TAG, "returning " + false);
+		return false;
 
 	};
 
@@ -173,9 +184,6 @@ public class SessionHandler extends Chef
 
 		networkHandler.sendRequest(postRequest, this);
 
-		setSessionId(sessionID);
-		setLoginCredentials(username, password);
-
 	}
 
 	public void logout(OnResponseRecievedListener listener) throws CustomException
@@ -185,6 +193,14 @@ public class SessionHandler extends Chef
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
 		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
+		try
+		{
+			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 		networkHandler.sendRequest(postRequest, this);
 
@@ -205,8 +221,7 @@ public class SessionHandler extends Chef
 				setSessionId(sessionData.getSessionId());
 				Log.i(SESSION_DEBUG_TAG, "setting session id");
 				String sessionId = null;
-				getLoginCredentials(username, password);
-				getSessionId(sessionId);
+				
 				if (getSessionId(sessionId))
 				{
 					Log.i(SESSION_DEBUG_TAG, "viewing session id");
