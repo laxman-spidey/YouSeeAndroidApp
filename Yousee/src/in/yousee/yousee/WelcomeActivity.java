@@ -22,6 +22,7 @@ public class WelcomeActivity extends Activity
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.welcome_activity);
 
+		
 		Thread splashThread = new Thread() {
 			@Override
 			public void run()

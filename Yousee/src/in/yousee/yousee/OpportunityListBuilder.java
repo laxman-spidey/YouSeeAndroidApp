@@ -124,6 +124,8 @@ public class OpportunityListBuilder extends Chef
 	{
 		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
 		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
+		//networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
+		//networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
 	}
 
 	@Override
@@ -133,7 +135,7 @@ public class OpportunityListBuilder extends Chef
 		//if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
 			JSONObject json;
-			Log.i("tag", "dfmjsdk result ; " + result);
+			
 			ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
 			try
 			{

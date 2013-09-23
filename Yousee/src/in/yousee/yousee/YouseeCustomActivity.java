@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewConfiguration;
 import android.widget.Toast;
-import 	java.lang.reflect.Field;
+import java.lang.reflect.Field;
 
 public class YouseeCustomActivity extends SherlockFragmentActivity implements UsesLoginFeature, OnResponseRecievedListener
 {
@@ -32,6 +32,16 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		setSupportProgressBarIndeterminateVisibility(false);
 		getOverflowMenu();
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
+		this.menu = menu;
+		setMenuState(SessionHandler.isSessionIdExists(getApplicationContext()));
+
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	private void getOverflowMenu()
@@ -160,7 +170,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 			registerMenu.setVisible(true);
 			logoutMenu.setVisible(false);
 		}
-		
 
 	}
 
@@ -246,11 +255,11 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void onLoginFailed()
 	{
 		Toast.makeText(getContext(), "Login Failed.", Toast.LENGTH_SHORT).show();
-		if(loginMenuClicked)
+		if (loginMenuClicked)
 		{
 			showLoginScreen();
 		}
-		
+
 	}
 
 	@Override
@@ -278,7 +287,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGOUT)
 		{
-			
+
 			SessionHandler.isLoggedIn = false;
 			setMenuState(false);
 			supportInvalidateOptionsMenu();

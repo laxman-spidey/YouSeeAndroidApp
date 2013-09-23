@@ -19,6 +19,8 @@ public abstract class Chef
 	protected void setRequestCode(int requestCode)
 	{
 		nameValuePairs.add(new BasicNameValuePair(TAG_NETWORK_REQUEST_CODE, "" + requestCode));
+		
+			
 	}
 
 	public abstract void assembleRequest();

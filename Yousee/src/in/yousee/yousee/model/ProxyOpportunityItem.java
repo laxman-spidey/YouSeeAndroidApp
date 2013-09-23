@@ -123,7 +123,7 @@ public class ProxyOpportunityItem implements JSONParsable
 			// this.partner = JSONObject.getString(TAG_PARTNER);
 			// this.description =
 			this.description = JSONObject.getString(TAG_DESCRIPTION);
-			Log.i("tag", this.title);
+			//Log.i("tag", this.title);
 		} catch (JSONException e)
 		{
 			

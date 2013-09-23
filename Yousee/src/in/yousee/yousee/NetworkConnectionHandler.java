@@ -47,10 +47,13 @@ public class NetworkConnectionHandler implements Runnable
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 	Chef listener;
+	public static String sessionId; 
+	public static DefaultHttpClient httpclient;
 
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
+		httpclient = new DefaultHttpClient();
 	}
 
 	/**
@@ -228,9 +231,19 @@ public class NetworkConnectionHandler implements Runnable
 			if (response.containsHeader(Chef.TAG_NETWORK_REQUEST_CODE))
 			{
 
-				
+				Header[] headers = response.getAllHeaders();
+				// Log.i("header "+headers[i].getName()+ " : ",
+				// headers[i].getValue());
+				for (int i = 0; i < headers.length; i++)
+				{
+					Log.i("tag", "header " + headers[i].getName() + " : " + headers[i].getValue());
+				}
+
 				String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
-				Log.i("tag", "requestCode : "+requestCodeString);
+				Log.i("tag", "requestCode : " + requestCodeString);
+				// String sessionId =
+				// response.getFirstHeader("sessionId").getValue();
+				// Log.i("tag", "sessionId : " + sessionId);
 				requestCode = Integer.valueOf(requestCodeString);
 
 				InputStream is = null;
@@ -268,7 +281,8 @@ public class NetworkConnectionHandler implements Runnable
 						}
 					}
 				}
-				Log.i("tag", "content string : "+contentAsString);
+				// Log.i("tag", "content string : " +
+				// contentAsString);
 				listener.serveResponse(contentAsString, requestCode);
 			}
 			else
@@ -289,10 +303,17 @@ public class NetworkConnectionHandler implements Runnable
 	{
 		InputStream is = null;
 
-		Log.i("tag", "download Started");
-		HttpClient httpclient = new DefaultHttpClient();
-
+		Log.i("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
+		Header[] headers = postRequest.getAllHeaders();
+		Log.i("tag","lenght "+headers.length);
+		// headers[i].getValue());
+		for (int i = 0; i < headers.length; i++)
+		{
+			Log.i("tag", "request " + headers[i].getName() + " : " + headers[i].getValue());
+		}
+		// httpclient.getCookieStore().addCookie();
 		HttpResponse response = httpclient.execute(postRequest);
+
 		return response;
 
 		// Makes sure that the InputStream is closed after the

@@ -43,7 +43,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
@@ -53,7 +53,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			Toast.makeText(getApplicationContext(), "hi", Toast.LENGTH_SHORT).show();
 		}
 		buildOpportunityListForTheFirstTime();
-		sendLoginRequest(false);
+		// sendLoginRequest(false);
 		initiateExpandableList();
 	}
 
