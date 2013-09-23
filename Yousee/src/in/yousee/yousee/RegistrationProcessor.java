@@ -17,12 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.GpsStatus.Listener;
 import android.util.Log;
 import android.widget.Toast;
 
-public class RegistrationProcessor extends Chef
+public class RegistrationProcessor extends Middleware
 {
 
 	public static final String TAG_FIRSTNAME = "firstName";
@@ -64,22 +65,21 @@ public class RegistrationProcessor extends Chef
 	}
 
 	@Override
-	public void cook() throws CustomException
-	{
-		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(responseListener.getContext());
-		connectionHandler.sendRequest(postRequest, this);
-
-	}
-
-	@Override
 	public void serveResponse(String result, int requestCode)
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_REGISTER)
 		{
-			
+
 			responseListener.onResponseRecieved(result, requestCode);
 		}
 		Log.i("tag", "result is = " + result);
+	}
+
+	@Override
+	public Context getContext()
+	{
+
+		return responseListener.getContext();
 	}
 
 }

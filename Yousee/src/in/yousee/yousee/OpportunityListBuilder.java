@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class OpportunityListBuilder extends Chef
+public class OpportunityListBuilder extends Middleware
 {
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
@@ -120,15 +120,6 @@ public class OpportunityListBuilder extends Chef
 	}
 
 	@Override
-	public void cook() throws CustomException
-	{
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
-		networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
-		//networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
-		//networkHandler.sendRequestInMultiThreadedMode(postRequest, this);
-	}
-
-	@Override
 	public void serveResponse(String result, int requestCode)
 	{
 
@@ -167,6 +158,12 @@ public class OpportunityListBuilder extends Chef
 		{
 			//listener.onResponseRecieved(result, requestCode);
 		}
+	}
+
+	@Override
+	public Context getContext()
+	{
+		return listener.getContext();
 	}
 
 }

@@ -20,7 +20,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SessionHandler extends Chef
+public class SessionHandler extends Middleware
 {
 	private Context context;
 	private String username;
@@ -165,7 +165,7 @@ public class SessionHandler extends Chef
 
 		this.username = username;
 		this.password = password;
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
+		
 
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGIN_EXEC);
 		nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -182,7 +182,7 @@ public class SessionHandler extends Chef
 			e.printStackTrace();
 		}
 
-		networkHandler.sendRequest(postRequest, this);
+		sendRequest();
 
 	}
 
@@ -201,8 +201,7 @@ public class SessionHandler extends Chef
 		{
 			e.printStackTrace();
 		}
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
-		networkHandler.sendRequest(postRequest, this);
+		sendRequest();
 
 	}
 
@@ -258,8 +257,14 @@ public class SessionHandler extends Chef
 	}
 
 	@Override
-	public void cook()
+	public void sendRequest()
 	{
 
+	}
+
+	@Override
+	public Context getContext()
+	{
+		return context;
 	}
 }

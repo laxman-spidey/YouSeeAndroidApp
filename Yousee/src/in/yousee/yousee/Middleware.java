@@ -8,7 +8,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-public abstract class Chef
+import android.content.Context;
+
+public abstract class Middleware
 {
 
 	public static final String TAG_NETWORK_REQUEST_CODE = "requestCode";
@@ -19,13 +21,18 @@ public abstract class Chef
 	protected void setRequestCode(int requestCode)
 	{
 		nameValuePairs.add(new BasicNameValuePair(TAG_NETWORK_REQUEST_CODE, "" + requestCode));
-		
-			
+
 	}
 
 	public abstract void assembleRequest();
 
-	public abstract void cook() throws CustomException;
+	public  void sendRequest() throws CustomException
+	{
+		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(getContext());
+		connectionHandler.sendRequest(postRequest, this);
+	}
 
 	public abstract void serveResponse(String result, int requestCode);
+
+	public abstract Context getContext();
 }

@@ -141,7 +141,7 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainFragment.this);
 				try
 				{
-					listBuilder.cook();
+					listBuilder.sendRequest();
 				}
 				catch (CustomException e)
 				{

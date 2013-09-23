@@ -14,9 +14,10 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Context;
 import android.util.Log;
 
-public class IndividualOpportunityItemBuilder extends Chef
+public class IndividualOpportunityItemBuilder extends Middleware
 {
 	private static final String TAG_ACTIVITY_ID = "activity_id";
 
@@ -55,17 +56,17 @@ public class IndividualOpportunityItemBuilder extends Chef
 	}
 
 	@Override
-	public void cook() throws CustomException
-	{
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(listener.getContext());
-		networkHandler.sendRequest(postRequest, this);
-	}
-
-	@Override
 	public void serveResponse(String result, int requestCode)
 	{
 
 		listener.onResponseRecieved(result, requestCode);
+	}
+
+	@Override
+	public Context getContext()
+	{
+
+		return listener.getContext();
 	}
 
 }

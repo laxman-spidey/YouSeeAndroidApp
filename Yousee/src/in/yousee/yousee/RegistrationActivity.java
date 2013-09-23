@@ -173,7 +173,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		try
 		{
 			JSONObject obj = new JSONObject((String) response);
-			responseCode = obj.getInt(Chef.TAG_NETWORK_RESULT_CODE);
+			responseCode = obj.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
 			if (responseCode == CustomException.SUCCESS_CODE)
 			{
 				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
