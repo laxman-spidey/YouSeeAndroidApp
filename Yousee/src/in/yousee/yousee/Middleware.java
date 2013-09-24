@@ -21,12 +21,11 @@ public abstract class Middleware
 	protected void setRequestCode(int requestCode)
 	{
 		nameValuePairs.add(new BasicNameValuePair(TAG_NETWORK_REQUEST_CODE, "" + requestCode));
-
 	}
 
 	public abstract void assembleRequest();
 
-	public  void sendRequest() throws CustomException
+	public void sendRequest() throws CustomException
 	{
 		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(getContext());
 		connectionHandler.sendRequest(postRequest, this);

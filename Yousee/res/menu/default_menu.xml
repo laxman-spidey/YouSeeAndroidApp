@@ -4,26 +4,26 @@
         android:id="@+id/action_refresh"
         android:icon="@drawable/navigation_refresh"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="Refresh"/>
     
     <item
         android:id="@+id/action_login"
         android:icon="@drawable/ic_menu_login"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="Login"/>
        <item
         android:id="@+id/action_register"
         android:icon="@drawable/ic_menu_new_member"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="Register"/>
 
         <item
         android:id="@+id/action_logout"
         android:icon="@drawable/ic_menu_login"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="Logout"/>
 </menu>

@@ -83,6 +83,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	public void commit()
 	{
 		Log.i("tag", "committed");
+		Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
 		// showLoginScreen();
 	}
 
@@ -251,7 +252,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		case R.id.applyButton:
 			SessionHandler sessionHandler = new SessionHandler(this);
 			String sessionId = null;
-			if (sessionHandler.isLoggedIn)
+			if (sessionHandler.isSessionIdExists(getApplicationContext()))
 			{
 				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();

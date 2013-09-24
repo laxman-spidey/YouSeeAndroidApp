@@ -43,7 +43,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
@@ -175,7 +175,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		// attach the adapter to the list
 		myList.setAdapter(listAdapter);
 
-		Log.i("tag", "before expand all");
 		// expand all Groupsrevenge
 		expandAll();
 
@@ -190,13 +189,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		// notify the list so that changes can take effect
 		listAdapter.notifyDataSetChanged();
 
-		// collapse all groups
-		// collapseAll();
-		// expand the group where item was just added
-		// myList.expandGroup(groupPosition);
-		// set the current group to be selected so that it becomes
-		// visible
-		// myList.setSelectedGroup(groupPosition);
 	}
 
 	// method to expand all groups
@@ -245,7 +237,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
 		{
 
-			Log.d("tag", "child is selected");
 			// get the group header
 			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
 			// get the child info
@@ -323,7 +314,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 	{
-		Log.i("tag", "item clicked " + position);
 
 		Intent intent = new Intent();
 		intent.setClass(this, IndividualOpportunityItemActivity.class);

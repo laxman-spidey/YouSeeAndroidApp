@@ -40,20 +40,20 @@ public class NetworkConnectionHandler implements Runnable
 	// used to get System services to check network status and required
 	// information
 	Context context;
-
+  
 	// web service URL
-	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.101:80/yousee_test/YouseeMobile/";
 
 	DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 	Middleware listener;
-	public static String sessionId; 
-	public static DefaultHttpClient httpclient;
+	public static String sessionId;
+	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
-		httpclient = new DefaultHttpClient();
+
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class NetworkConnectionHandler implements Runnable
 	 * 
 	 * @param <void> progress
 	 * 
-	 * @param <Sring>
+	 * @param <HttpResponse>
 	 *                output
 	 */
 	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, HttpResponse>
@@ -244,6 +244,7 @@ public class NetworkConnectionHandler implements Runnable
 				// String sessionId =
 				// response.getFirstHeader("sessionId").getValue();
 				// Log.i("tag", "sessionId : " + sessionId);
+
 				requestCode = Integer.valueOf(requestCodeString);
 
 				InputStream is = null;
@@ -274,9 +275,6 @@ public class NetworkConnectionHandler implements Runnable
 						}
 						catch (IOException e)
 						{
-							// TODO Auto-generated
-							// catch
-							// block
 							e.printStackTrace();
 						}
 					}
@@ -305,7 +303,7 @@ public class NetworkConnectionHandler implements Runnable
 
 		Log.i("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
 		Header[] headers = postRequest.getAllHeaders();
-		Log.i("tag","lenght "+headers.length);
+		Log.i("tag", "lenght " + headers.length);
 		// headers[i].getValue());
 		for (int i = 0; i < headers.length; i++)
 		{

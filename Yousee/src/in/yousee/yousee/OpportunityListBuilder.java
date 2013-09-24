@@ -51,7 +51,7 @@ public class OpportunityListBuilder extends Middleware
 	public void assembleRequest()
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
-		
+
 		nameValuePairs = new ArrayList<NameValuePair>(2);
 		setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
@@ -64,7 +64,6 @@ public class OpportunityListBuilder extends Middleware
 		{
 			e.printStackTrace();
 		}
-		
 
 	}
 
@@ -123,23 +122,23 @@ public class OpportunityListBuilder extends Middleware
 	public void serveResponse(String result, int requestCode)
 	{
 
-		//if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
+		// if (requestCode ==
+		// RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
 			JSONObject json;
-			
+
 			ArrayList<ProxyOpportunityItem> proxyItemList = new ArrayList<ProxyOpportunityItem>();
 			try
 			{
-				Log.i("tag", "JSONlist length " + result);
+
 				json = new JSONObject(result);
 				int resultCount = json.getInt("resultCount");
 				String totalCount = json.getString("totalCount");
 
 				JSONArray list = json.getJSONArray("list");
-				Log.i("tag", "JSONlist length " + list.toString());
+
 				for (int i = 0; i < list.length(); i++)
 				{
-					Log.i("tag", "" + i);
 					proxyItemList.add(new ProxyOpportunityItem(list.getJSONObject(i)));
 				}
 
@@ -154,9 +153,9 @@ public class OpportunityListBuilder extends Middleware
 			Log.i("tag", "item list length = " + proxyItemList.size());
 			listener.onResponseRecieved(proxyItemList, requestCode);
 		}
-		//else
+		// else
 		{
-			//listener.onResponseRecieved(result, requestCode);
+			// listener.onResponseRecieved(result, requestCode);
 		}
 	}
 

@@ -1,17 +1,10 @@
 package in.yousee.yousee;
 
-import java.sql.Types;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -56,9 +49,6 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 	@Override
 	public int getCount()
 	{
-
-		// TODO Auto-generated method stub
-		Log.i("tag", "item Length=" + values.length);
 		return values.length;
 	}
 
@@ -67,8 +57,6 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		// Log.i("tag","getview");
-
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.opportunity_list_item, parent, false);
 
@@ -76,10 +64,7 @@ public class OpportunityListAdapter extends ArrayAdapter<String>
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.opportunityCatagoryIcon);
 		textView.setText(values[position]);
 		imageView.setBackgroundResource(types[position]);
-		// Log.i("tag", "item " + (position) + "   " +
-		// imageIdList.get(position));
-		// imageView.setBackgroundResource(imageIdList.get(position));
-		// Log.i("tag","endgetview");
+		
 		return rowView;
 	}
 
