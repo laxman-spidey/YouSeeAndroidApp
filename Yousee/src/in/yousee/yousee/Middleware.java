@@ -27,8 +27,11 @@ public abstract class Middleware
 
 	public void sendRequest() throws CustomException
 	{
-		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(getContext());
-		connectionHandler.sendRequest(postRequest, this);
+		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(getContext(), this);
+		if (NetworkConnectionHandler.isNetworkConnected(getContext()))
+		{
+			connectionHandler.execute(postRequest);
+		}
 	}
 
 	public abstract void serveResponse(String result, int requestCode);
