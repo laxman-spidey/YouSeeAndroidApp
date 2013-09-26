@@ -80,9 +80,11 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	private void instantiateAllFields()
 	{
 		firstName = (EditText) findViewById(R.id.regFirstName);
-		firstName.setText("fsadhgfsd");
+		//firstName.setText("fsadhgfsd");
+		
+		
 		lastName = (EditText) findViewById(R.id.regLastName);
-		lastName.setText("fsadhgfsd");
+		//lastName.setText("fsadhgfsd");
 		email = (EditText) findViewById(R.id.regEmail);
 		email.setText("mittu.thefire@gmail.com");
 		password = (EditText) findViewById(R.id.regPassword);
@@ -105,12 +107,29 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Log.i(LOG_TAG, "email : " + email.getId());
 		Log.i(LOG_TAG, "dob : " + dob.getId());
 		Log.i(LOG_TAG, "password : " + password.getId());
-		if (!isEmpty(firstName) && !isEmpty(dob) && !isEmpty(password) && !isEmpty(lastName) && validateEmail(email))
+		boolean validity = true;
+		if(isEmpty(firstName))
 		{
-			return true;
+			validity = false;
 		}
-
-		return false;
+		if(isEmpty(lastName))
+		{
+			validity = false;
+		}
+		if(isEmpty(password))
+		{
+			validity = false;
+		}
+		if(isEmpty(dob))
+		{
+			validity = false;
+		}
+		if(validateEmail(email))
+		{
+			validity = false;
+		}
+		
+		return validity;
 	}
 
 	private boolean isEmpty(EditText field)
@@ -213,13 +232,10 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 	private void showErrorInField(EditText field, String errorMsg)
 	{
-		field.setText("");
-		field.setHint(errorMsg);
-
-		field.setHintTextColor(Color.RED);
-		// CustomException.showToastError(context, new
-		// CustomException(CustomException.LOGIN_ERROR));sources().getColor(R.color.red));
-
+		//field.setText("");
+		//field.setHint(errorMsg);
+		//field.setHintTextColor(Color.RED);
+		field.setError(errorMsg);
 	}
 
 	@Override

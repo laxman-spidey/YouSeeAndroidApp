@@ -41,6 +41,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	ArrayList<View> activityList;
 	static boolean selectall = false;
 	RealOpportunityItem realItem;
+	IndividualOpportunityItemBuilder builder;
 
 	private static final String LOG_TAG = "tag";
 
@@ -54,7 +55,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		String jsonString = getIntent().getExtras().getString("result");
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
-		IndividualOpportunityItemBuilder builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
+		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
 		super.requestSenderChef = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
@@ -82,9 +83,9 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	public void commit()
 	{
-		Log.i("tag", "committed");
-		Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
-		// showLoginScreen();
+
+		builder.commitOpportunity(realItem, checkedState);
+
 	}
 
 	LinearLayout layout;
@@ -124,10 +125,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				{
 					view = buildScheduleCard(iterator.next());
 				}
-				catch (ParseException e)// ImageButton
-							// deselectAllButton =
-							// (ImageButton)
-				// findViewById(R.id.deselectAll); e)
+				catch (ParseException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -135,6 +133,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				layout.addView(view);
 			}
 			setSupportProgressBarIndeterminateVisibility(false);
+		}
+		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
+		{
+			Log.i("tag", "committed");
+			Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
 		}
 		super.onResponseRecieved(response, requestCode);
 
@@ -169,16 +172,29 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
+		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
+		
 
+		ImageView commitView = (ImageView) rowView.findViewById(R.id.commitView);
+		commitView.setEnabled(!schedule.isCommitted());
+		if (commitView.isEnabled())
+		{
+			commitView.setVisibility(View.VISIBLE);
+		}
+		final ImageView commitViewReference = commitView;
 		rowView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v)
 			{
-				int x = map.get(v);
-				checkedState[x] = !(checkedState[x]);
-				setScheduleSelected(v, checkedState[x]);
-				Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
+				Log.i(LOG_TAG, "isenabled : " + commitViewReference.isEnabled());
+				if (!commitViewReference.isEnabled())
+				{
+					int x = map.get(v);
+					checkedState[x] = !(checkedState[x]);
+					setScheduleSelected(v, checkedState[x]);
+					Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
+				}
 
 			}
 		});
@@ -226,19 +242,13 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	private void setScheduleSelected(View v, boolean check)
 	{
 		ImageView imgView = (ImageView) v.findViewById(R.id.selectView);
-		// LinearLayout imgView= (LinearLayout)
-		// v.findViewById(R.id.selectViewLayout);
-		// LinearLayout card = (LinearLayout) v.findViewById(R.id.card);
-
 		if (check)
 		{
-			// card.setBackgroundResource(R.drawable.disabled_card);
 			imgView.setVisibility(View.VISIBLE);
 
 		}
 		else
 		{
-			// card.setBackgroundResource(R.drawable.border);
 			imgView.setVisibility(View.INVISIBLE);
 		}
 
@@ -250,9 +260,8 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		switch (v.getId())
 		{
 		case R.id.applyButton:
-			SessionHandler sessionHandler = new SessionHandler(this);
 			String sessionId = null;
-			if (sessionHandler.isSessionIdExists(getApplicationContext()))
+			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
 				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();

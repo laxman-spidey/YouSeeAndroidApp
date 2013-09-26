@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MainActivity extends YouseeCustomActivity implements OnItemClickListener, OnResponseRecievedListener
+public class MainActivity extends YouseeCustomActivity implements OnItemClickListener
 {
 
 	private FrameLayout filterFrame;
