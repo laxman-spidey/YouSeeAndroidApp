@@ -261,7 +261,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		Log.i("tag", "showing LoginScreen");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_LOGIN);
-
 	}
 
 	@Override
