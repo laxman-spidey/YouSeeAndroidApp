@@ -121,7 +121,7 @@ public class MainFragment extends SherlockFragment implements OnItemClickListene
 
 		}
 
-		OpportunityListAdapter adapter = new OpportunityListAdapter(getActivity().getApplicationContext(), titles, types);
+		OpportunityListAdapter adapter = new OpportunityListAdapter(getActivity().getApplicationContext(), proxyList);
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);

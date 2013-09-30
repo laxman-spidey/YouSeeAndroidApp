@@ -72,20 +72,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
 	{
 
-		// Log.i("tag", "creating");
-		// this.proxyList = proxyList;
-		/*
-		 * // ------------testing app with no network
-		 * connection--------- proxyList = new
-		 * ArrayList<ProxyOpportunityItem>(); for (int i = 0; i < 10;
-		 * i++) { ProxyOpportunityItem testItem = new
-		 * ProxyOpportunityItem(1, "kjfklsdjfkhsdkjfhsd", "Education",
-		 * "",
-		 * "jfskldjhfksdfkjsydjfknsdjkhfkjsdnfjsdhjkfhksdgkjsdgkjsdnjkshfkjsd"
-		 * ); proxyList.add(testItem); } // ------------testing app with
-		 * no network connection---------//
-		 */
-
 		this.proxyList = proxyList;
 		listview = (ListView) findViewById(R.id.opportunityListview);
 
@@ -102,7 +88,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		}
 
-		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), titles, types);
+		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), proxyList);
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);
