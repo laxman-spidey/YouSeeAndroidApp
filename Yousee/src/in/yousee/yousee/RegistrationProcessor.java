@@ -31,6 +31,8 @@ public class RegistrationProcessor extends Middleware
 	public static final String TAG_EMAIL = "email";
 	public static final String TAG_PASSWORD = "password";
 	public static final String TAG_DOB = "dob";
+	public static final String TAG_PHNO = "phNo";
+	public static final String TAG_CITY = "city";
 
 	private OnResponseRecievedListener responseListener;
 	private RegistrationFormObject regForm;
@@ -53,6 +55,8 @@ public class RegistrationProcessor extends Middleware
 		nameValuePairs.add(new BasicNameValuePair(TAG_EMAIL, regForm.getEmail()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_PASSWORD, regForm.getPassword()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_DOB, regForm.getDob()));
+		nameValuePairs.add(new BasicNameValuePair(TAG_PHNO, regForm.getPhNo()));
+		nameValuePairs.add(new BasicNameValuePair(TAG_CITY, regForm.getCity()));
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));

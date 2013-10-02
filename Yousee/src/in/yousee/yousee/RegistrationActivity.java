@@ -74,23 +74,28 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	EditText lastName;
 	EditText email;
 	EditText password;
+	EditText city;
+	EditText phNo;
 	EditText dob;
 	TextView errorField;
 
 	private void instantiateAllFields()
 	{
 		firstName = (EditText) findViewById(R.id.regFirstName);
-		//firstName.setText("fsadhgfsd");
-		
-		
 		lastName = (EditText) findViewById(R.id.regLastName);
-		//lastName.setText("fsadhgfsd");
 		email = (EditText) findViewById(R.id.regEmail);
-		email.setText("mittu.thefire@gmail.com");
 		password = (EditText) findViewById(R.id.regPassword);
-		password.setText("fsadhgfsd");
+		city = (EditText) findViewById(R.id.regCity);
+		phNo = (EditText) findViewById(R.id.regPhno);
 
 		dob = (EditText) findViewById(R.id.regDob);
+
+		// test//////
+		firstName.setText("fsadhgfsd");
+		lastName.setText("fsadhgfsd");
+		email.setText("mittu.thefire@gmail.com");
+		password.setText("fsadhgfsd");
+		// test//////
 
 		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
@@ -108,27 +113,35 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Log.i(LOG_TAG, "dob : " + dob.getId());
 		Log.i(LOG_TAG, "password : " + password.getId());
 		boolean validity = true;
-		if(isEmpty(firstName))
+		if (isEmpty(firstName))
 		{
 			validity = false;
 		}
-		if(isEmpty(lastName))
+		if (isEmpty(lastName))
 		{
 			validity = false;
 		}
-		if(isEmpty(password))
+		if (isEmpty(password))
 		{
 			validity = false;
 		}
-		if(isEmpty(dob))
+		if (isEmpty(city))
 		{
 			validity = false;
 		}
-		if(validateEmail(email))
+		if (isEmpty(phNo))
 		{
 			validity = false;
 		}
-		
+		if (isEmpty(dob))
+		{
+			validity = false;
+		}
+		if (validateEmail(email))
+		{
+			validity = false;
+		}
+
 		return validity;
 	}
 
@@ -146,9 +159,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			return false;
 		}
 	}
-
-	// CustomException.showToastError(context, new
-	// CustomException(CustomException.LOGIN_ERROR));
 
 	/**
 	 * Validate hex with regular expression
@@ -232,9 +242,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 	private void showErrorInField(EditText field, String errorMsg)
 	{
-		//field.setText("");
-		//field.setHint(errorMsg);
-		//field.setHintTextColor(Color.RED);
 		field.setError(errorMsg);
 	}
 
@@ -262,8 +269,10 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		regFormObject.setEmail(email.getText().toString());
 		regFormObject.setPassword(password.getText().toString());
 		regFormObject.setDob(dob.getText().toString());
+		regFormObject.setPhNo(phNo.getText().toString());
+		regFormObject.setCity(city.getText().toString());
 		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
-		requestSenderChef = registrationProcessor;
+		requestSenderMiddleware = registrationProcessor;
 		sendRequest();
 	}
 
