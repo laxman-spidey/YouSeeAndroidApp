@@ -37,6 +37,7 @@ public class SessionHandler extends Middleware
 	private static final String LOGIN_DATA = "login_data";
 	private static final String KEY_USERNAME = "username";
 	private static final String KEY_PASSWORD = "password";
+	private static final String KEY_USER_ID = "userId";
 	public static final String KEY_SESSION_ID = "sessionID";
 
 	public SessionHandler(Context context)
@@ -83,6 +84,42 @@ public class SessionHandler extends Middleware
 		this.username = username;
 		this.password = password;
 		editor.commit();
+
+	}
+
+	private void setUserId(int userId)
+	{
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		SharedPreferences.Editor editor = sharedPrefs.edit();
+		editor.putInt(KEY_USER_ID, userId);
+		editor.commit();
+	}
+
+	public static boolean isUserIdExists(Context context)
+	{
+
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		if (sharedPrefs.contains(KEY_USER_ID) && sharedPrefs.getInt(KEY_USER_ID, 0) != 0)
+		{
+			return true;
+		}
+		return false;
+
+	}
+
+	public static int getUserId(Context context)
+	{
+		Log.i(SESSION_DEBUG_TAG, "getsessionId()");
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		if (isUserIdExists(context))
+		{
+
+			int userId = sharedPrefs.getInt(KEY_SESSION_ID, 0);
+			Log.i(SESSION_DEBUG_TAG, "userId = " + userId);
+			return userId;
+		}
+		Log.i(SESSION_DEBUG_TAG, "userId false");
+		return 0;
 
 	}
 
@@ -222,6 +259,7 @@ public class SessionHandler extends Middleware
 				Log.i(SESSION_DEBUG_TAG, "login data set");
 				setSessionId(sessionData.getSessionId());
 				Log.i(SESSION_DEBUG_TAG, "setting session id");
+				setUserId(sessionData.getUserId());
 				String sessionId = null;
 
 				if (isSessionIdExists(context))

@@ -64,7 +64,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		{
 			listBuilder = new OpportunityListBuilder(this);
 		}
-		requestSenderChef = listBuilder;
+		requestSenderMiddleware = listBuilder;
 		sendRequest();
 
 	}
@@ -108,7 +108,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
 
-				requestSenderChef = listBuilder;
+				requestSenderMiddleware = listBuilder;
 				sendRequest();
 
 			}

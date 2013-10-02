@@ -81,7 +81,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public boolean refresh = false;
 
 	public static final String LOG_TAG = "tag";
-	protected Middleware requestSenderChef;
+	protected Middleware requestSenderMiddleware;
 
 	public void promptRetry(String msg)
 	{
@@ -97,7 +97,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 
 		try
 		{
-			requestSenderChef.sendRequest();
+			requestSenderMiddleware.sendRequest();
 		}
 		catch (CustomException e)
 		{

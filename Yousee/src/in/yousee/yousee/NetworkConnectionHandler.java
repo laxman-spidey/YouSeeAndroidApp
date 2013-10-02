@@ -289,7 +289,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	{
 		InputStream is = null;
 
-		Log.i("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
+		Log.d("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
 		Header[] headers = postRequest.getAllHeaders();
 		Log.i("tag", "lenght " + headers.length);
 		// headers[i].getValue());
@@ -297,6 +297,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 		{
 			Log.i("tag", "request " + headers[i].getName() + " : " + headers[i].getValue());
 		}
+		Log.i("tag", readIt(postRequest.getEntity().getContent()));
 		// httpclient.getCookieStore().addCookie();
 		HttpResponse response = httpclient.execute(postRequest);
 

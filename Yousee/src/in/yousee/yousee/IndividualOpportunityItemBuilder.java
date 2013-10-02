@@ -6,6 +6,7 @@ import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 import in.yousee.yousee.model.RealOpportunityItem;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,11 @@ public class IndividualOpportunityItemBuilder extends Middleware
 	private static final String TAG_ACTIVITY_ID = "activity_id";
 	private static final String TAG_OPPORTUNITY_COMMITTED_ID = "opp_id";
 
+	public static int requestCode;
 	ProxyOpportunityItem proxy;
 	OnResponseRecievedListener listener;
+	RealOpportunityItem realOpportunityItem;
+	boolean[] checkedState;
 
 	public IndividualOpportunityItemBuilder(ProxyOpportunityItem proxy, OnResponseRecievedListener responseListener)
 	{
@@ -42,35 +46,71 @@ public class IndividualOpportunityItemBuilder extends Middleware
 	@Override
 	public void assembleRequest()
 	{
-		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_SCHEDULE);
-		nameValuePairs = new ArrayList<NameValuePair>();
-		setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST);
-
-		nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
-
-		try
+		Log.i("tag", "requestCode = " + requestCode);
+		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST)
 		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_SCHEDULE);
+			nameValuePairs = new ArrayList<NameValuePair>();
+			setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST);
+			addUserIdToPost();
+			nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
+
+			try
+			{
+				postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (UnsupportedEncodingException e)
+		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
 		{
-			e.printStackTrace();
+			if (realOpportunityItem != null)
+			{
+				commitOpportunity(this.realOpportunityItem, this.checkedState);
+			}
+			else
+			{
+				Log.i("debug_tag", "preCommmitExecute() must be executed before committing");
+			}
+		}
+		else
+		{
+			Log.i("debug_tag", "set requestCode to  RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST or RequestCodes.NETWORK_ACTIVITY_COMMIT ");
 		}
 		// cacheRequest(postRequest);
 	}
 
-	public void commitOpportunity(RealOpportunityItem reaOpportunityItem, boolean checkedState[])
+	public void preCommitExecute(RealOpportunityItem realOpportunityItem, boolean checkedState[])
+	{
+		Log.i("tag", "pre Commit");
+		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+		this.realOpportunityItem = realOpportunityItem;
+		this.checkedState = checkedState;
+		assembleRequest();
+	}
+
+	private void commitOpportunity(RealOpportunityItem realOpportunityItem, boolean checkedState[])
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.ACTIVITY_COMMIT);
 		nameValuePairs = new ArrayList<NameValuePair>();
 		setRequestCode(RequestCodes.NETWORK_ACTIVITY_COMMIT);
-		for(int i=0; i<checkedState.length;i++)
+		addUserIdToPost();
+		String value = "";
+		for (int i = 0; i < checkedState.length; i++)
 		{
-			int id = reaOpportunityItem.getActivityScheduleList().get(i).getOpportunityId();
-			
-			nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
+			if (checkedState[i])
+			{
+				int id = this.realOpportunityItem.getActivityScheduleList().get(i).getOpportunityId();
+				value += id + ",";
+			}
+
 		}
 		
+		value = value.substring(0, value.length() - 2);
+		Log.i("tag", "opportunity Id values = " + value);
+		nameValuePairs.add(new BasicNameValuePair(TAG_OPPORTUNITY_COMMITTED_ID, "" + value));
 
 		try
 		{
@@ -88,10 +128,12 @@ public class IndividualOpportunityItemBuilder extends Middleware
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST)
 		{
+			Log.d("tag", "schedule list response recieved");
 			listener.onResponseRecieved(result, requestCode);
 		}
 		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
 		{
+			Log.d("tag", "commit response recieved");
 			JSONObject obj;
 			Boolean res = false;
 			try

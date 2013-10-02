@@ -25,6 +25,7 @@ public class CustomException extends Exception implements JSONParsable
 	
 	public static final int REGISTRATION_EMAIL_ALREADY_TAKEN = 120;
 	public static final int REGISTRATION_USERNAME_EXISTS= 121;
+	public static final int REGISTRATION_PHONE_NUMBER_ALREADY_EXISTS= 121;
 	public static final int ERROR_CODE = 0;
 	public static final int SUCCESS_CODE = 1;
 	

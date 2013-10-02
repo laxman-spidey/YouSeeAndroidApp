@@ -55,8 +55,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		String jsonString = getIntent().getExtras().getString("result");
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
+		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
-		super.requestSenderChef = builder;
+
+		Log.d("debug_tag", "requestCode = " + builder.requestCode);
+		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
 		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
@@ -72,7 +75,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		ImageButton selectAllButton = (ImageButton) findViewById(R.id.selectAll);
 		// ImageButton deselectAllButton = (ImageButton)
-		// findViewById(R.id.deselectAll);
+		// findViewById(R.id.deselectAll);static
 		selectAllButton.setOnClickListener(this);
 		// deselectAllButton.setOnClickListener(this);
 
@@ -83,8 +86,18 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	public void commit()
 	{
-
-		builder.commitOpportunity(realItem, checkedState);
+		if (realItem != null)
+		{
+			Log.i(LOG_TAG, "Committing");
+			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+			builder.preCommitExecute(realItem, checkedState);
+			super.requestSenderMiddleware = builder;
+			super.sendRequest();
+		}
+		else
+		{
+			Log.i(LOG_TAG, "Biscuit");
+		}
 
 	}
 
@@ -97,7 +110,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -111,6 +123,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				refreshActivityScheduleList();
 			}
 			realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
+			Log.d("debug_tag", "real item created");
 			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
 			checkedState = new boolean[scheduleList.size()];
 			layout = (LinearLayout) findViewById(R.id.rootLay);
@@ -136,8 +149,16 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		}
 		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
 		{
-			Log.i("tag", "committed");
-			Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
+			if ((Boolean) response)
+			{
+				Log.i("tag", "committed");
+				Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "failed to Commit", Toast.LENGTH_SHORT).show();
+			}
+
 		}
 		super.onResponseRecieved(response, requestCode);
 
@@ -173,10 +194,9 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
 		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
-		
 
 		ImageView commitView = (ImageView) rowView.findViewById(R.id.commitView);
-		commitView.setEnabled(!schedule.isCommitted());
+		commitView.setEnabled(schedule.isCommitted());
 		if (commitView.isEnabled())
 		{
 			commitView.setVisibility(View.VISIBLE);
@@ -263,6 +283,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			String sessionId = null;
 			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
+				sessionId = SessionHandler.getSessionId(getApplicationContext());
 				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
 
