@@ -4,20 +4,15 @@ import in.yousee.yousee.model.CustomException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class LoginActivity extends Activity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
 {
@@ -51,11 +46,6 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		passwordEditText = (EditText) findViewById(R.id.password);
 		loginButton = (Button) findViewById(R.id.loginButton);
 		RegisterButton = (Button) findViewById(R.id.registerButton);
-		// usernameErrorMsg = (TextView)
-		// findViewById(R.id.usernameErrorMessage);
-		// passwordErrorMsg = (TextView)
-		// findViewById(R.id.passwordErrorMessage);
-
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
@@ -73,7 +63,6 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		{
 			if (validateForm())
 			{
-				Log.i("tag", "Logging in ........");
 				SessionHandler session = new SessionHandler(getApplicationContext(), this);
 				try
 				{
@@ -209,7 +198,6 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 	{
 
 		Intent intent = new Intent();
-		Log.i("tag", "showing Registration Activity");
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
 		startActivity(intent);
 	}

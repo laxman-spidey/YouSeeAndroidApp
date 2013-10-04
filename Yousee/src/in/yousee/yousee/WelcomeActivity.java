@@ -55,7 +55,6 @@ public class WelcomeActivity extends Activity
 	public void showMainActivity()
 	{
 
-		Log.i("tag", "in Show menu activity");
 		Intent intent = new Intent();
 		intent.putExtra("sessionId", sessionId);
 		intent.setClass(this, in.yousee.yousee.MainActivity.class);

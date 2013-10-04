@@ -8,7 +8,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -32,6 +31,5 @@ public class DatePickerFragment extends SherlockDialogFragment implements DatePi
 	public void onDateSet(DatePicker view, int year, int month, int day)
 	{
 		dob.setText(""+day+"/"+month+"/"+year);
-		Log.i("tag", "date has been set");
 	}
 }

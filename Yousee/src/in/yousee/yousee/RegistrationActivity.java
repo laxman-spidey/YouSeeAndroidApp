@@ -4,7 +4,6 @@ import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.RegistrationFormObject;
 
-import java.net.ResponseCache;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,9 +13,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -40,16 +37,13 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		setContentView(R.layout.registration_form);
 		instantiateAllFields();
 
-
 	}
 
-	
 	@Override
 	protected void setWindowProgressBar()
 	{
-		
-	}
 
+	}
 
 	public void showDatePickerDialog(View v)
 	{
@@ -69,12 +63,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	{
 		if (isFocused == true)
 		{
-			Log.i("tag", "focus gained");
 			showDatePickerDialog(v);
-		}
-		else
-		{
-			Log.i("tag", "focus lost");
 		}
 
 	}
@@ -99,13 +88,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 		dob = (EditText) findViewById(R.id.regDob);
 
-		// test//////
-		firstName.setText("fsadhgfsd");
-		lastName.setText("fsadhgfsd");
-		email.setText("mittu.thefire@gmail.com");
-		password.setText("fsadhgfsd");
-		// test//////
-
 		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
 		registerButton.setOnClickListener(this);
@@ -116,11 +98,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	private boolean validateForm()
 	{
 
-		Log.i(LOG_TAG, "first : " + firstName.getId());
-		Log.i(LOG_TAG, "last : " + lastName.getId());
-		Log.i(LOG_TAG, "email : " + email.getId());
-		Log.i(LOG_TAG, "dob : " + dob.getId());
-		Log.i(LOG_TAG, "password : " + password.getId());
 		boolean validity = true;
 		if (isEmpty(firstName))
 		{
@@ -164,7 +141,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		}
 		else
 		{
-			Log.i(LOG_TAG, "non empty id: " + field.getId());
 			return false;
 		}
 	}
@@ -191,20 +167,16 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		{
 			if ((matcher.matches()))
 			{
-				Log.i(LOG_TAG, "matched email id ");
 				return true;
 			}
 			else
 			{
-				Log.i(LOG_TAG, "not matched email id ");
-
 				showErrorInField(emailField, "invalid email format");
 				return false;
 			}
 		}
 		else
 		{
-			Log.i(LOG_TAG, "email id empty");
 			return false;
 		}
 
@@ -213,7 +185,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	public void onResponseRecieved(Object response, int requestCode)
 	{
 		int responseCode;
-		Log.i(LOG_TAG, (String) response);
 		try
 		{
 			JSONObject obj = new JSONObject((String) response);
@@ -225,9 +196,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			}
 			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
-				Toast.makeText(getApplicationContext(), "Email, you have entered is already taken, Try with another Email", Toast.LENGTH_LONG).show();
-				// errorField.setText("Email, you have entered is already taken, Try with another Email");
-				// errorField.setVisibility(View.VISIBLE);
+				showErrorInField(email, "Email, you have entered is already taken, Try with another Email");
 			}
 			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
@@ -237,7 +206,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		}
 		catch (JSONException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -265,8 +233,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	{
 		if (validateForm())
 			submitRegistration();
-		else
-			Log.i(LOG_TAG, "biscuittttttttttttttt..");
 
 	}
 

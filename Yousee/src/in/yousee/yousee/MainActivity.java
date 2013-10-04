@@ -1,7 +1,6 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.constants.RequestCodes;
-import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.LinkedHashMap;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -53,13 +51,11 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			Toast.makeText(getApplicationContext(), "hi", Toast.LENGTH_SHORT).show();
 		}
 		buildOpportunityListForTheFirstTime();
-		// sendLoginRequest(false);
 		initiateExpandableList();
 	}
 
 	private void buildOpportunityListForTheFirstTime()
 	{
-		Log.i("tag", "building opportunity list");
 		if (listBuilder == null)
 		{
 			listBuilder = new OpportunityListBuilder(this);
@@ -92,7 +88,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);
-		Log.i(LOG_TAG, "progress bar : false");
 		setSupportProgressBarIndeterminateVisibility(false);
 
 	}
@@ -107,7 +102,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
-
 				requestSenderMiddleware = listBuilder;
 				sendRequest();
 
@@ -155,7 +149,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		// get reference to the ExpandableListView
 		myList = (ExpandableListView) findViewById(R.id.expandableListView1);
-		// setPadding();
 		// create the adapter by passing your ArrayList data
 		listAdapter = new FilterListAdapter(MainActivity.this, filterGroupList);
 		// attach the adapter to the list
@@ -187,15 +180,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		}
 	}
 
-	// method to collapse all groups
-	private void collapseAll()
-	{
-		int count = listAdapter.getGroupCount();
-		for (int i = 0; i < count; i++)
-		{
-			myList.collapseGroup(i);
-		}
-	}
+
 
 	// load some initial data into out list
 	private void loadData()

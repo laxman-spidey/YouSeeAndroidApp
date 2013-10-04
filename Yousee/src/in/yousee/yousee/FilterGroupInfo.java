@@ -1,13 +1,6 @@
 package in.yousee.yousee;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import android.util.Log;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
 
 public class FilterGroupInfo 
 {

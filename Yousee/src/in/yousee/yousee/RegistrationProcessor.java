@@ -2,26 +2,17 @@ package in.yousee.yousee;
 
 import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.constants.ServerFiles;
-import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.RegistrationFormObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.location.GpsStatus.Listener;
-import android.util.Log;
-import android.widget.Toast;
 
 public class RegistrationProcessor extends Middleware
 {
@@ -76,7 +67,6 @@ public class RegistrationProcessor extends Middleware
 
 			responseListener.onResponseRecieved(result, requestCode);
 		}
-		Log.i("tag", "result is = " + result);
 	}
 
 	@Override

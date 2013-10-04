@@ -19,7 +19,6 @@ public class OpportunityListAdapter extends ArrayAdapter<ProxyOpportunityItem>
 	private final Context context;
 	
 	private ArrayList<ProxyOpportunityItem> proxyItemList;
-	// private final ArrayList<Integer> imageIdList;
 
 	HashMap<String, Integer> mIdMap;
 

@@ -1,32 +1,27 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
+import in.yousee.yousee.constants.ServerFiles;
+import in.yousee.yousee.model.CustomException;
+import in.yousee.yousee.model.SessionData;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
-import in.yousee.yousee.constants.RequestCodes;
-import in.yousee.yousee.constants.ServerFiles;
-import in.yousee.yousee.model.CustomException;
-import in.yousee.yousee.model.SessionData;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SessionHandler extends Middleware
 {
 	private Context context;
 
-	private String sessionID;
-	private String userID;
-	private String userType;
 	private UsesLoginFeature loginFeatureClient;
 	private OnResponseRecievedListener logoutListener;
 	private static final String SESSION_DEBUG_TAG = "session_tag";
@@ -59,16 +54,13 @@ public class SessionHandler extends Middleware
 
 	private boolean getLoginCredentials(String username, String password)
 	{
-		Log.i(SESSION_DEBUG_TAG, "in getLogin credentials----------------------------------");
 		if (isLoginCredentialsExists(context))
 		{
 			SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 			username = sharedPrefs.getString(KEY_USERNAME, null);
 			this.username = username;
-			Log.i(SESSION_DEBUG_TAG, "username " + this.username);
 			password = sharedPrefs.getString(KEY_PASSWORD, null);
 			this.password = password;
-			Log.i(SESSION_DEBUG_TAG, "password " + this.password);
 			return true;
 		}
 		return false;
@@ -92,7 +84,6 @@ public class SessionHandler extends Middleware
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putInt(KEY_USER_ID, userId);
-		Log.i(SESSION_DEBUG_TAG, "userid set to : "+userId);
 		editor.commit();
 	}
 
@@ -110,13 +101,11 @@ public class SessionHandler extends Middleware
 
 	public static int getUserId(Context context)
 	{
-		Log.i(SESSION_DEBUG_TAG, "getUserId()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		if (isUserIdExists(context))
 		{
 
 			int userId = sharedPrefs.getInt(KEY_USER_ID, -1);
-			Log.i(SESSION_DEBUG_TAG, "userId = " + userId);
 			return userId;
 		}
 		Log.i(SESSION_DEBUG_TAG, "userId false");
@@ -162,29 +151,24 @@ public class SessionHandler extends Middleware
 
 	private void setSessionId(String sessionId)
 	{
-		Log.i(SESSION_DEBUG_TAG, "setsessionId()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 
 		editor.putString(KEY_SESSION_ID, sessionId);
-		this.sessionID = sessionId;
+
 		editor.commit();
-		Log.i(SESSION_DEBUG_TAG, "sessionId set to = " + sharedPrefs.getString(KEY_SESSION_ID, ""));
 
 	}
 
 	public static boolean isSessionIdExists(Context context)
 	{
-		Log.i(SESSION_DEBUG_TAG, "isSessionIdExists()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 
 		if (sharedPrefs.contains(KEY_SESSION_ID) && sharedPrefs.getString(KEY_SESSION_ID, "").equals("") == false)
 		{
-			Log.i(SESSION_DEBUG_TAG, "returning " + true);
 			return true;
 		}
-		Log.i(SESSION_DEBUG_TAG, "returning " + false);
 		return false;
 
 	};
@@ -192,7 +176,6 @@ public class SessionHandler extends Middleware
 	public void loginExec() throws CustomException
 	{
 
-		Log.i("tag", "in login exec");
 		if (getLoginCredentials(username, password))
 		{
 			loginExec(username, password);
@@ -201,8 +184,6 @@ public class SessionHandler extends Middleware
 
 	public void loginExec(String username, String password) throws CustomException
 	{
-		Log.i("tag", "loginExec(" + username + ", " + password + ")");
-
 		this.username = username;
 		this.password = password;
 
@@ -227,7 +208,6 @@ public class SessionHandler extends Middleware
 	public void logout(OnResponseRecievedListener listener) throws CustomException
 	{
 		this.logoutListener = listener;
-		Log.i("tag", "sendLogoutRequestToServer()");
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
 		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
@@ -246,37 +226,17 @@ public class SessionHandler extends Middleware
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
-		Log.i(SESSION_DEBUG_TAG, result);
-
 		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGIN)
 		{
 			SessionData sessionData = new SessionData(result);
-			Log.i(SESSION_DEBUG_TAG, "serving response");
 			if (sessionData.isSuccess())
 			{
 
-				Log.i(SESSION_DEBUG_TAG, "login success");
 				setLoginCredentials(username, password);
-
-				Log.i(SESSION_DEBUG_TAG, "login data set");
 				setSessionId(sessionData.getSessionId());
-				Log.i(SESSION_DEBUG_TAG, "setting session id");
 				setUserId(sessionData.getUserId());
-				String sessionId = null;
-				
 
-				if (isSessionIdExists(context))
-				{
-					Log.i(SESSION_DEBUG_TAG, "viewing session id");
-
-				}
-				else
-				{
-					Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
-				}
-				Log.i(SESSION_DEBUG_TAG, "viewing username: " + username + ", password: " + password);
 				getLoginCredentials(username, password);
-				Log.i(SESSION_DEBUG_TAG, "viewing2 username: " + username + ", password: " + password);
 				loginFeatureClient.onLoginSuccess();
 			}
 			else
@@ -287,7 +247,6 @@ public class SessionHandler extends Middleware
 		}
 		else if (requestCode == RequestCodes.NETWORK_REQUEST_LOGOUT)
 		{
-			Log.i(SESSION_DEBUG_TAG, "logging out");
 			SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 			SharedPreferences.Editor editor = sharedPrefs.edit();
 			editor.remove(KEY_SESSION_ID);

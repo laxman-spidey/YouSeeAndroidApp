@@ -7,19 +7,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Locale;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -43,7 +34,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://www.yousee.in/YouseeMobile/";
 
 	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
@@ -51,8 +42,8 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	public static String sessionId;
 	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
-	public static boolean isExecuting = false; 
-	
+	public static boolean isExecuting = false;
+
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
@@ -79,19 +70,15 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	 */
 	public static boolean isNetworkConnected(Context context) throws CustomException
 	{
-		Log.i("tag", "is network connected");
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		Log.i("tag", "network information is recieved");
 		if (networkInfo != null && networkInfo.isConnected())
 		{
-			Log.i("tag", "network connection is available");
 			return true;
 
 		}
 		else
 		{
-			Log.i("tag", "throwing exception");
 			throw new CustomException(CustomException.ERROR_NETWORK_NOT_FOUND);
 		}
 
@@ -113,10 +100,8 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	 */
 	public ResponseBody sendRequest(HttpPost postRequest)
 	{
-		this.listener = listener;
-		this.postRequest = postRequest;
-		// downloadwebContent = new DownloadWebpageTask();
 
+		this.postRequest = postRequest;
 		try
 		{
 
@@ -124,13 +109,9 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 		}
 		catch (IOException e)
 		{
-			Log.i("tag", "cannot retrieve");
 			e.printStackTrace();
 			return null;
 		}
-
-		// onResponseRecieved();
-
 	}
 
 	/**
@@ -151,7 +132,6 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
-		// Thread networkThread = new Thread(this);
 		try
 		{
 			Log.i("tag", "fksdjklfjskdhfkjshd");
@@ -159,19 +139,11 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 		}
 		catch (IllegalStateException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		if (NetworkConnectionHandler.isNetworkConnected(context))
-		{
-			Log.i("tag", "before Started");
-			// downloadwebContent = new DownloadWebpageTask();
-			// networkThread.start();
 		}
 
 	}
@@ -179,9 +151,6 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	public void run()
 	{
 
-		Log.i("tag", "networkThread Started");
-
-		// downloadwebContent.execute(postRequest);
 	}
 
 	/**
@@ -218,7 +187,6 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	public ResponseBody onResponseRecieved(HttpResponse response)
 	{
 		int requestCode = 0;
-		int resultCode = 0;
 
 		if (response != null)
 		{
@@ -226,15 +194,9 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 			if (response.containsHeader(Middleware.TAG_NETWORK_REQUEST_CODE))
 			{
 
-				ResponseBody responseBody = new ResponseBody(); 
-				Header[] headers = response.getAllHeaders();
-				for (int i = 0; i < headers.length; i++)
-				{
-					Log.i("tag", "header " + headers[i].getName() + " : " + headers[i].getValue());
-				}
+				ResponseBody responseBody = new ResponseBody();
 
 				String requestCodeString = response.getFirstHeader(Middleware.TAG_NETWORK_REQUEST_CODE).getValue();
-				Log.i("tag", "requestCode : " + requestCodeString);
 				requestCode = Integer.valueOf(requestCodeString);
 				responseBody.setRequestCode(requestCode);
 
@@ -258,7 +220,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 				finally
 				{
 					if (is != null)
-					{ 
+					{
 						try
 						{
 							is.close();
@@ -270,10 +232,9 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 
 					}
 				}
-				
-				Log.i("tag", "content string : " + contentAsString);
+
 				return responseBody;
-				
+
 			}
 			else
 				Toast.makeText(context, "Something went wrong,", Toast.LENGTH_LONG).show();
@@ -291,25 +252,9 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	 */
 	private ResponseBody downloadUrl(HttpPost postRequest) throws IOException
 	{
-		InputStream is = null;
-
-		Log.d("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
-		Header[] headers = postRequest.getAllHeaders();
-		Log.i("tag", "lenght " + headers.length);
-		// headers[i].getValue());
-		for (int i = 0; i < headers.length; i++)
-		{
-			Log.i("tag", "request " + headers[i].getName() + " : " + headers[i].getValue());
-		}
-		Log.i("tag", readIt(postRequest.getEntity().getContent()));
-		// httpclient.getCookieStore().addCookie();
 		HttpResponse response = httpclient.execute(postRequest);
 
 		return onResponseRecieved(response);
-
-		// Makes sure that the InputStream is closed after the
-		// app is
-		// finished using it.
 
 	}
 
@@ -324,7 +269,6 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 
 		while (read != null)
 		{
-			// System.out.println(read);
 			sb.append(read);
 			read = br.readLine();
 

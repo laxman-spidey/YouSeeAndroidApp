@@ -5,19 +5,14 @@ import in.yousee.yousee.model.ProxyOpportunityItem;
 import in.yousee.yousee.model.RealOpportunityItem;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,8 +38,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	RealOpportunityItem realItem;
 	IndividualOpportunityItemBuilder builder;
 
-	private static final String LOG_TAG = "tag";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -58,7 +51,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
 
-		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
 		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
@@ -74,10 +66,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		applyButton.setOnClickListener(this);
 
 		ImageButton selectAllButton = (ImageButton) findViewById(R.id.selectAll);
-		// ImageButton deselectAllButton = (ImageButton)
-		// findViewById(R.id.deselectAll);static
 		selectAllButton.setOnClickListener(this);
-		// deselectAllButton.setOnClickListener(this);
 
 		activityList = new ArrayList<View>();
 		super.sendRequest();
@@ -99,7 +88,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			}
 			if (checkedAtleastOneCard)
 			{
-				Log.i(LOG_TAG, "Committing");
 				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
 				builder.preCommitExecute(realItem, checkedState);
 				super.requestSenderMiddleware = builder;
@@ -113,7 +101,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		}
 		else
 		{
-			Log.i(LOG_TAG, "Biscuit");
+			
 		}
 
 	}
@@ -140,7 +128,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				refreshActivityScheduleList();
 			}
 			realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
-			Log.d("debug_tag", "real item created");
 			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
 			checkedState = new boolean[scheduleList.size()];
 			layout = (LinearLayout) findViewById(R.id.rootLay);
@@ -149,7 +136,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
 			while (iterator.hasNext())
 			{
-				Log.i(LOG_TAG, "adding.....");
 				View view = null;
 				try
 				{
@@ -167,7 +153,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		{
 			if ((Boolean) response)
 			{
-				Log.i("tag", "committed");
 				Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
 			}
 			else
@@ -195,11 +180,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		map.put(rowView, i++);
 		activityList.add(rowView);
 
-		String string = "10:20";
-		SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
-		Date datex = df.parse(string);
-		Log.i(LOG_TAG, df.format(datex));
-
 		TextView textView = (TextView) rowView.findViewById(R.id.title);
 		textView.setText("Schedule #" + i);
 
@@ -214,7 +194,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
-		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
 
 		ImageView commitView = (ImageView) rowView.findViewById(R.id.commitView);
 		commitView.setEnabled(schedule.isCommitted());
@@ -228,7 +207,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			@Override
 			public void onClick(View v)
 			{
-				Log.i(LOG_TAG, "isenabled : " + commitViewReference.isEnabled());
 				if (!commitViewReference.isEnabled())
 				{
 					int x = map.get(v);
@@ -306,15 +284,12 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
 				sessionId = SessionHandler.getSessionId(getApplicationContext());
-				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
 
 				commit();
-
 			}
 			else
 			{
-				Log.i("tag", "Entering Login screen");
 				showCommitLoginScreen();
 			}
 
@@ -323,13 +298,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			selectall = !(selectall);
 			if (selectall == true)
 			{
-				Log.i(LOG_TAG, "selectall");
 				selectAll();
 				v.setBackgroundResource(R.drawable.deselectall);
 			}
 			else
 			{
-				Log.i(LOG_TAG, "de-selectall");
 				deselectAll();
 				v.setBackgroundResource(R.drawable.selectall);
 			}
@@ -345,7 +318,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	public void showCommitLoginScreen()
 	{
 		Intent intent = new Intent();
-		Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
 
@@ -356,7 +328,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	{
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
 		{
-			Log.i(LOG_TAG, "ACTIVITY_REQUEST_COMMIT_LOGIN");
 			commit();
 		}
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)

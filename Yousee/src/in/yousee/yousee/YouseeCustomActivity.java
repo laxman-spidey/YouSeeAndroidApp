@@ -28,7 +28,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		setWindowProgressBar();
-		// getOverflowMenu();
 		super.onCreate(savedInstanceState);
 	}
 
@@ -42,13 +41,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-
-		/*
-		 * getSupportMenuInflater().inflate(R.menu.default_menu, menu);
-		 * this.menu = menu;
-		 * setMenuState(SessionHandler.isSessionIdExists
-		 * (getApplicationContext()));
-		 */
 		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
 		this.menu = menu;
 		return super.onCreateOptionsMenu(menu);
@@ -57,35 +49,12 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		Log.i(LOG_TAG, "onprepare optionsmenu");
-
 		setMenuState(SessionHandler.isSessionIdExists(getApplicationContext()));
-
 		return super.onPrepareOptionsMenu(menu);
-	}
-
-	private void getOverflowMenu()
-	{
-
-		try
-		{
-			ViewConfiguration config = ViewConfiguration.get(this);
-			Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-			if (menuKeyField != null)
-			{
-				menuKeyField.setAccessible(true);
-				menuKeyField.setBoolean(config, false);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	public boolean refresh = false;
 
-	public static final String LOG_TAG = "tag";
 	protected Middleware requestSenderMiddleware;
 
 	public void promptRetry(String msg)
@@ -99,7 +68,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void sendRequest()
 	{
 		setSupportProgressBarIndeterminateVisibility(true);
-		
+
 		if (NetworkConnectionHandler.isExecuting == false)
 		{
 			try
@@ -108,8 +77,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 			}
 			catch (CustomException e)
 			{
-
-				Log.i(LOG_TAG, "network not connected exception found");
 				promptRetry(e.getErrorMsg());
 				e.printStackTrace();
 			}
@@ -124,8 +91,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// Log.i(LOG_TAG, "retrying");
-		// requestCode = RESULT_OK;
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_RETRY)
 		{
 			if (resultCode == RESULT_OK)
@@ -152,7 +117,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		{
 		case R.id.action_refresh:
 			refresh = true;
-			Log.i(LOG_TAG, "refreshing.............................................................");
 			reloadActivity();
 			break;
 		case R.id.action_login:
@@ -176,7 +140,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 
 	private void setMenuState(boolean loggedIn)
 	{
-		Log.i(LOG_TAG, "login status " + loggedIn);
 		MenuItem loginMenu = menu.findItem(R.id.action_login);
 		MenuItem registerMenu = menu.findItem(R.id.action_register);
 		MenuItem logoutMenu = menu.findItem(R.id.action_logout);
@@ -209,7 +172,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		}
 		else
 		{
-
 			return false;
 		}
 
@@ -238,7 +200,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	{
 
 		Intent intent = new Intent();
-		Log.i("tag", "showing Registration Activity");
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
 		startActivity(intent);
 	}
@@ -247,7 +208,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	{
 
 		Intent intent = new Intent();
-		Log.i("tag", "showing About us Activity");
 		intent.setClass(this, in.yousee.yousee.AboutUs.class);
 		startActivity(intent);
 	}
@@ -260,7 +220,6 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	public void onLoginFailed()
 	{
-		Toast.makeText(getContext(), "Login Failed.", Toast.LENGTH_SHORT).show();
 		if (loginMenuClicked)
 		{
 			showLoginScreen();
@@ -304,8 +263,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	public Context getContext()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getApplicationContext();
 	}
 
 }
