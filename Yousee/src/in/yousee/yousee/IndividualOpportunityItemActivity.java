@@ -41,6 +41,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	ArrayList<View> activityList;
 	static boolean selectall = false;
 	RealOpportunityItem realItem;
+	IndividualOpportunityItemBuilder builder;
 
 	private static final String LOG_TAG = "tag";
 
@@ -54,8 +55,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		String jsonString = getIntent().getExtras().getString("result");
 
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
-		IndividualOpportunityItemBuilder builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
-		super.requestSenderChef = builder;
+		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
+
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
+		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
 		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
@@ -71,7 +75,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		ImageButton selectAllButton = (ImageButton) findViewById(R.id.selectAll);
 		// ImageButton deselectAllButton = (ImageButton)
-		// findViewById(R.id.deselectAll);
+		// findViewById(R.id.deselectAll);static
 		selectAllButton.setOnClickListener(this);
 		// deselectAllButton.setOnClickListener(this);
 
@@ -82,8 +86,36 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	public void commit()
 	{
-		Log.i("tag", "committed");
-		// showLoginScreen();
+		if (realItem != null)
+		{
+			boolean checkedAtleastOneCard = false;
+			for (int i = 0; i < checkedState.length; i++)
+			{
+				if (checkedState[i] == true)
+				{
+					checkedAtleastOneCard = true;
+					break;
+				}
+			}
+			if (checkedAtleastOneCard)
+			{
+				Log.i(LOG_TAG, "Committing");
+				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+				builder.preCommitExecute(realItem, checkedState);
+				super.requestSenderMiddleware = builder;
+				super.sendRequest();
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
+			}
+
+		}
+		else
+		{
+			Log.i(LOG_TAG, "Biscuit");
+		}
+
 	}
 
 	LinearLayout layout;
@@ -95,7 +127,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		// TODO Auto-generated method stub
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -109,6 +140,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				refreshActivityScheduleList();
 			}
 			realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
+			Log.d("debug_tag", "real item created");
 			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
 			checkedState = new boolean[scheduleList.size()];
 			layout = (LinearLayout) findViewById(R.id.rootLay);
@@ -123,17 +155,31 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				{
 					view = buildScheduleCard(iterator.next());
 				}
-				catch (ParseException e)// ImageButton
-							// deselectAllButton =
-							// (ImageButton)
-				// findViewById(R.id.deselectAll); e)
+				catch (ParseException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				layout.addView(view);
 			}
 			setSupportProgressBarIndeterminateVisibility(false);
+		}
+		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
+		{
+			if ((Boolean) response)
+			{
+				Log.i("tag", "committed");
+				Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "failed to Commit", Toast.LENGTH_SHORT).show();
+			}
+
+			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+			builder.assembleRequest();
+			refreshActivityScheduleList();
+			super.reloadActivity();
+
 		}
 		super.onResponseRecieved(response, requestCode);
 
@@ -168,16 +214,28 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		TextView volReq = (TextView) rowView.findViewById(R.id.volReq);
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
+		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
 
+		ImageView commitView = (ImageView) rowView.findViewById(R.id.commitView);
+		commitView.setEnabled(schedule.isCommitted());
+		if (commitView.isEnabled())
+		{
+			commitView.setVisibility(View.VISIBLE);
+		}
+		final ImageView commitViewReference = commitView;
 		rowView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v)
 			{
-				int x = map.get(v);
-				checkedState[x] = !(checkedState[x]);
-				setScheduleSelected(v, checkedState[x]);
-				Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
+				Log.i(LOG_TAG, "isenabled : " + commitViewReference.isEnabled());
+				if (!commitViewReference.isEnabled())
+				{
+					int x = map.get(v);
+					checkedState[x] = !(checkedState[x]);
+					setScheduleSelected(v, checkedState[x]);
+					Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
+				}
 
 			}
 		});
@@ -225,19 +283,13 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	private void setScheduleSelected(View v, boolean check)
 	{
 		ImageView imgView = (ImageView) v.findViewById(R.id.selectView);
-		// LinearLayout imgView= (LinearLayout)
-		// v.findViewById(R.id.selectViewLayout);
-		// LinearLayout card = (LinearLayout) v.findViewById(R.id.card);
-
 		if (check)
 		{
-			// card.setBackgroundResource(R.drawable.disabled_card);
 			imgView.setVisibility(View.VISIBLE);
 
 		}
 		else
 		{
-			// card.setBackgroundResource(R.drawable.border);
 			imgView.setVisibility(View.INVISIBLE);
 		}
 
@@ -249,10 +301,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		switch (v.getId())
 		{
 		case R.id.applyButton:
-			SessionHandler sessionHandler = new SessionHandler(this);
 			String sessionId = null;
-			if (sessionHandler.isLoggedIn)
+
+			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
+				sessionId = SessionHandler.getSessionId(getApplicationContext());
 				Log.i("tag", "sessionID = " + sessionId);
 				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
 
@@ -262,7 +315,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			else
 			{
 				Log.i("tag", "Entering Login screen");
-				showLoginScreen();
+				showCommitLoginScreen();
 			}
 
 			break;
@@ -289,10 +342,10 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	}
 
-	public void showLoginScreen()
+	public void showCommitLoginScreen()
 	{
 		Intent intent = new Intent();
-		Log.i("tag", "showing LoginScreen");
+		Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
 
@@ -303,7 +356,18 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	{
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
 		{
+			Log.i(LOG_TAG, "ACTIVITY_REQUEST_COMMIT_LOGIN");
 			commit();
+		}
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)
+		{
+			if (resultCode == RESULT_OK)
+			{
+
+				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+				builder.assembleRequest();
+				refreshActivityScheduleList();
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -318,6 +382,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+
 		}
 		return true;
 

@@ -20,11 +20,10 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SessionHandler extends Chef
+public class SessionHandler extends Middleware
 {
 	private Context context;
-	private String username;
-	private String password;
+
 	private String sessionID;
 	private String userID;
 	private String userType;
@@ -32,11 +31,14 @@ public class SessionHandler extends Chef
 	private OnResponseRecievedListener logoutListener;
 	private static final String SESSION_DEBUG_TAG = "session_tag";
 	public static boolean isLoggedIn = false;
+	private String username = "";
+	private String password = "";
 
 	private static final String LOGIN_DATA = "login_data";
 	private static final String KEY_USERNAME = "username";
 	private static final String KEY_PASSWORD = "password";
-	private static final String KEY_SESSION_ID = "sessionID";
+	private static final String KEY_USER_ID = "userId";
+	public static final String KEY_SESSION_ID = "sessionID";
 
 	public SessionHandler(Context context)
 	{
@@ -62,9 +64,11 @@ public class SessionHandler extends Chef
 		{
 			SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 			username = sharedPrefs.getString(KEY_USERNAME, null);
-			Log.i(SESSION_DEBUG_TAG, "username " + username);
+			this.username = username;
+			Log.i(SESSION_DEBUG_TAG, "username " + this.username);
 			password = sharedPrefs.getString(KEY_PASSWORD, null);
-			Log.i(SESSION_DEBUG_TAG, "password " + password);
+			this.password = password;
+			Log.i(SESSION_DEBUG_TAG, "password " + this.password);
 			return true;
 		}
 		return false;
@@ -77,7 +81,46 @@ public class SessionHandler extends Chef
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putString(KEY_USERNAME, username);
 		editor.putString(KEY_PASSWORD, password);
+		this.username = username;
+		this.password = password;
 		editor.commit();
+
+	}
+
+	private void setUserId(int userId)
+	{
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		SharedPreferences.Editor editor = sharedPrefs.edit();
+		editor.putInt(KEY_USER_ID, userId);
+		Log.i(SESSION_DEBUG_TAG, "userid set to : "+userId);
+		editor.commit();
+	}
+
+	public static boolean isUserIdExists(Context context)
+	{
+
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		if (sharedPrefs.contains(KEY_USER_ID) && sharedPrefs.getInt(KEY_USER_ID, 0) != 0)
+		{
+			return true;
+		}
+		return false;
+
+	}
+
+	public static int getUserId(Context context)
+	{
+		Log.i(SESSION_DEBUG_TAG, "getUserId()");
+		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
+		if (isUserIdExists(context))
+		{
+
+			int userId = sharedPrefs.getInt(KEY_USER_ID, -1);
+			Log.i(SESSION_DEBUG_TAG, "userId = " + userId);
+			return userId;
+		}
+		Log.i(SESSION_DEBUG_TAG, "userId false");
+		return 0;
 
 	}
 
@@ -101,19 +144,19 @@ public class SessionHandler extends Chef
 
 	}
 
-	public boolean getSessionId(String sessionId)
+	public static String getSessionId(Context context)
 	{
 		Log.i(SESSION_DEBUG_TAG, "getsessionId()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		if (isSessionIdExists(context))
 		{
 
-			sessionId = sharedPrefs.getString(KEY_SESSION_ID, "error");
+			String sessionId = sharedPrefs.getString(KEY_SESSION_ID, "error");
 			Log.i(SESSION_DEBUG_TAG, "sessiocheppan id exixsts = " + sessionId);
-			return true;
+			return sessionId;
 		}
 		Log.i(SESSION_DEBUG_TAG, "session id false");
-		return false;
+		return null;
 
 	}
 
@@ -135,8 +178,8 @@ public class SessionHandler extends Chef
 	{
 		Log.i(SESSION_DEBUG_TAG, "isSessionIdExists()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
-		
-		if (sharedPrefs.contains(KEY_SESSION_ID) && sharedPrefs.getString(KEY_SESSION_ID, "").equals(""))
+
+		if (sharedPrefs.contains(KEY_SESSION_ID) && sharedPrefs.getString(KEY_SESSION_ID, "").equals("") == false)
 		{
 			Log.i(SESSION_DEBUG_TAG, "returning " + true);
 			return true;
@@ -150,29 +193,24 @@ public class SessionHandler extends Chef
 	{
 
 		Log.i("tag", "in login exec");
-		// if (getLoginCredentials(username, password))
 		if (getLoginCredentials(username, password))
 		{
 			loginExec(username, password);
 		}
-		// else
-		// return -1;
 	}
 
 	public void loginExec(String username, String password) throws CustomException
 	{
-		Log.i("tag", "loginExec(username, password)");
+		Log.i("tag", "loginExec(" + username + ", " + password + ")");
 
 		this.username = username;
 		this.password = password;
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
 
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGIN_EXEC);
 		nameValuePairs = new ArrayList<NameValuePair>(2);
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
 		nameValuePairs.add(new BasicNameValuePair("username", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
-
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -182,7 +220,7 @@ public class SessionHandler extends Chef
 			e.printStackTrace();
 		}
 
-		networkHandler.sendRequest(postRequest, this);
+		sendRequest();
 
 	}
 
@@ -201,36 +239,44 @@ public class SessionHandler extends Chef
 		{
 			e.printStackTrace();
 		}
-		NetworkConnectionHandler networkHandler = new NetworkConnectionHandler(context);
-		networkHandler.sendRequest(postRequest, this);
+		sendRequest();
 
 	}
 
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
+		Log.i(SESSION_DEBUG_TAG, result);
+
 		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGIN)
 		{
 			SessionData sessionData = new SessionData(result);
 			Log.i(SESSION_DEBUG_TAG, "serving response");
 			if (sessionData.isSuccess())
 			{
+
 				Log.i(SESSION_DEBUG_TAG, "login success");
 				setLoginCredentials(username, password);
+
 				Log.i(SESSION_DEBUG_TAG, "login data set");
 				setSessionId(sessionData.getSessionId());
 				Log.i(SESSION_DEBUG_TAG, "setting session id");
+				setUserId(sessionData.getUserId());
 				String sessionId = null;
 				
-				if (getSessionId(sessionId))
+
+				if (isSessionIdExists(context))
 				{
 					Log.i(SESSION_DEBUG_TAG, "viewing session id");
-					Toast.makeText(context, "Successfully logged in " + sessionId, Toast.LENGTH_SHORT).show();
+
 				}
 				else
 				{
 					Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
 				}
+				Log.i(SESSION_DEBUG_TAG, "viewing username: " + username + ", password: " + password);
+				getLoginCredentials(username, password);
+				Log.i(SESSION_DEBUG_TAG, "viewing2 username: " + username + ", password: " + password);
 				loginFeatureClient.onLoginSuccess();
 			}
 			else
@@ -258,8 +304,8 @@ public class SessionHandler extends Chef
 	}
 
 	@Override
-	public void cook()
+	public Context getContext()
 	{
-
+		return context;
 	}
 }

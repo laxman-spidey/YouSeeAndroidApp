@@ -85,6 +85,7 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		private static final String TAG_LOCATION = "location";
 		private static final String TAG_CITY = "city";
 		private static final String TAG_VOL_REQ = "volReq";
+		private static final String TAG_COMMITTED = "committed";
 
 		private int opportunityId;
 		private Date fromDate, toDate;
@@ -92,6 +93,7 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 		private String location;
 		private String city;
 		private int volReq;
+		private boolean committed;
 
 		public OpportunitySchedule(int activityId, Date fromDate, Date toDate, Date fromTime, Date toTime, String location, String city, int volReq)
 		{
@@ -258,6 +260,16 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 			}
 		}
 
+		public boolean isCommitted()
+		{
+			return committed;
+		}
+
+		public void setCommitted(boolean committed)
+		{
+			this.committed = committed;
+		}
+
 		public String getLocation()
 		{
 			return location;
@@ -302,6 +314,7 @@ public class RealOpportunityItem extends ProxyOpportunityItem
 				setLocation(JSONObject.getString(TAG_LOCATION));
 				setCity(JSONObject.getString(TAG_CITY));
 				setVolReq(JSONObject.getInt(TAG_VOL_REQ));
+				setCommitted(JSONObject.getBoolean(TAG_COMMITTED));
 			}
 			catch (JSONException e)
 			{

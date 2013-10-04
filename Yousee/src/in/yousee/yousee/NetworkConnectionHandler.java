@@ -1,6 +1,7 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.model.CustomException;
+import in.yousee.yousee.model.ResponseBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import android.widget.Toast;
  * @author Laxman
  * @version 1.0 15/08/2013
  */
-public class NetworkConnectionHandler implements Runnable
+public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, ResponseBody>
 {
 	// used to get System services to check network status and required
 	// information
@@ -44,16 +45,25 @@ public class NetworkConnectionHandler implements Runnable
 	// web service URL
 	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
 
-	DownloadWebpageTask downloadwebContent;
+	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
-	Chef listener;
-	public static String sessionId; 
-	public static DefaultHttpClient httpclient;
+	Middleware listener;
+	public static String sessionId;
+	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
+	public static boolean isExecuting = false; 
+	
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
-		httpclient = new DefaultHttpClient();
+
+	}
+
+	public NetworkConnectionHandler(Context context, Middleware listener)
+	{
+		this.listener = listener;
+		this.context = context;
+
 	}
 
 	/**
@@ -94,23 +104,31 @@ public class NetworkConnectionHandler implements Runnable
 	 * @param HttpPostRequest
 	 *                Post request object
 	 * 
-	 * @param Chef
+	 * @param Middleware
 	 *                assigned to a global variable listener. a method of
 	 *                this class is called after receiving response
 	 * 
 	 * @throws CustomException
 	 * @see in.yousee.yousee.model.CustomException
 	 */
-	public void sendRequest(HttpPost postRequest, Chef listener) throws CustomException
+	public ResponseBody sendRequest(HttpPost postRequest)
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
-		downloadwebContent = new DownloadWebpageTask();
+		// downloadwebContent = new DownloadWebpageTask();
 
-		if (NetworkConnectionHandler.isNetworkConnected(context))
+		try
 		{
-			downloadwebContent.execute(postRequest);
+
+			return downloadUrl(postRequest);
 		}
+		catch (IOException e)
+		{
+			Log.i("tag", "cannot retrieve");
+			e.printStackTrace();
+			return null;
+		}
+
 		// onResponseRecieved();
 
 	}
@@ -122,18 +140,18 @@ public class NetworkConnectionHandler implements Runnable
 	 * @param HttpPostRequest
 	 *                Post request object
 	 * 
-	 * @param Chef
+	 * @param Middleware
 	 *                assigned to a global variable listener. a method of
 	 *                this class is called after receiving response
 	 * 
 	 * @throws CustomException
 	 * @see in.yousee.yousee.model.CustomException
 	 */
-	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Chef listener) throws CustomException
+	public void sendRequestInMultiThreadedMode(HttpPost postRequest, Middleware listener) throws CustomException
 	{
 		this.listener = listener;
 		this.postRequest = postRequest;
-		Thread networkThread = new Thread(this);
+		// Thread networkThread = new Thread(this);
 		try
 		{
 			Log.i("tag", "fksdjklfjskdhfkjshd");
@@ -152,19 +170,18 @@ public class NetworkConnectionHandler implements Runnable
 		if (NetworkConnectionHandler.isNetworkConnected(context))
 		{
 			Log.i("tag", "before Started");
-			downloadwebContent = new DownloadWebpageTask();
-			networkThread.start();
+			// downloadwebContent = new DownloadWebpageTask();
+			// networkThread.start();
 		}
 
 	}
 
-	@Override
 	public void run()
 	{
 
 		Log.i("tag", "networkThread Started");
 
-		downloadwebContent.execute(postRequest);
+		// downloadwebContent.execute(postRequest);
 	}
 
 	/**
@@ -173,46 +190,24 @@ public class NetworkConnectionHandler implements Runnable
 	 * 
 	 * @param <void> progress
 	 * 
-	 * @param <Sring>
+	 * @param <HttpResponse>
 	 *                output
 	 */
-	private class DownloadWebpageTask extends AsyncTask<HttpPost, Void, HttpResponse>
+
+	@Override
+	protected ResponseBody doInBackground(HttpPost... postRequests)
 	{
+		isExecuting = true;
+		return sendRequest(postRequests[0]);
 
-		@Override
-		protected HttpResponse doInBackground(HttpPost... postRequests)
-		{
-			try
-			{
-				// Log.i("tag", "cannot retrieve : "
-				// +postRequests[0].getURI().toString());
-				return downloadUrl(postRequests[0]);
-			}
-			catch (IOException e)
-			{
-				Log.i("tag", "cannot retrieve");
-				// HttpResponse response = new
-				// BasicHttpResponse(null,
-				// CustomException.IO_ERROR,
-				// "IO error Occured");
-				// Toast.makeText(context,
-				// "IOException occured",
-				// Toast.LENGTH_SHORT).show();
+	}
 
-				e.printStackTrace();
-
-				return null;
-			}
-
-		}
-
-		// onPostExecute displays the results of the AsyncTask.
-		@Override
-		protected void onPostExecute(HttpResponse response)
-		{
-			onResponseRecieved(response);
-		}
-
+	// onPostExecute displays the results of the AsyncTask.
+	@Override
+	protected void onPostExecute(ResponseBody responseBody)
+	{
+		isExecuting = false;
+		listener.serveResponse(responseBody.getResponseString(), responseBody.getRequestCode());
 	}
 
 	/**
@@ -220,7 +215,7 @@ public class NetworkConnectionHandler implements Runnable
 	 * server.
 	 */
 
-	public void onResponseRecieved(HttpResponse response)
+	public ResponseBody onResponseRecieved(HttpResponse response)
 	{
 		int requestCode = 0;
 		int resultCode = 0;
@@ -228,23 +223,20 @@ public class NetworkConnectionHandler implements Runnable
 		if (response != null)
 		{
 
-			if (response.containsHeader(Chef.TAG_NETWORK_REQUEST_CODE))
+			if (response.containsHeader(Middleware.TAG_NETWORK_REQUEST_CODE))
 			{
 
+				ResponseBody responseBody = new ResponseBody(); 
 				Header[] headers = response.getAllHeaders();
-				// Log.i("header "+headers[i].getName()+ " : ",
-				// headers[i].getValue());
 				for (int i = 0; i < headers.length; i++)
 				{
 					Log.i("tag", "header " + headers[i].getName() + " : " + headers[i].getValue());
 				}
 
-				String requestCodeString = response.getFirstHeader(Chef.TAG_NETWORK_REQUEST_CODE).getValue();
+				String requestCodeString = response.getFirstHeader(Middleware.TAG_NETWORK_REQUEST_CODE).getValue();
 				Log.i("tag", "requestCode : " + requestCodeString);
-				// String sessionId =
-				// response.getFirstHeader("sessionId").getValue();
-				// Log.i("tag", "sessionId : " + sessionId);
 				requestCode = Integer.valueOf(requestCodeString);
+				responseBody.setRequestCode(requestCode);
 
 				InputStream is = null;
 				String contentAsString = null;
@@ -252,38 +244,36 @@ public class NetworkConnectionHandler implements Runnable
 				{
 					is = response.getEntity().getContent();
 					contentAsString = readIt(is);
+					responseBody.setResponseString(contentAsString);
 
 				}
 				catch (IllegalStateException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				finally
 				{
 					if (is != null)
-					{
+					{ 
 						try
 						{
 							is.close();
 						}
 						catch (IOException e)
 						{
-							// TODO Auto-generated
-							// catch
-							// block
 							e.printStackTrace();
 						}
+
 					}
 				}
-				// Log.i("tag", "content string : " +
-				// contentAsString);
-				listener.serveResponse(contentAsString, requestCode);
+				
+				Log.i("tag", "content string : " + contentAsString);
+				return responseBody;
+				
 			}
 			else
 				Toast.makeText(context, "Something went wrong,", Toast.LENGTH_LONG).show();
@@ -293,28 +283,29 @@ public class NetworkConnectionHandler implements Runnable
 		{
 			Toast.makeText(context, "Something went wrong, Click on refresh.", Toast.LENGTH_LONG).show();
 		}
-
+		return null;
 	}
 
 	/**
 	 * This method connects to Server and downloads Response is returned
 	 */
-	private HttpResponse downloadUrl(HttpPost postRequest) throws IOException
+	private ResponseBody downloadUrl(HttpPost postRequest) throws IOException
 	{
 		InputStream is = null;
 
-		Log.i("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
+		Log.d("tag", "download Started" + readIt(postRequest.getEntity().getContent()));
 		Header[] headers = postRequest.getAllHeaders();
-		Log.i("tag","lenght "+headers.length);
+		Log.i("tag", "lenght " + headers.length);
 		// headers[i].getValue());
 		for (int i = 0; i < headers.length; i++)
 		{
 			Log.i("tag", "request " + headers[i].getName() + " : " + headers[i].getValue());
 		}
+		Log.i("tag", readIt(postRequest.getEntity().getContent()));
 		// httpclient.getCookieStore().addCookie();
 		HttpResponse response = httpclient.execute(postRequest);
 
-		return response;
+		return onResponseRecieved(response);
 
 		// Makes sure that the InputStream is closed after the
 		// app is

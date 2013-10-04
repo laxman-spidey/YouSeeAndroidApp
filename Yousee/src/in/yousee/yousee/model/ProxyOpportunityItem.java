@@ -161,6 +161,6 @@ public class ProxyOpportunityItem implements JSONParsable
 		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_HEALTH))
 			return R.drawable.ic_health;
 		else
-			return R.drawable.uc_logo;
+			return R.drawable.ic_launcher;
 	}
 }

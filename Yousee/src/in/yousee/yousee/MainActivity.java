@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MainActivity extends YouseeCustomActivity implements OnItemClickListener, OnResponseRecievedListener
+public class MainActivity extends YouseeCustomActivity implements OnItemClickListener
 {
 
 	private FrameLayout filterFrame;
@@ -43,7 +43,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
@@ -64,27 +64,13 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		{
 			listBuilder = new OpportunityListBuilder(this);
 		}
-		requestSenderChef = listBuilder;
+		requestSenderMiddleware = listBuilder;
 		sendRequest();
 
 	}
 
 	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
 	{
-
-		// Log.i("tag", "creating");
-		// this.proxyList = proxyList;
-		/*
-		 * // ------------testing app with no network
-		 * connection--------- proxyList = new
-		 * ArrayList<ProxyOpportunityItem>(); for (int i = 0; i < 10;
-		 * i++) { ProxyOpportunityItem testItem = new
-		 * ProxyOpportunityItem(1, "kjfklsdjfkhsdkjfhsd", "Education",
-		 * "",
-		 * "jfskldjhfksdfkjsydjfknsdjkhfkjsdnfjsdhjkfhksdgkjsdgkjsdnjkshfkjsd"
-		 * ); proxyList.add(testItem); } // ------------testing app with
-		 * no network connection---------//
-		 */
 
 		this.proxyList = proxyList;
 		listview = (ListView) findViewById(R.id.opportunityListview);
@@ -102,7 +88,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		}
 
-		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), titles, types);
+		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), proxyList);
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);
@@ -122,7 +108,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
 
-				requestSenderChef = listBuilder;
+				requestSenderMiddleware = listBuilder;
 				sendRequest();
 
 			}
@@ -175,7 +161,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		// attach the adapter to the list
 		myList.setAdapter(listAdapter);
 
-		Log.i("tag", "before expand all");
 		// expand all Groupsrevenge
 		expandAll();
 
@@ -190,13 +175,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		// notify the list so that changes can take effect
 		listAdapter.notifyDataSetChanged();
 
-		// collapse all groups
-		// collapseAll();
-		// expand the group where item was just added
-		// myList.expandGroup(groupPosition);
-		// set the current group to be selected so that it becomes
-		// visible
-		// myList.setSelectedGroup(groupPosition);
 	}
 
 	// method to expand all groups
@@ -245,7 +223,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
 		{
 
-			Log.d("tag", "child is selected");
 			// get the group header
 			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
 			// get the child info
@@ -323,7 +300,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 	{
-		Log.i("tag", "item clicked " + position);
 
 		Intent intent = new Intent();
 		intent.setClass(this, IndividualOpportunityItemActivity.class);

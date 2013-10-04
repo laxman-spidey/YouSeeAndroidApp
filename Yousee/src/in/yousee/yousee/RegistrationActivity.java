@@ -33,20 +33,35 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		setSupportProgressBarIndeterminateVisibility(false);
+
 		getWindow().setTitle("Registration");
 		getWindow().setTitleColor(getResources().getColor(R.color.red));
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.registration_form);
 		instantiateAllFields();
 
+
 	}
+
+	
+	@Override
+	protected void setWindowProgressBar()
+	{
+		
+	}
+
 
 	public void showDatePickerDialog(View v)
 	{
 		SherlockDialogFragment newFragment = new DatePickerFragment();
 		newFragment.show(getSupportFragmentManager(), "datePicker");
 
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		return false;
 	}
 
 	@Override
@@ -68,21 +83,28 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	EditText lastName;
 	EditText email;
 	EditText password;
+	EditText city;
+	EditText phNo;
 	EditText dob;
 	TextView errorField;
 
 	private void instantiateAllFields()
 	{
 		firstName = (EditText) findViewById(R.id.regFirstName);
-		firstName.setText("fsadhgfsd");
 		lastName = (EditText) findViewById(R.id.regLastName);
-		lastName.setText("fsadhgfsd");
 		email = (EditText) findViewById(R.id.regEmail);
-		email.setText("mittu.thefire@gmail.com");
 		password = (EditText) findViewById(R.id.regPassword);
-		password.setText("fsadhgfsd");
+		city = (EditText) findViewById(R.id.regCity);
+		phNo = (EditText) findViewById(R.id.regPhno);
 
 		dob = (EditText) findViewById(R.id.regDob);
+
+		// test//////
+		firstName.setText("fsadhgfsd");
+		lastName.setText("fsadhgfsd");
+		email.setText("mittu.thefire@gmail.com");
+		password.setText("fsadhgfsd");
+		// test//////
 
 		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
@@ -99,12 +121,37 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Log.i(LOG_TAG, "email : " + email.getId());
 		Log.i(LOG_TAG, "dob : " + dob.getId());
 		Log.i(LOG_TAG, "password : " + password.getId());
-		if (!isEmpty(firstName) && !isEmpty(dob) && !isEmpty(password) && !isEmpty(lastName) && validateEmail(email))
+		boolean validity = true;
+		if (isEmpty(firstName))
 		{
-			return true;
+			validity = false;
+		}
+		if (isEmpty(lastName))
+		{
+			validity = false;
+		}
+		if (isEmpty(password))
+		{
+			validity = false;
+		}
+		if (isEmpty(city))
+		{
+			validity = false;
+		}
+		if (isEmpty(phNo))
+		{
+			validity = false;
+		}
+		if (isEmpty(dob))
+		{
+			validity = false;
+		}
+		if (validateEmail(email))
+		{
+			validity = false;
 		}
 
-		return false;
+		return validity;
 	}
 
 	private boolean isEmpty(EditText field)
@@ -121,9 +168,6 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			return false;
 		}
 	}
-
-	// CustomException.showToastError(context, new
-	// CustomException(CustomException.LOGIN_ERROR));
 
 	/**
 	 * Validate hex with regular expression
@@ -173,19 +217,19 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		try
 		{
 			JSONObject obj = new JSONObject((String) response);
-			responseCode = obj.getInt(Chef.TAG_NETWORK_RESULT_CODE);
+			responseCode = obj.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
 			if (responseCode == CustomException.SUCCESS_CODE)
 			{
 				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
 				sessionHandler.serveResponse((String) response, RequestCodes.NETWORK_REQUEST_LOGIN);
 			}
-			else if(responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
+			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
 				Toast.makeText(getApplicationContext(), "Email, you have entered is already taken, Try with another Email", Toast.LENGTH_LONG).show();
-				//errorField.setText("Email, you have entered is already taken, Try with another Email");
-				//errorField.setVisibility(View.VISIBLE);
+				// errorField.setText("Email, you have entered is already taken, Try with another Email");
+				// errorField.setVisibility(View.VISIBLE);
 			}
-			else if(responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
+			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
 				Toast.makeText(getApplicationContext(), "Something went wrong, Please try submitting again.", Toast.LENGTH_LONG).show();
 			}
@@ -196,7 +240,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public Context getContext()
@@ -207,13 +251,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 	private void showErrorInField(EditText field, String errorMsg)
 	{
-		field.setText("");
-		field.setHint(errorMsg);
-
-		field.setHintTextColor(Color.RED);
-		// CustomException.showToastError(context, new
-		// CustomException(CustomException.LOGIN_ERROR));sources().getColor(R.color.red));
-
+		field.setError(errorMsg);
 	}
 
 	@Override
@@ -240,15 +278,17 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		regFormObject.setEmail(email.getText().toString());
 		regFormObject.setPassword(password.getText().toString());
 		regFormObject.setDob(dob.getText().toString());
+		regFormObject.setPhNo(phNo.getText().toString());
+		regFormObject.setCity(city.getText().toString());
 		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
-		requestSenderChef = registrationProcessor;
+		requestSenderMiddleware = registrationProcessor;
 		sendRequest();
 	}
 
 	@Override
 	public void onLoginFailed()
 	{
-		
+
 	}
 
 	@Override

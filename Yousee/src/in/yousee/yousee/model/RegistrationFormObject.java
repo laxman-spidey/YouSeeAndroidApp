@@ -2,13 +2,13 @@ package in.yousee.yousee.model;
 
 public class RegistrationFormObject
 {
-	
 
-	
 	private String firstName;
 	private String lastname;
 	private String email;
 	private String password;
+	private String phNo;
+	private String city;
 	private String dob;
 
 	public String getFirstName()
@@ -60,4 +60,25 @@ public class RegistrationFormObject
 	{
 		this.dob = dob;
 	}
+
+	public String getPhNo()
+	{
+		return phNo;
+	}
+
+	public void setPhNo(String phNo)
+	{
+		this.phNo = phNo;
+	}
+
+	public String getCity()
+	{
+		return city;
+	}
+
+	public void setCity(String city)
+	{
+		this.city = city;
+	}
+
 }

@@ -17,12 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.GpsStatus.Listener;
 import android.util.Log;
 import android.widget.Toast;
 
-public class RegistrationProcessor extends Chef
+public class RegistrationProcessor extends Middleware
 {
 
 	public static final String TAG_FIRSTNAME = "firstName";
@@ -30,6 +31,8 @@ public class RegistrationProcessor extends Chef
 	public static final String TAG_EMAIL = "email";
 	public static final String TAG_PASSWORD = "password";
 	public static final String TAG_DOB = "dob";
+	public static final String TAG_PHNO = "phNo";
+	public static final String TAG_CITY = "city";
 
 	private OnResponseRecievedListener responseListener;
 	private RegistrationFormObject regForm;
@@ -52,6 +55,8 @@ public class RegistrationProcessor extends Chef
 		nameValuePairs.add(new BasicNameValuePair(TAG_EMAIL, regForm.getEmail()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_PASSWORD, regForm.getPassword()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_DOB, regForm.getDob()));
+		nameValuePairs.add(new BasicNameValuePair(TAG_PHNO, regForm.getPhNo()));
+		nameValuePairs.add(new BasicNameValuePair(TAG_CITY, regForm.getCity()));
 		try
 		{
 			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -64,22 +69,21 @@ public class RegistrationProcessor extends Chef
 	}
 
 	@Override
-	public void cook() throws CustomException
-	{
-		NetworkConnectionHandler connectionHandler = new NetworkConnectionHandler(responseListener.getContext());
-		connectionHandler.sendRequest(postRequest, this);
-
-	}
-
-	@Override
 	public void serveResponse(String result, int requestCode)
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_REGISTER)
 		{
-			
+
 			responseListener.onResponseRecieved(result, requestCode);
 		}
 		Log.i("tag", "result is = " + result);
+	}
+
+	@Override
+	public Context getContext()
+	{
+
+		return responseListener.getContext();
 	}
 
 }

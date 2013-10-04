@@ -50,6 +50,21 @@
             android:text="aifdhsdf" />
 
         <EditText
+            android:id="@+id/regPhno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Phone number"
+            android:inputType="numberSigned" />
+
+        <EditText
+            android:id="@+id/regCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="City" />
+
+        <EditText
             android:id="@+id/regDob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

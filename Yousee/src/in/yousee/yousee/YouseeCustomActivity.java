@@ -27,18 +27,38 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		// setSupportProgressBarIndeterminate(true);
-		setSupportProgressBarIndeterminateVisibility(false);
-		getOverflowMenu();
+		setWindowProgressBar();
+		// getOverflowMenu();
 		super.onCreate(savedInstanceState);
+	}
+
+	protected void setWindowProgressBar()
+	{
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setSupportProgressBarIndeterminate(true);
+		setSupportProgressBarIndeterminateVisibility(false);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+
+		/*
+		 * getSupportMenuInflater().inflate(R.menu.default_menu, menu);
+		 * this.menu = menu;
+		 * setMenuState(SessionHandler.isSessionIdExists
+		 * (getApplicationContext()));
+		 */
+		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
+		this.menu = menu;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
-		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
-		this.menu = menu;
+		Log.i(LOG_TAG, "onprepare optionsmenu");
+
 		setMenuState(SessionHandler.isSessionIdExists(getApplicationContext()));
 
 		return super.onPrepareOptionsMenu(menu);
@@ -63,21 +83,10 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// TODO Auto-generated method stub
-
-		getSupportMenuInflater().inflate(R.menu.default_menu, menu);
-		this.menu = menu;
-		setMenuState(SessionHandler.isSessionIdExists(getApplicationContext()));
-		return super.onCreateOptionsMenu(menu);
-	}
-
 	public boolean refresh = false;
 
 	public static final String LOG_TAG = "tag";
-	protected Chef requestSenderChef;
+	protected Middleware requestSenderMiddleware;
 
 	public void promptRetry(String msg)
 	{
@@ -90,17 +99,24 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void sendRequest()
 	{
 		setSupportProgressBarIndeterminateVisibility(true);
-
-		try
+		
+		if (NetworkConnectionHandler.isExecuting == false)
 		{
-			requestSenderChef.cook();
+			try
+			{
+				requestSenderMiddleware.sendRequest();
+			}
+			catch (CustomException e)
+			{
+
+				Log.i(LOG_TAG, "network not connected exception found");
+				promptRetry(e.getErrorMsg());
+				e.printStackTrace();
+			}
 		}
-		catch (CustomException e)
+		else
 		{
-
-			Log.i(LOG_TAG, "network not connected exception found");
-			promptRetry(e.getErrorMsg());
-			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "Please wait.. ", Toast.LENGTH_SHORT);
 		}
 
 	}
@@ -115,11 +131,15 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 			if (resultCode == RESULT_OK)
 			{
 				reloadActivity();
+
 			}
 		}
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)
 		{
-
+			if (resultCode == RESULT_OK)
+			{
+				onLoginSuccess();
+			}
 		}
 		setSupportProgressBarIndeterminateVisibility(false);
 		super.onActivityResult(requestCode, resultCode, data);
@@ -144,6 +164,9 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 			break;
 		case R.id.action_register:
 			showRegistrationForm();
+			break;
+		case R.id.action_about_us:
+			showAboutUsActivity();
 			break;
 		default:
 			break;
@@ -176,44 +199,18 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public boolean sendLoginRequest(boolean loginMenuClicked)
 	{
 		this.loginMenuClicked = loginMenuClicked;
-		try
+
+		if (SessionHandler.isSessionIdExists(getApplicationContext()) == false)
 		{
 
-			SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
-			if (SessionHandler.isSessionIdExists(getApplicationContext()) == false)
-			{
-				Log.i(LOG_TAG, "sessionId doesn't exist");
-				if (SessionHandler.isLoginCredentialsExists(getApplicationContext()) == true)
-				{
-					Log.i(LOG_TAG, "login data doesn't exist");
-					Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
-					sessionHandler.loginExec();
+			showLoginScreen();
+			return true;
 
-					return true;
-				}
-				else
-				{
-					if (loginMenuClicked)
-					{
-						showLoginScreen();
-					}
-					Toast.makeText(getApplicationContext(), "new user", Toast.LENGTH_SHORT).show();
-					return false;
-				}
-
-			}
-			else
-			{
-
-				return false;
-			}
 		}
-		catch (CustomException e)
+		else
 		{
 
-			Toast.makeText(getApplicationContext(), "Login Error occured.", Toast.LENGTH_SHORT).show();
 			return false;
-
 		}
 
 	}
@@ -246,7 +243,16 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		startActivity(intent);
 	}
 
-	private void reloadActivity()
+	private void showAboutUsActivity()
+	{
+
+		Intent intent = new Intent();
+		Log.i("tag", "showing About us Activity");
+		intent.setClass(this, in.yousee.yousee.AboutUs.class);
+		startActivity(intent);
+	}
+
+	public void reloadActivity()
 	{
 		sendRequest();
 	}
@@ -276,10 +282,9 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void showLoginScreen()
 	{
 		Intent intent = new Intent();
-		Log.i("tag", "showing LoginScreen");
+		Log.i("tag", "ACTIVITY_REQUEST_LOGIN");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
-		startActivity(intent);
-
+		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_LOGIN);
 	}
 
 	@Override

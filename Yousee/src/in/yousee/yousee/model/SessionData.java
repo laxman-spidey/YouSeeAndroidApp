@@ -14,7 +14,7 @@ public class SessionData implements JSONParsable
 
 	private boolean success;
 	private String sessionId;
-	private String userId;
+	private int userId;
 	private String userType;
 
 	public SessionData(JSONObject JsonObject)
@@ -54,12 +54,12 @@ public class SessionData implements JSONParsable
 		this.sessionId = sessionId;
 	}
 
-	public String getUserId()
+	public int getUserId()
 	{
 		return userId;
 	}
 
-	public void setUserId(String userId)
+	public void setUserId(int userId)
 	{
 		this.userId = userId;
 	}
@@ -81,7 +81,7 @@ public class SessionData implements JSONParsable
 		{
 			setSessionId(JSONObject.getString(TAG_SESSION_ID));
 			setSuccess(JSONObject.getBoolean(TAG_SUCCESS));
-			setUserId(JSONObject.getString(TAG_USER_ID));
+			setUserId(JSONObject.getInt(TAG_USER_ID));
 			setUserType(JSONObject.getString(TAG_USER_TYPE_ID));
 
 		} catch (JSONException e)

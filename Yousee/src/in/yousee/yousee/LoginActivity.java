@@ -148,7 +148,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		}
 		else
 		{
-			showUsernameError("");
+
 			return true;
 		}
 
@@ -164,27 +164,21 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		}
 		else
 		{
-			showPasswordError("");
+
 			return true;
 		}
 	}
 
 	private void showUsernameError(String errorMsg)
 	{
-		usernameEditText.setHighlightColor(Color.RED);
-		usernameEditText.setHint("Username invalid");
-		usernameEditText.setHintTextColor(Color.RED);
-		// usernameErrorMsg.setText(errorMsg);
-		// usernameErrorMsg.setVisibility(View.VISIBLE);
+		usernameEditText.setError(errorMsg);
+
 	}
 
 	private void showPasswordError(String errorMsg)
 	{
-		passwordEditText.setHighlightColor(Color.RED);
-		passwordEditText.setHint("Password invalid");
-		passwordEditText.setHintTextColor(Color.RED);
-		// passwordErrorMsg.setText(errorMsg);
-		// passwordErrorMsg.setVisibility(View.VISIBLE);
+		passwordEditText.setError(errorMsg);
+
 	}
 
 	private void addErrorMsg(String errorMsg)
