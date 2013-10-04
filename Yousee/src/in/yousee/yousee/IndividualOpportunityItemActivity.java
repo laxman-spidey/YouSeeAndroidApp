@@ -315,7 +315,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			else
 			{
 				Log.i("tag", "Entering Login screen");
-				showLoginScreen();
+				showCommitLoginScreen();
 			}
 
 			break;
@@ -342,10 +342,10 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	}
 
-	public void showLoginScreen()
+	public void showCommitLoginScreen()
 	{
 		Intent intent = new Intent();
-		Log.i("tag", "showing LoginScreen");
+		Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
 
@@ -356,6 +356,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	{
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
 		{
+			Log.i(LOG_TAG, "ACTIVITY_REQUEST_COMMIT_LOGIN");
 			commit();
 		}
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)

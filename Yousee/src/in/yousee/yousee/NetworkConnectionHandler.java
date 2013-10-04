@@ -51,6 +51,8 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	public static String sessionId;
 	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
+	public static boolean isExecuting = false; 
+	
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
@@ -195,6 +197,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	@Override
 	protected ResponseBody doInBackground(HttpPost... postRequests)
 	{
+		isExecuting = true;
 		return sendRequest(postRequests[0]);
 
 	}
@@ -203,6 +206,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	@Override
 	protected void onPostExecute(ResponseBody responseBody)
 	{
+		isExecuting = false;
 		listener.serveResponse(responseBody.getResponseString(), responseBody.getRequestCode());
 	}
 
