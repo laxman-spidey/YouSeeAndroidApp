@@ -27,11 +27,16 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		// setSupportProgressBarIndeterminate(true);
-		setSupportProgressBarIndeterminateVisibility(false);
+		setWindowProgressBar();
 		// getOverflowMenu();
 		super.onCreate(savedInstanceState);
+	}
+
+	protected void setWindowProgressBar()
+	{
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setSupportProgressBarIndeterminate(true);
+		setSupportProgressBarIndeterminateVisibility(false);
 	}
 
 	@Override
@@ -94,17 +99,24 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void sendRequest()
 	{
 		setSupportProgressBarIndeterminateVisibility(true);
-
-		try
+		
+		if (NetworkConnectionHandler.isExecuting == false)
 		{
-			requestSenderMiddleware.sendRequest();
+			try
+			{
+				requestSenderMiddleware.sendRequest();
+			}
+			catch (CustomException e)
+			{
+
+				Log.i(LOG_TAG, "network not connected exception found");
+				promptRetry(e.getErrorMsg());
+				e.printStackTrace();
+			}
 		}
-		catch (CustomException e)
+		else
 		{
-
-			Log.i(LOG_TAG, "network not connected exception found");
-			promptRetry(e.getErrorMsg());
-			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "Please wait.. ", Toast.LENGTH_SHORT);
 		}
 
 	}
@@ -230,7 +242,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
 		startActivity(intent);
 	}
-	
+
 	private void showAboutUsActivity()
 	{
 
@@ -270,7 +282,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	public void showLoginScreen()
 	{
 		Intent intent = new Intent();
-		Log.i("tag", "showing LoginScreen");
+		Log.i("tag", "ACTIVITY_REQUEST_LOGIN");
 		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
 		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_LOGIN);
 	}

@@ -33,14 +33,23 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		setSupportProgressBarIndeterminateVisibility(false);
+
 		getWindow().setTitle("Registration");
 		getWindow().setTitleColor(getResources().getColor(R.color.red));
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.registration_form);
 		instantiateAllFields();
 
+
 	}
+
+	
+	@Override
+	protected void setWindowProgressBar()
+	{
+		
+	}
+
 
 	public void showDatePickerDialog(View v)
 	{
