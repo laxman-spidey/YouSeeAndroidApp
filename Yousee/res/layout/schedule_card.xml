@@ -95,5 +95,18 @@
             android:visibility="gone" />
 
         
+        <TextView
+            android:id="@+id/commitTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|right"
+            android:textColor="#369"
+            android:background="#bbb"
+            android:padding="3dp"
+            android:layout_margin="2dp"
+            android:textSize="18sp"
+            android:text="Commmitted"
+            android:visibility="gone" />
+        
 
 </FrameLayout>

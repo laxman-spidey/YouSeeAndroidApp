@@ -216,16 +216,16 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
 		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
 
-		ImageView commitView = (ImageView) rowView.findViewById(R.id.commitView);
+		View commitView = (TextView) rowView.findViewById(R.id.commitTextView);
 		commitView.setEnabled(schedule.isCommitted());
 		if (commitView.isEnabled())
 		{
-			titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
+			//titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
 			LinearLayout cardLayout = (LinearLayout) rowView.findViewById(R.id.card_layout);
-			cardLayout.setBackgroundResource(R.drawable.card_disabled);
+			//cardLayout.setBackgroundResource(R.drawable.card_disabled);
 			commitView.setVisibility(View.VISIBLE);
 		}
-		final ImageView commitViewReference = commitView;
+		final View commitViewReference = commitView;
 		rowView.setOnClickListener(new OnClickListener() {
 
 			@Override

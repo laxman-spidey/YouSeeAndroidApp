@@ -128,7 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|right"
-                        android:text="Touch on Schedule cards to select" />
+                        android:text="Tap on Schedule cards to select" />
                 </LinearLayout>
             </LinearLayout>
 
