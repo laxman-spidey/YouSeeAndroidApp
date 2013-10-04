@@ -26,9 +26,9 @@
         android:title="Logout"/>
     <item
         android:id="@+id/action_about_us"
-        android:icon="@drawable/ic_logout"
+        android:icon="@drawable/ic_action_about"
         android:orderInCategory="100"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:title="About Us"/>
 
 </menu>

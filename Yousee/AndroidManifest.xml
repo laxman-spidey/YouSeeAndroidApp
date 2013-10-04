@@ -50,6 +50,10 @@
             android:label="@string/title_activity_retry"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
+        <activity
+            android:name="in.yousee.yousee.AboutUs"
+            android:label="@string/title_activity_about_us" >
+        </activity>
     </application>
 
 </manifest>

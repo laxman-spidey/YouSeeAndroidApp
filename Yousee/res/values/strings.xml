@@ -20,6 +20,8 @@
     <color name="alpha_grey">#33000000</color>
 
     <string name="title_activity_retry">Yousee</string>
-    <string name="title_activity_about_us">AboutUs</string>
+    <string name="title_activity_about_us">About us</string>
+    <string name="label_testinghtmltags"><u>Click here to give us feedback or report an issue</u></string>
+    <string name="yousee_email_id">yousee@gmail.com</string>
 
 </resources>
