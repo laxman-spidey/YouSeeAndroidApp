@@ -32,6 +32,5 @@ public class DatePickerFragment extends SherlockDialogFragment implements DatePi
 	public void onDateSet(DatePicker view, int year, int month, int day)
 	{
 		dob.setText(""+day+"/"+month+"/"+year);
-		Log.i("tag", "date has been set");
 	}
 }

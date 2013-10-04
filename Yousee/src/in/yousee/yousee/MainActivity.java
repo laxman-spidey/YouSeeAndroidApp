@@ -1,7 +1,6 @@
 package in.yousee.yousee;
 
 import in.yousee.yousee.constants.RequestCodes;
-import in.yousee.yousee.model.CustomException;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -48,12 +46,8 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
 
-		if (SessionHandler.isLoggedIn)
-		{
-			Toast.makeText(getApplicationContext(), "hi", Toast.LENGTH_SHORT).show();
-		}
+		
 		buildOpportunityListForTheFirstTime();
-		// sendLoginRequest(false);
 		initiateExpandableList();
 	}
 
@@ -231,7 +225,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 			CheckBox checkBox = detailInfo.getCheckBox();
 			checkBox.setChecked(!checkBox.isChecked());
-			Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + detailInfo.getName() + "  , " + checkBox.isChecked(), Toast.LENGTH_SHORT).show();
+			
 			return false;
 		}
 
@@ -246,7 +240,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			// get the group header
 			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
 			// display it or do something with it
-			Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(), Toast.LENGTH_SHORT).show();
+			
 
 			return false;
 		}

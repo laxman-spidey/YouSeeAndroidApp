@@ -1,24 +1,22 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.constants.RequestCodes;
+import in.yousee.yousee.constants.ServerFiles;
+import in.yousee.yousee.model.CustomException;
+import in.yousee.yousee.model.SessionData;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-import in.yousee.yousee.RequestHandlers.LoginRequestHandler;
-import in.yousee.yousee.constants.RequestCodes;
-import in.yousee.yousee.constants.ServerFiles;
-import in.yousee.yousee.model.CustomException;
-import in.yousee.yousee.model.SessionData;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SessionHandler extends Middleware
 {
@@ -270,13 +268,8 @@ public class SessionHandler extends Middleware
 					Log.i(SESSION_DEBUG_TAG, "viewing session id");
 
 				}
-				else
-				{
-					Toast.makeText(context, "biscuit", Toast.LENGTH_SHORT).show();
-				}
-				Log.i(SESSION_DEBUG_TAG, "viewing username: " + username + ", password: " + password);
+				
 				getLoginCredentials(username, password);
-				Log.i(SESSION_DEBUG_TAG, "viewing2 username: " + username + ", password: " + password);
 				loginFeatureClient.onLoginSuccess();
 			}
 			else

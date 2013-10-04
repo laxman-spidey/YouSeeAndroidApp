@@ -5,9 +5,6 @@ import in.yousee.yousee.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-import android.widget.Toast;
-
 public class ProxyOpportunityItem implements JSONParsable
 {
 	private static final String TAG_ID = "id";

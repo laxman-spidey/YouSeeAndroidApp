@@ -225,14 +225,10 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			}
 			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
-				Toast.makeText(getApplicationContext(), "Email, you have entered is already taken, Try with another Email", Toast.LENGTH_LONG).show();
-				// errorField.setText("Email, you have entered is already taken, Try with another Email");
-				// errorField.setVisibility(View.VISIBLE);
+				showErrorInField(email, "Email, you have entered is already taken, Try with another Email");
+				
 			}
-			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
-			{
-				Toast.makeText(getApplicationContext(), "Something went wrong, Please try submitting again.", Toast.LENGTH_LONG).show();
-			}
+			
 
 		}
 		catch (JSONException e)

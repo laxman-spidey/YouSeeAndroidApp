@@ -7,5 +7,4 @@ public class ServerFiles
 	public static final String ACTIVITY_SCHEDULE = "activity_schedule.php";
 	public static final String PROCESS_REGISTRATION= "processRegistrations.php";
 	
-	
 }
