@@ -92,6 +92,7 @@ public class SessionHandler extends Middleware
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putInt(KEY_USER_ID, userId);
+		Log.i(SESSION_DEBUG_TAG, "userid set to : "+userId);
 		editor.commit();
 	}
 
@@ -109,12 +110,12 @@ public class SessionHandler extends Middleware
 
 	public static int getUserId(Context context)
 	{
-		Log.i(SESSION_DEBUG_TAG, "getsessionId()");
+		Log.i(SESSION_DEBUG_TAG, "getUserId()");
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		if (isUserIdExists(context))
 		{
 
-			int userId = sharedPrefs.getInt(KEY_SESSION_ID, 0);
+			int userId = sharedPrefs.getInt(KEY_USER_ID, -1);
 			Log.i(SESSION_DEBUG_TAG, "userId = " + userId);
 			return userId;
 		}
@@ -245,6 +246,7 @@ public class SessionHandler extends Middleware
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
+		Log.i(SESSION_DEBUG_TAG, result);
 
 		if (requestCode == RequestCodes.NETWORK_REQUEST_LOGIN)
 		{
@@ -261,6 +263,7 @@ public class SessionHandler extends Middleware
 				Log.i(SESSION_DEBUG_TAG, "setting session id");
 				setUserId(sessionData.getUserId());
 				String sessionId = null;
+				
 
 				if (isSessionIdExists(context))
 				{

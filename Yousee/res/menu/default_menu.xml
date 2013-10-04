@@ -18,12 +18,17 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="Register"/>
-    
     <item
         android:id="@+id/action_logout"
         android:icon="@drawable/ic_logout"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="Logout"/>
+    <item
+        android:id="@+id/action_about_us"
+        android:icon="@drawable/ic_logout"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="About Us"/>
 
 </menu>

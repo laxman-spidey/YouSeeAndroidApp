@@ -58,7 +58,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
 
-		Log.d("debug_tag", "requestCode = " + builder.requestCode);
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
 		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
@@ -88,11 +88,28 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	{
 		if (realItem != null)
 		{
-			Log.i(LOG_TAG, "Committing");
-			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
-			builder.preCommitExecute(realItem, checkedState);
-			super.requestSenderMiddleware = builder;
-			super.sendRequest();
+			boolean checkedAtleastOneCard = false;
+			for (int i = 0; i < checkedState.length; i++)
+			{
+				if (checkedState[i] == true)
+				{
+					checkedAtleastOneCard = true;
+					break;
+				}
+			}
+			if (checkedAtleastOneCard)
+			{
+				Log.i(LOG_TAG, "Committing");
+				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+				builder.preCommitExecute(realItem, checkedState);
+				super.requestSenderMiddleware = builder;
+				super.sendRequest();
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
+			}
+
 		}
 		else
 		{
@@ -140,7 +157,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				}
 				catch (ParseException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				layout.addView(view);
@@ -158,6 +174,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			{
 				Toast.makeText(getApplicationContext(), "failed to Commit", Toast.LENGTH_SHORT).show();
 			}
+
+			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+			builder.assembleRequest();
+			refreshActivityScheduleList();
+			super.reloadActivity();
 
 		}
 		super.onResponseRecieved(response, requestCode);
@@ -281,6 +302,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		{
 		case R.id.applyButton:
 			String sessionId = null;
+
 			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
 				sessionId = SessionHandler.getSessionId(getApplicationContext());
@@ -336,6 +358,16 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		{
 			commit();
 		}
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)
+		{
+			if (resultCode == RESULT_OK)
+			{
+
+				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+				builder.assembleRequest();
+				refreshActivityScheduleList();
+			}
+		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -349,6 +381,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+
 		}
 		return true;
 

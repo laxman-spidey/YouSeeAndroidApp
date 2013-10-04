@@ -100,15 +100,17 @@ public class IndividualOpportunityItemBuilder extends Middleware
 		String value = "";
 		for (int i = 0; i < checkedState.length; i++)
 		{
+			Log.i("tag"," checked state : "+ checkedState[i]);
 			if (checkedState[i])
 			{
 				int id = this.realOpportunityItem.getActivityScheduleList().get(i).getOpportunityId();
+				Log.i("tag"," checked id: "+ id);
 				value += id + ",";
 			}
 
 		}
-		
-		value = value.substring(0, value.length() - 2);
+		Log.i("tag", "opportunity Id values = " + value);
+		value = value.substring(0, value.length() - 1);
 		Log.i("tag", "opportunity Id values = " + value);
 		nameValuePairs.add(new BasicNameValuePair(TAG_OPPORTUNITY_COMMITTED_ID, "" + value));
 

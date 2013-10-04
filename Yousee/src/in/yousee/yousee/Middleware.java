@@ -12,8 +12,7 @@ import android.content.Context;
 
 public abstract class Middleware
 {
-
-	public static final String TAG_NETWORK_REQUEST_CODE = "requestCode";
+ 	public static final String TAG_NETWORK_REQUEST_CODE = "requestCode";
 	public static final String TAG_NETWORK_RESULT_CODE = "resultCode";
 	public static final String TAG_USER_ID = "userId";
 	protected List<NameValuePair> nameValuePairs;
@@ -26,12 +25,11 @@ public abstract class Middleware
 
 	protected void addUserIdToPost()
 	{
-		if (SessionHandler.isUserIdExists(getContext()))
+		if (SessionHandler.isSessionIdExists(getContext()))
 		{
 			nameValuePairs.add(new BasicNameValuePair(TAG_USER_ID, "" + SessionHandler.getUserId(getContext())));
 		}
 	}
-
 	public abstract void assembleRequest();
 
 	public void sendRequest() throws CustomException

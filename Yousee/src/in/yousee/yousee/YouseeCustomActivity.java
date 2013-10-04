@@ -228,7 +228,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		startActivity(intent);
 	}
 
-	private void reloadActivity()
+	public void reloadActivity()
 	{
 		sendRequest();
 	}
