@@ -16,8 +16,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="First name"
-            android:inputType="textPersonName"
-            android:text="aifdhsdf" >
+            android:inputType="textPersonName" >
 
             <requestFocus />
         </EditText>
@@ -28,8 +27,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Last name"
-            android:inputType="textPersonName"
-            android:text="aifdhsdf" />
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/regEmail"
@@ -37,8 +35,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:text="aifdhsdf" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/regPassword"
@@ -46,8 +43,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Password"
-            android:inputType="textPassword"
-            android:text="aifdhsdf" />
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/regPhno"
@@ -71,8 +67,7 @@
             android:ems="10"
             android:hint="Date of Birth"
             android:inputType="date"
-            android:onClick="showDatePickerDialog"
-            android:text="aifdhsdf" />
+            android:onClick="showDatePickerDialog" />
 
         <TextView
             android:id="@+id/regErrorTextView"
