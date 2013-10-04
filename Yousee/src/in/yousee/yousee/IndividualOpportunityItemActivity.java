@@ -200,8 +200,8 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		Date datex = df.parse(string);
 		Log.i(LOG_TAG, df.format(datex));
 
-		TextView textView = (TextView) rowView.findViewById(R.id.title);
-		textView.setText("Schedule #" + i);
+		TextView titleView = (TextView) rowView.findViewById(R.id.title);
+		titleView.setText("Schedule #" + i);
 
 		TextView date = (TextView) rowView.findViewById(R.id.date);
 		date.setText(schedule.getFromDateString() + " - " + schedule.getToDateString());
@@ -220,6 +220,9 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		commitView.setEnabled(schedule.isCommitted());
 		if (commitView.isEnabled())
 		{
+			titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
+			LinearLayout cardLayout = (LinearLayout) rowView.findViewById(R.id.card_layout);
+			cardLayout.setBackgroundResource(R.drawable.card_disabled);
 			commitView.setVisibility(View.VISIBLE);
 		}
 		final ImageView commitViewReference = commitView;

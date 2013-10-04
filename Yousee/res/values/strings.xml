@@ -18,6 +18,7 @@
     <color name="black">#000000</color>
     <color name="holo_blue_bright">#ff00ddff</color>
     <color name="alpha_grey">#33000000</color>
+    <color name="disabled_card_color">#DCDCDC</color>
 
     <string name="title_activity_retry">Yousee</string>
     <string name="title_activity_about_us">About us</string>

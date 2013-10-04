@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
     android:background="@color/custom_grey"
     android:orientation="vertical" >
 
@@ -36,9 +35,9 @@
                 android:id="@+id/description_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:layout_margin="5dp"
-                android:text="United Care Development Services (UC) is a Philanthropy Exchange which provides a wider giving platform through the Four Donations For Development (Chaar Daan, Chaar Dhaam) initiative, which invites contributions in the form of \n\n   1.Volunteering(Shram Daan), \n   2.In Kind Donations(Vastu Daan), \n   3.Waste Donations (Kachra Daan) and \n   4.Financial(PostPay) Donations(Dhan Daan). \n\nUC&apos;s objective is to generate Resources for Result oriented social work, in the areas of Education, Health and Environment." />
+                android:text="United Care Development Services (UC) is a Philanthropy Exchange which provides a wider giving platform through the Four Donations For Development (Chaar Daan, Chaar Dhaam) initiative, which invites contributions in the form of \n\n   1.Volunteering(Shram Daan), \n   2.In Kind Donations(Vastu Daan), \n   3.Waste Donations (Kachra Daan) and \n   4.Financial(PostPay) Donations(Dhan Daan). \n\nUC&apos;s objective is to generate Resources for Result oriented social work, in the areas of Education, Health and Environment."
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/emailIntentTextView"
