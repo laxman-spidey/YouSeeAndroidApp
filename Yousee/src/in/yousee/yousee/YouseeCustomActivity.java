@@ -153,6 +153,9 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		case R.id.action_register:
 			showRegistrationForm();
 			break;
+		case R.id.action_about_us:
+			showAboutUsActivity();
+			break;
 		default:
 			break;
 		}
@@ -225,6 +228,15 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		Intent intent = new Intent();
 		Log.i("tag", "showing Registration Activity");
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
+		startActivity(intent);
+	}
+	
+	private void showAboutUsActivity()
+	{
+
+		Intent intent = new Intent();
+		Log.i("tag", "showing About us Activity");
+		intent.setClass(this, in.yousee.yousee.AboutUs.class);
 		startActivity(intent);
 	}
 
