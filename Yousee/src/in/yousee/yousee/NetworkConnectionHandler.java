@@ -34,8 +34,8 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	// information
 	Context context;
 
-	// web service URL
-	public static final String DOMAIN = "http://www.yousee.in/YouseeMobile/";
+	// web service URL 
+	public static final String DOMAIN = "http://192.168.0.102/yousee_test/YouseeMobile/";
 
 	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;

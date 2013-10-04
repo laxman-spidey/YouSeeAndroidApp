@@ -77,7 +77,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		// ImageButton deselectAllButton = (ImageButton)
 		// findViewById(R.id.deselectAll);static
 		selectAllButton.setOnClickListener(this);
-		// deselectAllButton.setOnClickListener(this);
+		// deselectAllButton.setOnClickListener(this); 
 
 		activityList = new ArrayList<View>();
 		super.sendRequest();
@@ -97,7 +97,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 					break;
 				}
 			}
-			if (checkedAtleastOneCard)
+			if (checkedAtleastOneCard == true)
 			{
 				Log.i(LOG_TAG, "Committing");
 				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
@@ -347,10 +347,27 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 	public void showCommitLoginScreen()
 	{
-		Intent intent = new Intent();
-		Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
-		intent.setClass(this, in.yousee.yousee.LoginActivity.class);
-		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
+		boolean checkedAtleastOneCard = false;
+		for (int i = 0; i < checkedState.length; i++)
+		{
+			if (checkedState[i] == true)
+			{
+				checkedAtleastOneCard = true;
+				break;
+			}
+		}
+		if (checkedAtleastOneCard == true)
+		{
+			Intent intent = new Intent();
+			Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
+			intent.setClass(this, in.yousee.yousee.LoginActivity.class);
+			startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
+		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
+		}
+		
 
 	}
 

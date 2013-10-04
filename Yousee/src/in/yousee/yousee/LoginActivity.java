@@ -47,18 +47,13 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		passwordEditText = (EditText) findViewById(R.id.password);
 		loginButton = (Button) findViewById(R.id.loginButton);
 		RegisterButton = (Button) findViewById(R.id.registerButton);
-		// usernameErrorMsg = (TextView)
-		// findViewById(R.id.usernameErrorMessage);
-		// passwordErrorMsg = (TextView)
-		// findViewById(R.id.passwordErrorMessage);
+
 
 		usernameEditText.setOnFocusChangeListener(this);
 		passwordEditText.setOnFocusChangeListener(this);
 		loginButton.setOnClickListener(this);
 		RegisterButton.setOnClickListener(this);
 
-		usernameEditText.setText("vivek");
-		passwordEditText.setText("password");
 
 	}
 

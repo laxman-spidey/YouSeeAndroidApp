@@ -99,12 +99,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 		dob = (EditText) findViewById(R.id.regDob);
 
-		// test//////
-		firstName.setText("fsadhgfsd");
-		lastName.setText("fsadhgfsd");
-		email.setText("mittu.thefire@gmail.com");
-		password.setText("fsadhgfsd");
-		// test//////
+		
 
 		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);

@@ -3,38 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/custom_grey"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".AboutUs" >
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp" >
+        android:layout_gravity="center" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/border"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context=".AboutUs" >
+            android:padding="5dp"
+            android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/imageView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:padding="5dp"
                 android:src="@drawable/welcome_uc_logo" />
 
             <TextView
                 android:id="@+id/description_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/imageView1"
                 android:layout_margin="5dp"
                 android:text="United Care Development Services (UC) is a Philanthropy Exchange which provides a wider giving platform through the Four Donations For Development (Chaar Daan, Chaar Dhaam) initiative, which invites contributions in the form of \n\n   1.Volunteering(Shram Daan), \n   2.In Kind Donations(Vastu Daan), \n   3.Waste Donations (Kachra Daan) and \n   4.Financial(PostPay) Donations(Dhan Daan). \n\nUC&apos;s objective is to generate Resources for Result oriented social work, in the areas of Education, Health and Environment."
                 android:textColor="@color/black" />
@@ -43,12 +43,15 @@
                 android:id="@+id/emailIntentTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/description_view"
+                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:singleLine="false"
                 android:text="@string/label_testinghtmltags"
                 android:textColor="#0000FF"
                 android:textStyle="italic" />
-        </LinearLayout>
+
+        </RelativeLayout>
     </ScrollView>
 
 </LinearLayout>
