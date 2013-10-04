@@ -7,19 +7,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Locale;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -43,7 +35,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	Context context;
 
 	// web service URL
-	public static final String DOMAIN = "http://192.168.0.102:80/yousee_test/YouseeMobile/";
+	public static final String DOMAIN = "http://www.yousee.in/YouseeMobile/";
 
 	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
@@ -51,8 +43,9 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	public static String sessionId;
 	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
-	public static boolean isExecuting = false; 
-	
+	public static boolean isExecuting = false;
+	public String toastString = null;
+
 	public NetworkConnectionHandler(Context context)
 	{
 		this.context = context;
@@ -207,7 +200,12 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	protected void onPostExecute(ResponseBody responseBody)
 	{
 		isExecuting = false;
-		listener.serveResponse(responseBody.getResponseString(), responseBody.getRequestCode());
+		if (toastString != null)
+		{
+			Toast.makeText(context, toastString, Toast.LENGTH_LONG).show();
+		}
+		if (responseBody != null)
+			listener.serveResponse(responseBody.getResponseString(), responseBody.getRequestCode());
 	}
 
 	/**
@@ -226,7 +224,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 			if (response.containsHeader(Middleware.TAG_NETWORK_REQUEST_CODE))
 			{
 
-				ResponseBody responseBody = new ResponseBody(); 
+				ResponseBody responseBody = new ResponseBody();
 				Header[] headers = response.getAllHeaders();
 				for (int i = 0; i < headers.length; i++)
 				{
@@ -258,7 +256,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 				finally
 				{
 					if (is != null)
-					{ 
+					{
 						try
 						{
 							is.close();
@@ -270,18 +268,19 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 
 					}
 				}
-				
+
 				Log.i("tag", "content string : " + contentAsString);
 				return responseBody;
-				
+
 			}
 			else
-				Toast.makeText(context, "Something went wrong,", Toast.LENGTH_LONG).show();
+				toastString = "Something went wrong, Please Report the issue to the developer.";
 
 		}
 		else
 		{
-			Toast.makeText(context, "Something went wrong, Click on refresh.", Toast.LENGTH_LONG).show();
+			toastString = "Something went wrong, Please report the issue to the developer.";
+
 		}
 		return null;
 	}
