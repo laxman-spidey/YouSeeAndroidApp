@@ -9,6 +9,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -134,11 +135,15 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 
 			}
 		}
-		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN)
+		if (requestCode == RequestCodes.ACTIVITY_REQUEST_LOGIN || requestCode == RequestCodes.ACTIVITY_REQUEST_REGISTRATION )
 		{
 			if (resultCode == RESULT_OK)
 			{
 				onLoginSuccess();
+			}
+			else if(resultCode == Activity.RESULT_FIRST_USER)
+			{
+				showRegistrationForm();
 			}
 		}
 		setSupportProgressBarIndeterminateVisibility(false);
@@ -240,7 +245,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		Intent intent = new Intent();
 		Log.i("tag", "showing Registration Activity");
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_REGISTRATION);
 	}
 
 	private void showAboutUsActivity()
@@ -271,6 +276,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 	@Override
 	public void onLoginSuccess()
 	{
+		Log.i(LOG_TAG, "in login success");
 		SessionHandler.isLoggedIn = true;
 		setMenuState(true);
 		supportInvalidateOptionsMenu();

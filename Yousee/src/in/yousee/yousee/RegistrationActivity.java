@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.Window;
 
 public class RegistrationActivity extends YouseeCustomActivity implements OnFocusChangeListener, OnClickListener, UsesLoginFeature, OnResponseRecievedListener
 {
@@ -47,7 +48,8 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	@Override
 	protected void setWindowProgressBar()
 	{
-		
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		//setSupportProgressBarIndeterminateVisibility(false);
 	}
 
 
@@ -99,53 +101,69 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 		dob = (EditText) findViewById(R.id.regDob);
 
-		
-
 		errorField = (TextView) findViewById(R.id.regErrorTextView);
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
 		registerButton.setOnClickListener(this);
 		dob.setOnFocusChangeListener(this);
+		
+		//test
+		// firstName.setText("fsdaf");
+		// lastName.setText("fsdaf");
+		// email.setText("fsdaf@kh.com");
+		// dob.setText("fsdaf");
+		// password.setText("fsdaf");
+		//city.setText("fsdaf");
+		//phNo.setText("3456789");
+		//test
 
 	}
 
 	private boolean validateForm()
 	{
 
-		Log.i(LOG_TAG, "first : " + firstName.getId());
-		Log.i(LOG_TAG, "last : " + lastName.getId());
-		Log.i(LOG_TAG, "email : " + email.getId());
-		Log.i(LOG_TAG, "dob : " + dob.getId());
-		Log.i(LOG_TAG, "password : " + password.getId());
+		Log.i(LOG_TAG, "first : " + firstName.getText());
+		Log.i(LOG_TAG, "last : " + lastName.getText());
+		Log.i(LOG_TAG, "email : " + email.getText());
+		Log.i(LOG_TAG, "dob : " + dob.getText());
+		Log.i(LOG_TAG, "password : " + password.getText());
+		
 		boolean validity = true;
 		if (isEmpty(firstName))
 		{
+			Log.i(LOG_TAG, "firstname empty");
 			validity = false;
 		}
 		if (isEmpty(lastName))
 		{
+			Log.i(LOG_TAG, "lastname empty");
 			validity = false;
 		}
 		if (isEmpty(password))
 		{
+			Log.i(LOG_TAG, "password empty");
 			validity = false;
 		}
 		if (isEmpty(city))
 		{
+			Log.i(LOG_TAG, "city empty");
 			validity = false;
 		}
 		if (isEmpty(phNo))
 		{
+			Log.i(LOG_TAG, "phno empty");
 			validity = false;
 		}
 		if (isEmpty(dob))
 		{
+			Log.i(LOG_TAG, "dob empty");
 			validity = false;
 		}
-		if (validateEmail(email))
+		if (!validateEmail(email))
 		{
+			Log.i(LOG_TAG, "email empty");
 			validity = false;
 		}
-
+		Log.i(LOG_TAG,"validity: "+validity);
 		return validity;
 	}
 
@@ -186,7 +204,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		{
 			if ((matcher.matches()))
 			{
-				Log.i(LOG_TAG, "matched email id ");
+				Log.i(LOG_TAG, "email id matched ");
 				return true;
 			}
 			else
@@ -216,14 +234,17 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			if (responseCode == CustomException.SUCCESS_CODE)
 			{
 				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
+				Log.i(LOG_TAG, "Sending response to session handler");
 				sessionHandler.serveResponse((String) response, RequestCodes.NETWORK_REQUEST_LOGIN);
 			}
 			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
 				showErrorInField(email, "Email, you have entered is already taken, Try with another Email");
-				
 			}
-			
+			else
+			{
+				Log.i(LOG_TAG, "response code not matched");
+			}
 
 		}
 		catch (JSONException e)
@@ -255,7 +276,10 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	public void onClick(View v)
 	{
 		if (validateForm())
+		{
+			setSupportProgressBarIndeterminateVisibility(true);
 			submitRegistration();
+		}
 		else
 			Log.i(LOG_TAG, "biscuittttttttttttttt..");
 
@@ -263,6 +287,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 
 	private void submitRegistration()
 	{
+		Log.i(LOG_TAG, "submitting");
 		RegistrationFormObject regFormObject = new RegistrationFormObject();
 		regFormObject.setFirstName(firstName.getText().toString());
 		regFormObject.setLastname(lastName.getText().toString());
@@ -279,13 +304,14 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	@Override
 	public void onLoginFailed()
 	{
-
+		setSupportProgressBarIndeterminateVisibility(false);
 	}
 
 	@Override
 	public void onLoginSuccess()
 	{
-		Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
+		setSupportProgressBarIndeterminateVisibility(false);
+		//Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
 		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
 		finish();
 	}

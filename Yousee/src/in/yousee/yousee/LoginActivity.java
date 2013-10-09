@@ -96,7 +96,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		}
 		else if (v.getId() == R.id.registerButton)
 		{
-			showRegistrationForm();
+			//Toast.makeText(getApplicationContext(), "register", Toast.LENGTH_LONG).show();
+			setResult(Activity.RESULT_FIRST_USER, new Intent());
+			finish();
+			//showRegistrationForm();
 		}
 	}
 
@@ -202,6 +205,6 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		Intent intent = new Intent();
 		Log.i("tag", "showing Registration Activity");
 		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
-		startActivity(intent);
+	
 	}
 }

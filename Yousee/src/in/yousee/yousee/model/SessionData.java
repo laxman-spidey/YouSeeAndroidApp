@@ -81,7 +81,6 @@ public class SessionData implements JSONParsable
 		{
 			setSessionId(JSONObject.getString(TAG_SESSION_ID));
 			setSuccess(JSONObject.getBoolean(TAG_SUCCESS));
-			setUserId(JSONObject.getInt(TAG_USER_ID));
 			setUserType(JSONObject.getString(TAG_USER_TYPE_ID));
 
 		} catch (JSONException e)

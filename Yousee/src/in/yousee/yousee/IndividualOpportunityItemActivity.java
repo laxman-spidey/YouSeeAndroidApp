@@ -77,7 +77,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		// ImageButton deselectAllButton = (ImageButton)
 		// findViewById(R.id.deselectAll);static
 		selectAllButton.setOnClickListener(this);
-		// deselectAllButton.setOnClickListener(this); 
+		// deselectAllButton.setOnClickListener(this);
 
 		activityList = new ArrayList<View>();
 		super.sendRequest();
@@ -220,9 +220,9 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		commitView.setEnabled(schedule.isCommitted());
 		if (commitView.isEnabled())
 		{
-			//titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
+			// titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
 			LinearLayout cardLayout = (LinearLayout) rowView.findViewById(R.id.card_layout);
-			//cardLayout.setBackgroundResource(R.drawable.card_disabled);
+			// cardLayout.setBackgroundResource(R.drawable.card_disabled);
 			commitView.setVisibility(View.VISIBLE);
 		}
 		final View commitViewReference = commitView;
@@ -254,6 +254,9 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		activityList.removeAll(activityList);
 		i = 0;
 		map.clear();
+		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+		requestSenderMiddleware = builder;
+		
 
 	}
 
@@ -367,7 +370,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		{
 			Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
 		}
-		
 
 	}
 
@@ -406,6 +408,13 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		}
 		return true;
 
+	}
+
+	@Override
+	public void onLoginSuccess()
+	{
+		refreshActivityScheduleList();
+		super.onLoginSuccess();
 	}
 
 	@Override
