@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.PendingIntent;

@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
 import in.yousee.yousee.model.CustomException;
 import android.app.Activity;
 import android.content.Context;

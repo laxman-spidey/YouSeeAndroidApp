@@ -72,7 +72,7 @@ public class OpportunityListBuilder extends Middleware
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
 		nameValuePairs = new ArrayList<NameValuePair>(2);
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST);
-		
+		boolean noItemChecked = true;
 		nameValuePairs.add(new BasicNameValuePair(TAG_UPDATE, "true"));
 		Log.i("tag", "+hfksjdhfldhfjkghdfjkgdkjfhgjkdhfjgkhdfjkghjkdfhgkjdshfg");
 		Iterator<FilterGroupInfo> it = filterGroupList.iterator();
@@ -100,6 +100,7 @@ public class OpportunityListBuilder extends Middleware
 			}
 			if (isOneOfChildChecked)
 			{
+				noItemChecked = false;
 				string = string.substring(0, string.length() - 1);
 
 				nameValuePairs.add(new BasicNameValuePair(group.getName(), "" + string));
@@ -110,7 +111,14 @@ public class OpportunityListBuilder extends Middleware
 
 		try
 		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			if(noItemChecked)
+			{
+				assembleRequest();
+			}
+			else
+			{
+				postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			}
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -145,10 +153,9 @@ public class OpportunityListBuilder extends Middleware
 
 			}
 			catch (JSONException e)
-
 			{
 				Log.i("tag", "exception caught");
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			Log.i("tag", "item list length = " + proxyItemList.size());

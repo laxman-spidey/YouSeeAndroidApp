@@ -1,13 +1,18 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
+
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class FilterListAdapter extends BaseExpandableListAdapter
@@ -20,6 +25,7 @@ public class FilterListAdapter extends BaseExpandableListAdapter
 	{
 		this.context = context;
 		this.deptList = deptList;
+		
 	}
 
 	@Override
@@ -50,13 +56,17 @@ public class FilterListAdapter extends BaseExpandableListAdapter
 		}
 
 		CheckBox check = (CheckBox) view.findViewById(R.id.sequence);
+		//CheckedTextView check = (CheckedTextView) view.findViewById(R.id.sequence);
 		check.setFocusable(false);
+		check.setChecked(detailInfo.isChecked());
+		//check.setText(detailInfo.getName());
 		detailInfo.setCheckBox(check);
-
+		detailInfo.setLayout((LinearLayout)view);
 		// sequence.setText(detailInfo.getSequence().trim() + ") ");
 		TextView childItem = (TextView) view.findViewById(R.id.childItem);
 		childItem.setText(detailInfo.getName().trim());
 		detailInfo.setTextView(childItem);
+		Log.i("tag", "getting childview : group : "+group.getName()+", child name : "+detailInfo.getName().trim()+", child checked state: "+detailInfo.getCheckBox().isChecked());
 		return view;
 	}
 

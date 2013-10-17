@@ -4,6 +4,15 @@
     android:layout_height="match_parent"
     android:background="@color/custom_grey" >
 
+    <TextView
+        android:id="@+id/infoMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No Opportunities found under selected criteria"
+        android:textColor="@color/black"
+        android:visibility="gone" />
+
     <ListView
         android:id="@+id/opportunityListview"
         android:layout_width="match_parent"
@@ -39,7 +48,6 @@
                 android:childDivider="@color/divider"
                 android:divider="@color/divider"
                 android:dividerHeight="1dp"
-                
                 android:groupIndicator="@drawable/expandable_list_indicator"
                 android:paddingBottom="45dp" >
             </ExpandableListView>

@@ -1,5 +1,7 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
+
 import com.actionbarsherlock.app.SherlockActivity;
 
 import android.os.Bundle;

@@ -1,5 +1,7 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
+
 import java.util.Calendar;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;

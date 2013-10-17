@@ -1,5 +1,6 @@
 package in.yousee.yousee;
 
+import in.yousee.yousee.R;
 import in.yousee.yousee.constants.RequestCodes;
 import in.yousee.yousee.model.ProxyOpportunityItem;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -46,7 +49,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
 
-		
 		buildOpportunityListForTheFirstTime();
 		initiateExpandableList();
 	}
@@ -160,7 +162,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		// add new item to the List
 		// listener for child row click
-		myList.setOnChildClickListener(myListItemClicked);
+		// myList.setOnChildClickListener(myListItemClicked);
 		// listener for group heading click
 		myList.setOnGroupClickListener(myListGroupClicked);
 
@@ -211,26 +213,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 	}
 
-	// our child listener
-	public OnChildClickListener myListItemClicked = new OnChildClickListener() {
-
-		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
-		{
-
-			// get the group header
-			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
-			// get the child info
-			FilterChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
-			// display it or do something with it
-
-			CheckBox checkBox = detailInfo.getCheckBox();
-			checkBox.setChecked(!checkBox.isChecked());
-			
-			return false;
-		}
-
-	};
-
 	// our group listener
 	private OnGroupClickListener myListGroupClicked = new OnGroupClickListener() {
 
@@ -239,8 +221,16 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 			// get the group header
 			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
+			ArrayList<FilterChildInfo> detailInfoList = headerInfo.getProductList();
+			Iterator<FilterChildInfo> it = detailInfoList.iterator();
+			Log.i(LOG_TAG, "group: " + headerInfo.getName());
+			while (it.hasNext())
+			{
+				FilterChildInfo o = it.next();
+				Log.i(LOG_TAG, o.getName() + " : " + o.isChecked());
+			}
+
 			// display it or do something with it
-			
 
 			return false;
 		}
@@ -307,8 +297,22 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
+			TextView infoMsg = (TextView) findViewById(R.id.infoMsg);
 			ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
-			buildOpportunityList(responseObject);
+			if (responseObject.size() > 0)
+			{
+				infoMsg.setVisibility(View.GONE);
+				buildOpportunityList(responseObject);
+				listview.setVisibility(View.VISIBLE);
+				
+			}
+			else
+			{
+				Log.i(LOG_TAG, "Showing info msg");
+				listview.setVisibility(View.GONE);
+				infoMsg.setVisibility(View.VISIBLE);
+			}
+			
 			setSupportProgressBarIndeterminateVisibility(false);
 		}
 		super.onResponseRecieved(response, requestCode);
@@ -319,6 +323,13 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		return this.getApplicationContext();
 
+	}
+
+	@Override
+	public void reloadActivity()
+	{
+		requestSenderMiddleware = listBuilder;
+		super.reloadActivity();
 	}
 
 }
