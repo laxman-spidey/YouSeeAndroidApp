@@ -28,8 +28,10 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.analytics.tracking.android.EasyTracker;
 
-public class MainActivity extends YouseeCustomActivity implements OnItemClickListener
+public class MainActivity extends YouseeCustomActivity implements
+		OnItemClickListener
 {
 
 	private FrameLayout filterFrame;
@@ -65,7 +67,8 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 	}
 
-	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
+	public void buildOpportunityList(
+			ArrayList<ProxyOpportunityItem> proxyList)
 	{
 
 		this.proxyList = proxyList;
@@ -77,14 +80,16 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		Iterator<ProxyOpportunityItem> it = proxyList.iterator();
 		while (it.hasNext())
 		{
-			ProxyOpportunityItem item = (ProxyOpportunityItem) it.next();
+			ProxyOpportunityItem item = (ProxyOpportunityItem) it
+					.next();
 			titles[index] = item.getTitle();
 			types[index] = item.getResourceOfCatagoryType();
 			index++;
 
 		}
 
-		OpportunityListAdapter adapter = new OpportunityListAdapter(getApplicationContext(), proxyList);
+		OpportunityListAdapter adapter = new OpportunityListAdapter(
+				getApplicationContext(), proxyList);
 		listview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		listview.setOnItemClickListener(this);
@@ -95,14 +100,17 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 	private void setUpdateButtonOnClickListener()
 	{
-		updateButton.setOnClickListener(new OnClickListener() {
+		updateButton.setOnClickListener(new OnClickListener()
+		{
 
 			@Override
 			public void onClick(View v)
 			{
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
-				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
+				listBuilder = new OpportunityListBuilder(
+						filterGroupList,
+						MainActivity.this);
 
 				requestSenderMiddleware = listBuilder;
 				sendRequest();
@@ -153,7 +161,8 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		myList = (ExpandableListView) findViewById(R.id.expandableListView1);
 		// setPadding();
 		// create the adapter by passing your ArrayList data
-		listAdapter = new FilterListAdapter(MainActivity.this, filterGroupList);
+		listAdapter = new FilterListAdapter(MainActivity.this,
+				filterGroupList);
 		// attach the adapter to the list
 		myList.setAdapter(listAdapter);
 
@@ -214,20 +223,27 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	}
 
 	// our group listener
-	private OnGroupClickListener myListGroupClicked = new OnGroupClickListener() {
+	private OnGroupClickListener myListGroupClicked = new OnGroupClickListener()
+	{
 
-		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+		public boolean onGroupClick(ExpandableListView parent, View v,
+				int groupPosition, long id)
 		{
 
 			// get the group header
-			FilterGroupInfo headerInfo = filterGroupList.get(groupPosition);
-			ArrayList<FilterChildInfo> detailInfoList = headerInfo.getProductList();
-			Iterator<FilterChildInfo> it = detailInfoList.iterator();
+			FilterGroupInfo headerInfo = filterGroupList
+					.get(groupPosition);
+			ArrayList<FilterChildInfo> detailInfoList = headerInfo
+					.getProductList();
+			Iterator<FilterChildInfo> it = detailInfoList
+					.iterator();
 			Log.i(LOG_TAG, "group: " + headerInfo.getName());
 			while (it.hasNext())
 			{
 				FilterChildInfo o = it.next();
-				Log.i(LOG_TAG, o.getName() + " : " + o.isChecked());
+				Log.i(LOG_TAG,
+						o.getName() + " : "
+								+ o.isChecked());
 			}
 
 			// display it or do something with it
@@ -255,7 +271,8 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		}
 
 		// get the children for the group
-		ArrayList<FilterChildInfo> productList = headerInfo.getProductList();
+		ArrayList<FilterChildInfo> productList = headerInfo
+				.getProductList();
 		// size of the children list
 		int listSize = productList.size();
 		// add to the counter
@@ -282,12 +299,14 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id)
 	{
 
 		Intent intent = new Intent();
 		intent.setClass(this, IndividualOpportunityItemActivity.class);
-		intent.putExtra("result", proxyList.get(position).toJsonString());
+		intent.putExtra("result", proxyList.get(position)
+				.toJsonString());
 		startActivity(intent);
 
 	}
@@ -304,15 +323,14 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 				infoMsg.setVisibility(View.GONE);
 				buildOpportunityList(responseObject);
 				listview.setVisibility(View.VISIBLE);
-				
-			}
-			else
+
+			} else
 			{
 				Log.i(LOG_TAG, "Showing info msg");
 				listview.setVisibility(View.GONE);
 				infoMsg.setVisibility(View.VISIBLE);
 			}
-			
+
 			setSupportProgressBarIndeterminateVisibility(false);
 		}
 		super.onResponseRecieved(response, requestCode);
@@ -332,4 +350,17 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		super.reloadActivity();
 	}
 
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
 }

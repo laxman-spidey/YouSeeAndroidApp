@@ -1,5 +1,7 @@
 package in.yousee.yousee;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import in.yousee.yousee.R;
 import in.yousee.yousee.model.CustomException;
 import android.app.Activity;
@@ -200,12 +202,17 @@ public class LoginActivity extends Activity implements OnClickListener, OnFocusC
 		finish();
 	}
 
-	private void showRegistrationForm()
+	@Override
+	public void onStart()
 	{
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
 
-		Intent intent = new Intent();
-		Log.i("tag", "showing Registration Activity");
-		intent.setClass(this, in.yousee.yousee.RegistrationActivity.class);
-	
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 }

@@ -29,8 +29,11 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.Window;
+import com.google.analytics.tracking.android.EasyTracker;
 
-public class RegistrationActivity extends YouseeCustomActivity implements OnFocusChangeListener, OnClickListener, UsesLoginFeature, OnResponseRecievedListener
+public class RegistrationActivity extends YouseeCustomActivity implements
+		OnFocusChangeListener, OnClickListener, UsesLoginFeature,
+		OnResponseRecievedListener
 {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -42,17 +45,14 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		setContentView(R.layout.registration_form);
 		instantiateAllFields();
 
-
 	}
 
-	
 	@Override
 	protected void setWindowProgressBar()
 	{
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		//setSupportProgressBarIndeterminateVisibility(false);
+		// setSupportProgressBarIndeterminateVisibility(false);
 	}
-
 
 	public void showDatePickerDialog(View v)
 	{
@@ -74,8 +74,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		{
 			Log.i("tag", "focus gained");
 			showDatePickerDialog(v);
-		}
-		else
+		} else
 		{
 			Log.i("tag", "focus lost");
 		}
@@ -106,16 +105,16 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Button registerButton = (Button) findViewById(R.id.regSubmit);
 		registerButton.setOnClickListener(this);
 		dob.setOnFocusChangeListener(this);
-		
-		//test
+
+		// test
 		// firstName.setText("fsdaf");
 		// lastName.setText("fsdaf");
 		// email.setText("fsdaf@kh.com");
 		// dob.setText("fsdaf");
 		// password.setText("fsdaf");
-		//city.setText("fsdaf");
-		//phNo.setText("3456789");
-		//test
+		// city.setText("fsdaf");
+		// phNo.setText("3456789");
+		// test
 
 	}
 
@@ -127,7 +126,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Log.i(LOG_TAG, "email : " + email.getText());
 		Log.i(LOG_TAG, "dob : " + dob.getText());
 		Log.i(LOG_TAG, "password : " + password.getText());
-		
+
 		boolean validity = true;
 		if (isEmpty(firstName))
 		{
@@ -164,7 +163,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			Log.i(LOG_TAG, "email empty");
 			validity = false;
 		}
-		Log.i(LOG_TAG,"validity: "+validity);
+		Log.i(LOG_TAG, "validity: " + validity);
 		return validity;
 	}
 
@@ -175,8 +174,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		{
 			showErrorInField(field, "this field can't be empty");
 			return true;
-		}
-		else
+		} else
 		{
 			Log.i(LOG_TAG, "non empty id: " + field.getId());
 			return false;
@@ -196,7 +194,8 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		Pattern pattern;
 		Matcher matcher;
 
-		String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 		String emailString = emailField.getText().toString();
 		pattern = Pattern.compile(EMAIL_PATTERN);
@@ -207,16 +206,15 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 			{
 				Log.i(LOG_TAG, "email id matched ");
 				return true;
-			}
-			else
+			} else
 			{
 				Log.i(LOG_TAG, "not matched email id ");
 
-				showErrorInField(emailField, "invalid email format");
+				showErrorInField(emailField,
+						"invalid email format");
 				return false;
 			}
-		}
-		else
+		} else
 		{
 			Log.i(LOG_TAG, "email id empty");
 			return false;
@@ -231,24 +229,27 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		try
 		{
 			JSONObject obj = new JSONObject((String) response);
-			responseCode = obj.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
+			responseCode = obj
+					.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
 			if (responseCode == CustomException.SUCCESS_CODE)
 			{
-				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
-				Log.i(LOG_TAG, "Sending response to session handler");
-				sessionHandler.serveResponse((String) response, RequestCodes.NETWORK_REQUEST_LOGIN);
-			}
-			else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
+				SessionHandler sessionHandler = new SessionHandler(
+						getApplicationContext(), this);
+				Log.i(LOG_TAG,
+						"Sending response to session handler");
+				sessionHandler.serveResponse(
+						(String) response,
+						RequestCodes.NETWORK_REQUEST_LOGIN);
+			} else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
-				showErrorInField(email, "Email, you have entered is already taken, Try with another Email");
-			}
-			else
+				showErrorInField(email,
+						"Email, you have entered is already taken, Try with another Email");
+			} else
 			{
 				Log.i(LOG_TAG, "response code not matched");
 			}
 
-		}
-		catch (JSONException e)
+		} catch (JSONException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -280,8 +281,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		{
 			setSupportProgressBarIndeterminateVisibility(true);
 			submitRegistration();
-		}
-		else
+		} else
 			Log.i(LOG_TAG, "biscuittttttttttttttt..");
 
 	}
@@ -297,7 +297,8 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		regFormObject.setDob(dob.getText().toString());
 		regFormObject.setPhNo(phNo.getText().toString());
 		regFormObject.setCity(city.getText().toString());
-		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
+		RegistrationProcessor registrationProcessor = new RegistrationProcessor(
+				this, regFormObject);
 		requestSenderMiddleware = registrationProcessor;
 		sendRequest();
 	}
@@ -312,8 +313,24 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 	public void onLoginSuccess()
 	{
 		setSupportProgressBarIndeterminateVisibility(false);
-		//Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
-		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
+		// Toast.makeText(getApplicationContext(), "login success",
+		// Toast.LENGTH_LONG).show();
+		setResult(Activity.RESULT_OK,
+				new Intent().putExtra("result", "success"));
 		finish();
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 }
