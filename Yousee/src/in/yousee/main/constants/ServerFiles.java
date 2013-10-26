@@ -9,4 +9,5 @@ public class ServerFiles
 	public static final String LOGOUT = "logout.php";
 	public static final String TEST_FILE = "index.php";
 	public static final String ACTIVITY_COMMIT = "activity_commit.php";
+	public static final String STORE_GCM_ID = "storeGcmId.php";
 }

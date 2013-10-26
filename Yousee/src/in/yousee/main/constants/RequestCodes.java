@@ -15,4 +15,5 @@ public class RequestCodes
 	public static final int NETWORK_REQUEST_LOGOUT = 203;
 	public static final int NETWORK_REQUEST_REGISTER = 204;
 	public static final int NETWORK_ACTIVITY_COMMIT = 205;
+	public static final int NETWORK_REQUEST_SEND_GCM_ID = 206;
 }
