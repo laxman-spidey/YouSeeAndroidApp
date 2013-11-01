@@ -1,6 +1,6 @@
 package in.yousee.main.model;
 
-import in.yousee.yousee.R;
+import in.yousee.main.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +10,7 @@ public class ProxyOpportunityItem implements JSONParsable
 	private static final String TAG_ID = "id";
 	private static final String TAG_TITLE = "title";
 	private static final String TAG_TYPE = "type";
-	private static final String TAG_PARTNER = "partner";
+	private static final String TAG_PARTNER = "partner"; 
 	private static final String TAG_DESCRIPTION = "description";
 
 	private static final String TAG_TYPE_EDUCATION = "Education";

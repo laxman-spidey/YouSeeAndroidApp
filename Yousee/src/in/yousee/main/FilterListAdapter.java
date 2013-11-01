@@ -1,7 +1,5 @@
 package in.yousee.main;
 
-import in.yousee.yousee.R;
-
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 

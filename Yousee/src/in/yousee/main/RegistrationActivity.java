@@ -3,9 +3,7 @@ package in.yousee.main;
 import in.yousee.main.constants.RequestCodes;
 import in.yousee.main.model.CustomException;
 import in.yousee.main.model.RegistrationFormObject;
-import in.yousee.yousee.R;
 
-import java.net.ResponseCache;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +13,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +21,6 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.view.Menu;

@@ -1,9 +1,6 @@
 package in.yousee.main;
 
-import com.google.analytics.tracking.android.EasyTracker;
-
 import in.yousee.main.model.CustomException;
-import in.yousee.yousee.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class LoginActivity extends Activity implements OnClickListener, OnFocusChangeListener, UsesLoginFeature
 {

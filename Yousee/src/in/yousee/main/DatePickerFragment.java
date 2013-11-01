@@ -1,18 +1,14 @@
 package in.yousee.main;
 
-import in.yousee.yousee.R;
-
 import java.util.Calendar;
-
-import com.actionbarsherlock.app.SherlockDialogFragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-
-import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.EditText;
+
+import com.actionbarsherlock.app.SherlockDialogFragment;
 
 public class DatePickerFragment extends SherlockDialogFragment implements DatePickerDialog.OnDateSetListener
 {

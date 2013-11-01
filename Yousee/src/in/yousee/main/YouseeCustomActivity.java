@@ -2,13 +2,8 @@ package in.yousee.main;
 
 import in.yousee.main.constants.RequestCodes;
 import in.yousee.main.model.CustomException;
-import in.yousee.yousee.R;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
+import java.lang.reflect.Field;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewConfiguration;
 import android.widget.Toast;
-import java.lang.reflect.Field;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 
 public class YouseeCustomActivity extends SherlockFragmentActivity implements UsesLoginFeature, OnResponseRecievedListener
 {

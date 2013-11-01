@@ -1,7 +1,6 @@
 package in.yousee.main;
 
 import in.yousee.main.model.ProxyOpportunityItem;
-import in.yousee.yousee.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

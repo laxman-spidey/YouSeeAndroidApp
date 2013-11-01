@@ -3,7 +3,6 @@ package in.yousee.main;
 import in.yousee.main.constants.RequestCodes;
 import in.yousee.main.model.ProxyOpportunityItem;
 import in.yousee.main.model.RealOpportunityItem;
-import in.yousee.yousee.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,7 +14,6 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -34,8 +32,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class IndividualOpportunityItemActivity extends YouseeCustomActivity
-		implements OnClickListener, OnResponseRecievedListener
+public class IndividualOpportunityItemActivity extends YouseeCustomActivity implements OnClickListener, OnResponseRecievedListener
 {
 	ProxyOpportunityItem proxyOpportunityItem;
 	ImageView image;
@@ -56,26 +53,22 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 
 		setContentView(R.layout.individual_opportunity_item);
 		String jsonString = getIntent().getExtras().getString("result");
-
+		Log.i("tag", jsonString);
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
-		builder = new IndividualOpportunityItemBuilder(
-				proxyOpportunityItem, this);
+		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
 
-		Log.d("debug_tag", "requestCode = "
-				+ IndividualOpportunityItemBuilder.requestCode);
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
 		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
-		image.setBackgroundResource(proxyOpportunityItem
-				.getResourceOfCatagoryType());
+		image.setBackgroundResource(proxyOpportunityItem.getResourceOfCatagoryType());
 
 		titleTextView = (TextView) findViewById(R.id.title);
 		titleTextView.setText(proxyOpportunityItem.getTitle());
 
 		descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
-		descriptionTextView.setText(proxyOpportunityItem
-				.getDescription());
+		descriptionTextView.setText(proxyOpportunityItem.getDescription());
 
 		Button applyButton = (Button) findViewById(R.id.applyButton);
 		applyButton.setOnClickListener(this);
@@ -113,9 +106,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 				super.sendRequest();
 			} else
 			{
-				Toast.makeText(getApplicationContext(),
-						"select atleast one Schedule card to commit",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
 			}
 
 		} else
@@ -146,25 +137,21 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 			{
 				refreshActivityScheduleList();
 			}
-			realItem = new RealOpportunityItem(
-					proxyOpportunityItem, (String) response);
+			realItem = new RealOpportunityItem(proxyOpportunityItem, (String) response);
 			Log.d("debug_tag", "real item created");
-			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem
-					.getActivityScheduleList();
+			ArrayList<RealOpportunityItem.OpportunitySchedule> scheduleList = realItem.getActivityScheduleList();
 			checkedState = new boolean[scheduleList.size()];
 			layout = (LinearLayout) findViewById(R.id.rootLay);
 			checkList = new ArrayList<Boolean>();
 			map = new HashMap<View, Integer>();
-			Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList
-					.iterator();
+			Iterator<RealOpportunityItem.OpportunitySchedule> iterator = scheduleList.iterator();
 			while (iterator.hasNext())
 			{
 				Log.i(LOG_TAG, "adding.....");
 				View view = null;
 				try
 				{
-					view = buildScheduleCard(iterator
-							.next());
+					view = buildScheduleCard(iterator.next());
 				} catch (ParseException e)
 				{
 					e.printStackTrace();
@@ -177,14 +164,10 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 			if ((Boolean) response)
 			{
 				Log.i("tag", "committed");
-				Toast.makeText(getApplicationContext(),
-						"Committed", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(getApplicationContext(), "Committed", Toast.LENGTH_SHORT).show();
 			} else
 			{
-				Toast.makeText(getApplicationContext(),
-						"failed to Commit",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "failed to Commit", Toast.LENGTH_SHORT).show();
 			}
 
 			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
@@ -197,36 +180,29 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 
 	}
 
-	public View buildScheduleCard(
-			RealOpportunityItem.OpportunitySchedule schedule)
-			throws ParseException
+	public View buildScheduleCard(RealOpportunityItem.OpportunitySchedule schedule) throws ParseException
 	{
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		ViewGroup rowView = (ViewGroup) inflater.inflate(
-				R.layout.schedule_card, layout, false);
+		ViewGroup rowView = (ViewGroup) inflater.inflate(R.layout.schedule_card, layout, false);
 
 		checkedState[i] = false;
 		map.put(rowView, i++);
 		activityList.add(rowView);
 
 		String string = "10:20";
-		SimpleDateFormat df = new SimpleDateFormat("hh:mm",
-				Locale.ENGLISH);
+		SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
 		Date datex = df.parse(string);
 		Log.i(LOG_TAG, df.format(datex));
 
-		TextView titleView = (TextView) rowView
-				.findViewById(R.id.title);
+		TextView titleView = (TextView) rowView.findViewById(R.id.title);
 		titleView.setText("Schedule #" + i);
 
 		TextView date = (TextView) rowView.findViewById(R.id.date);
-		date.setText(schedule.getFromDateString() + " - "
-				+ schedule.getToDateString());
+		date.setText(schedule.getFromDateString() + " - " + schedule.getToDateString());
 
 		TextView time = (TextView) rowView.findViewById(R.id.time);
-		time.setText(schedule.getFromTimeString() + " - "
-				+ schedule.getToTimeString());
+		time.setText(schedule.getFromTimeString() + " - " + schedule.getToTimeString());
 
 		TextView area = (TextView) rowView.findViewById(R.id.area);
 		area.setText(schedule.getCity() + ", " + schedule.getLocation());
@@ -235,14 +211,12 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 		volReq.setText("Volunteers required :" + schedule.getVolReq());
 		Log.i(LOG_TAG, "isCommitted : " + schedule.isCommitted());
 
-		View commitView = (TextView) rowView
-				.findViewById(R.id.commitTextView);
+		View commitView = (TextView) rowView.findViewById(R.id.commitTextView);
 		commitView.setEnabled(schedule.isCommitted());
 		if (commitView.isEnabled())
 		{
 			// titleView.setBackgroundResource(R.drawable.bottom_disabled_card);
-			LinearLayout cardLayout = (LinearLayout) rowView
-					.findViewById(R.id.card_layout);
+			LinearLayout cardLayout = (LinearLayout) rowView.findViewById(R.id.card_layout);
 			// cardLayout.setBackgroundResource(R.drawable.card_disabled);
 			commitView.setVisibility(View.VISIBLE);
 		}
@@ -253,19 +227,13 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 			@Override
 			public void onClick(View v)
 			{
-				Log.i(LOG_TAG,
-						"isenabled : "
-								+ commitViewReference
-										.isEnabled());
+				Log.i(LOG_TAG, "isenabled : " + commitViewReference.isEnabled());
 				if (!commitViewReference.isEnabled())
 				{
 					int x = map.get(v);
 					checkedState[x] = !(checkedState[x]);
 					setScheduleSelected(v, checkedState[x]);
-					Toast.makeText(getApplicationContext(),
-							"clicked" + x,
-							Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -276,8 +244,10 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 
 	private void refreshActivityScheduleList()
 	{
-
-		layout.removeAllViewsInLayout();
+		if (layout != null)
+		{
+			layout.removeAllViewsInLayout();
+		}
 		checkList.removeAll(checkList);
 		activityList.removeAll(activityList);
 		i = 0;
@@ -335,15 +305,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 		case R.id.applyButton:
 			String sessionId = null;
 
-			if (SessionHandler
-					.isSessionIdExists(getApplicationContext()))
+			if (SessionHandler.isSessionIdExists(getApplicationContext()))
 			{
-				sessionId = SessionHandler
-						.getSessionId(getApplicationContext());
+				sessionId = SessionHandler.getSessionId(getApplicationContext());
 				Log.i("tag", "sessionID = " + sessionId);
-				Toast.makeText(getApplicationContext(),
-						sessionId, Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
 
 				commit();
 
@@ -391,23 +357,17 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity
 		{
 			Intent intent = new Intent();
 			Log.i("tag", "ACTIVITY_REQUEST_COMMIT_LOGIN");
-			intent.setClass(this,
-					in.yousee.main.LoginActivity.class);
-			startActivityForResult(
-					intent,
-					RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
+			intent.setClass(this, in.yousee.main.LoginActivity.class);
+			startActivityForResult(intent, RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN);
 		} else
 		{
-			Toast.makeText(getApplicationContext(),
-					"select atleast one Schedule card to commit",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "select atleast one Schedule card to commit", Toast.LENGTH_LONG).show();
 		}
 
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent data)
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == RequestCodes.ACTIVITY_REQUEST_COMMIT_LOGIN)
 		{

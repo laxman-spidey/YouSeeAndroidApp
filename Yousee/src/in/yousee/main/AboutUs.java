@@ -1,20 +1,12 @@
 package in.yousee.main;
 
-import in.yousee.yousee.R;
-
-import com.actionbarsherlock.app.SherlockActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.app.Activity;
-import android.content.Intent;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
+import com.actionbarsherlock.app.SherlockActivity;
 
 public class AboutUs extends SherlockActivity implements OnClickListener
 {
