@@ -21,6 +21,7 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -34,7 +35,6 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	ListView listview;
 	OpportunityListBuilder listBuilder;
 	ArrayList<ProxyOpportunityItem> proxyList;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -297,21 +297,28 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
-			TextView infoMsg = (TextView) findViewById(R.id.infoMsg);
-			ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
-			if (responseObject.size() > 0)
+			if (response == null)
 			{
-				infoMsg.setVisibility(View.GONE);
-				buildOpportunityList(responseObject);
-				listview.setVisibility(View.VISIBLE);
+				TextView infoMsg = (TextView) findViewById(R.id.infoMsg);
+				ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
+				if (responseObject.size() > 0)
+				{
+					infoMsg.setVisibility(View.GONE);
+					buildOpportunityList(responseObject);
+					listview.setVisibility(View.VISIBLE);
 
-			} else
-			{
-				Log.i(LOG_TAG, "Showing info msg");
-				listview.setVisibility(View.GONE);
-				infoMsg.setVisibility(View.VISIBLE);
+				} else
+				{
+					Log.i(LOG_TAG, "Showing info msg");
+					listview.setVisibility(View.GONE);
+					infoMsg.setVisibility(View.VISIBLE);
+				}
 			}
-
+			else
+			{
+				Toast.makeText(getApplicationContext(), "no opportunities Listed", Toast.LENGTH_LONG).show();
+				Log.i(LOG_TAG, "response object is empty");
+			}
 			setSupportProgressBarIndeterminateVisibility(false);
 		}
 		super.onResponseRecieved(response, requestCode);
@@ -344,6 +351,5 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}
-
 
 }

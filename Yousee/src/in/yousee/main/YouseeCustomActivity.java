@@ -117,7 +117,7 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		}
 		else
 		{
-			Toast.makeText(getApplicationContext(), "Please wait.. ", Toast.LENGTH_SHORT);
+			Toast.makeText(getApplicationContext(), "Please wait.. ", Toast.LENGTH_SHORT).show();
 		}
 
 	}
@@ -172,6 +172,9 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 			break;
 		case R.id.action_about_us:
 			showAboutUsActivity();
+			break;
+		case R.id.action_settings:
+			showSettingsActivity();
 			break;
 		default:
 			break;
@@ -254,6 +257,13 @@ public class YouseeCustomActivity extends SherlockFragmentActivity implements Us
 		Intent intent = new Intent();
 		Log.i("tag", "showing About us Activity");
 		intent.setClass(this, in.yousee.main.AboutUs.class);
+		startActivity(intent);
+	}
+	private void showSettingsActivity()
+	{
+		Intent intent = new Intent();
+		Log.i("tag", "showing About us Activity");
+		intent.setClass(this, in.yousee.main.SettingsActivity.class);
 		startActivity(intent);
 	}
 

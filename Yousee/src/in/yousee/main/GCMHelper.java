@@ -31,10 +31,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 public class GCMHelper extends Middleware
 {
 
+	private static final String GCM_PREFERNCES_TAG = "gcmPreferences";
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
-	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	private static final String PROPERTY_DATABASE_IN_SYNC = "databaseInSync";
+	public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	
+	
 
 	/**
 	 * Substitute you own sender ID here. This is the project number you got
@@ -57,18 +61,33 @@ public class GCMHelper extends Middleware
 	{
 		this.activity = activity;
 		context = activity.getApplicationContext();
+
+	}
+
+	public void implementGcm(boolean register)
+	{
+		
 		if (checkPlayServices())
 		{
 			gcm = GoogleCloudMessaging.getInstance(context);
 			regid = getRegistrationId(context);
-
-			if (regid.equals("") || regid == null)
+			if (register)
 			{
-				registerInBackground();
-			} else
-			{
-				// mDisplay.append(regid);
+				if (regid.equals("") || regid == null)
+				{
+					registerInBackground(true);
+				}
+				else if(isDatabaseInSync())
+				{
+					Log.i("tag", "database in not insync");
+					sendRegistrationIdToBackend(true);
+				}
 			}
+			else
+			{
+				registerInBackground(false);
+			}
+			
 		} else
 		{
 			Log.i(TAG, "No valid Google Play Services APK found.");
@@ -81,7 +100,7 @@ public class GCMHelper extends Middleware
 	 * from the Google Play Store or enable it in the device's system
 	 * settings.
 	 */
-	private boolean checkPlayServices()
+	public boolean checkPlayServices()
 	{
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
 		if (resultCode != ConnectionResult.SUCCESS)
@@ -89,6 +108,7 @@ public class GCMHelper extends Middleware
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
 			{
 				GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+
 			} else
 			{
 				Log.i(TAG, "This device is not supported.");
@@ -108,7 +128,7 @@ public class GCMHelper extends Middleware
 	 * @return registration ID, or empty string if there is no existing
 	 *         registration ID.
 	 */
-	private String getRegistrationId(Context context)
+	public String getRegistrationId(Context context)
 	{
 		final SharedPreferences prefs = getGcmPreferences(context);
 		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
@@ -138,12 +158,12 @@ public class GCMHelper extends Middleware
 	 * Stores the registration ID and the app versionCode in the
 	 * application's shared preferences.
 	 */
-	private void registerInBackground()
+	private void registerInBackground(boolean register)
 	{
-		new AsyncTask<Void, Void, String>()
+		new AsyncTask<Boolean, Void, String>()
 		{
 			@Override
-			protected String doInBackground(Void... params)
+			protected String doInBackground(Boolean... params)
 			{
 				String msg = "";
 				try
@@ -152,14 +172,25 @@ public class GCMHelper extends Middleware
 					{
 						gcm = GoogleCloudMessaging.getInstance(context);
 					}
-					regid = gcm.register(SENDER_ID);
-					msg = "Device registered, registration ID=" + regid;
+					boolean register = params[0];
+					if (register)
+					{
+						regid = gcm.register(SENDER_ID);
+						sendRegistrationIdToBackend(true);
+						storeRegistrationId(context, regid);
+						msg = "Device registered, registration ID=" + regid;
+					} else
+					{
+						gcm.unregister();
+						sendRegistrationIdToBackend(false);
+						removeRegistrationId(context, getRegistrationId(context));
+						msg = "Device unregistered, registration ID=" + regid;
+					}
 
 					// You should send the registration ID
 					// to your server over HTTP, so it
 					// can use GCM/HTTP or CCS to send
 					// messages to your app.
-					sendRegistrationIdToBackend();
 
 					// For this demo: we don't need to send
 					// it because the device will send
@@ -169,7 +200,7 @@ public class GCMHelper extends Middleware
 
 					// Persist the regID - no need to
 					// register again.
-					storeRegistrationId(context, regid);
+
 				} catch (IOException ex)
 				{
 					Log.i("tag", "exception caught");
@@ -191,7 +222,7 @@ public class GCMHelper extends Middleware
 			{
 				// mDisplay.append(msg + "\n");
 			}
-		}.execute(null, null, null);
+		}.execute(register, null, null);
 	}
 
 	/**
@@ -218,8 +249,10 @@ public class GCMHelper extends Middleware
 		// This sample app persists the registration ID in shared
 		// preferences, but
 		// how you store the regID in your app is up to you.
-		return activity.getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+		return activity.getSharedPreferences(GCM_PREFERNCES_TAG, Context.MODE_PRIVATE);
 	}
+
+	private boolean register;
 
 	/**
 	 * Sends the registration ID to your server over HTTP, so it can use
@@ -227,8 +260,9 @@ public class GCMHelper extends Middleware
 	 * demo since the device sends upstream messages to a server that echoes
 	 * back the message using the 'from' address in the message.
 	 */
-	private void sendRegistrationIdToBackend()
+	private void sendRegistrationIdToBackend(boolean register)
 	{
+		this.register = register;
 		this.assembleRequest();
 		try
 		{
@@ -259,14 +293,28 @@ public class GCMHelper extends Middleware
 		editor.commit();
 	}
 
+	private void removeRegistrationId(Context context, String regId)
+	{
+		final SharedPreferences prefs = getGcmPreferences(context);
+		int appVersion = getAppVersion(context);
+		Log.i(TAG, "Saving regId on app version " + appVersion);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.remove(PROPERTY_REG_ID);
+		editor.remove(PROPERTY_APP_VERSION);
+		editor.commit();
+	}
+
 	@Override
 	public void assembleRequest()
 	{
 
+		String TAG_REGISTRATION_ID = "registrationID";
+		String TAG_REGISTER_FLAG = "registerFlag";
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.STORE_GCM_ID);
 		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_SEND_GCM_ID);
-		nameValuePairs.add(new BasicNameValuePair(TAG, regid));
+		nameValuePairs.add(new BasicNameValuePair(TAG_REGISTER_FLAG, "" + this.register));
+		nameValuePairs.add(new BasicNameValuePair(TAG_REGISTRATION_ID, regid));
 
 		try
 		{
@@ -289,6 +337,8 @@ public class GCMHelper extends Middleware
 				if (success)
 				{
 					Log.i(TAG, "Registration id successfully uploaded to database");
+					setDatabaseInSync();
+					
 				}
 			} catch (JSONException e)
 			{
@@ -297,6 +347,20 @@ public class GCMHelper extends Middleware
 			}
 
 		}
+	}
+	private void setDatabaseInSync()
+	{
+		final SharedPreferences prefs = getGcmPreferences(context);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(PROPERTY_DATABASE_IN_SYNC, true);
+		editor.commit();
+	}
+	public boolean isDatabaseInSync()
+	{
+		final SharedPreferences prefs = getGcmPreferences(context);
+		boolean inSync = prefs.getBoolean(PROPERTY_DATABASE_IN_SYNC, false);
+		return inSync;
+		
 	}
 
 	@Override

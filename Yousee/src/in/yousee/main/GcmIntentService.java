@@ -16,6 +16,9 @@
 
 package in.yousee.main;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.IntentService;
@@ -27,6 +30,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -51,6 +55,7 @@ public class GcmIntentService extends IntentService
 	@Override
 	protected void onHandleIntent(Intent intent)
 	{
+		Toast.makeText(getApplicationContext(), "gcm data recieved", Toast.LENGTH_LONG).show();
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
 		// The getMessageType() intent parameter must be the intent you
@@ -104,11 +109,24 @@ public class GcmIntentService extends IntentService
 	// a GCM message.
 	private void sendNotification(String msg)
 	{
+		String notificationHeader = "New Opportunity.";
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+		Log.i("tag", msg);
+		JSONObject msgobj;
+		String title = "title";
+		try
+		{
+			msgobj = new JSONObject(msg);
+			title = msgobj.getString("title");
+		} catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle("GCM Notification").setStyle(new NotificationCompat.BigTextStyle().bigText(msg)).setContentText(msg);
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(notificationHeader).setStyle(new NotificationCompat.BigTextStyle().bigText(title)).setContentText(title);
 
 		mBuilder.setContentIntent(contentIntent);
 		mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
