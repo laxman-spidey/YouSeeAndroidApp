@@ -42,7 +42,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		GCMHelper gcm = new GCMHelper(this);
+		GCMHelper gcm = new GCMHelper(this, this);
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();
@@ -297,28 +297,23 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		if (requestCode == RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST)
 		{
-			if (response == null)
-			{
-				TextView infoMsg = (TextView) findViewById(R.id.infoMsg);
-				ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
-				if (responseObject.size() > 0)
-				{
-					infoMsg.setVisibility(View.GONE);
-					buildOpportunityList(responseObject);
-					listview.setVisibility(View.VISIBLE);
 
-				} else
-				{
-					Log.i(LOG_TAG, "Showing info msg");
-					listview.setVisibility(View.GONE);
-					infoMsg.setVisibility(View.VISIBLE);
-				}
-			}
-			else
+			Log.i(LOG_TAG, "response is full");
+			TextView infoMsg = (TextView) findViewById(R.id.infoMsg);
+			ArrayList<ProxyOpportunityItem> responseObject = (ArrayList<ProxyOpportunityItem>) response;
+			if (responseObject.size() > 0)
 			{
-				Toast.makeText(getApplicationContext(), "no opportunities Listed", Toast.LENGTH_LONG).show();
-				Log.i(LOG_TAG, "response object is empty");
+				infoMsg.setVisibility(View.GONE);
+				buildOpportunityList(responseObject);
+				listview.setVisibility(View.VISIBLE);
+
+			} else
+			{
+				Log.i(LOG_TAG, "Showing info msg");
+				listview.setVisibility(View.GONE);
+				infoMsg.setVisibility(View.VISIBLE);
 			}
+
 			setSupportProgressBarIndeterminateVisibility(false);
 		}
 		super.onResponseRecieved(response, requestCode);

@@ -25,5 +25,6 @@
     <string name="label_testinghtmltags"><u>Click here to give us feedback or report an issue</u></string>
     <string name="yousee_email_id">yousee@gmail.com</string>
     <string name="title_activity_notification_test">NotificationTestActivity</string>
+    <string name="notification_pref">notifications_pref</string>
 
 </resources>

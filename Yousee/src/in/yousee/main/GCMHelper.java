@@ -37,8 +37,6 @@ public class GCMHelper extends Middleware
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	private static final String PROPERTY_DATABASE_IN_SYNC = "databaseInSync";
 	public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	
-	
 
 	/**
 	 * Substitute you own sender ID here. This is the project number you got
@@ -54,11 +52,13 @@ public class GCMHelper extends Middleware
 	AtomicInteger msgId = new AtomicInteger();
 	Context context;
 	Activity activity;
+	OnResponseRecievedListener listener;
 
 	String regid;
 
-	public GCMHelper(Activity activity)
+	public GCMHelper(Activity activity, OnResponseRecievedListener listener)
 	{
+		this.listener = listener;
 		this.activity = activity;
 		context = activity.getApplicationContext();
 
@@ -66,7 +66,7 @@ public class GCMHelper extends Middleware
 
 	public void implementGcm(boolean register)
 	{
-		
+
 		if (checkPlayServices())
 		{
 			gcm = GoogleCloudMessaging.getInstance(context);
@@ -77,17 +77,16 @@ public class GCMHelper extends Middleware
 				{
 					registerInBackground(true);
 				}
-				else if(isDatabaseInSync())
+				else if (isDatabaseInSync())
 				{
 					Log.i("tag", "database in not insync");
 					sendRegistrationIdToBackend(true);
 				}
-			}
-			else
+			} else
 			{
 				registerInBackground(false);
 			}
-			
+
 		} else
 		{
 			Log.i(TAG, "No valid Google Play Services APK found.");
@@ -264,6 +263,7 @@ public class GCMHelper extends Middleware
 	{
 		this.register = register;
 		this.assembleRequest();
+		Log.i("tag","register = "+register);
 		try
 		{
 			this.sendRequest();
@@ -314,6 +314,10 @@ public class GCMHelper extends Middleware
 		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_SEND_GCM_ID);
 		nameValuePairs.add(new BasicNameValuePair(TAG_REGISTER_FLAG, "" + this.register));
+		if (SessionHandler.isLoggedIn)
+		{
+			nameValuePairs.add(new BasicNameValuePair(SessionHandler.TAG_USER_ID, "" + SessionHandler.getUserId(context)));
+		}
 		nameValuePairs.add(new BasicNameValuePair(TAG_REGISTRATION_ID, regid));
 
 		try
@@ -338,16 +342,20 @@ public class GCMHelper extends Middleware
 				{
 					Log.i(TAG, "Registration id successfully uploaded to database");
 					setDatabaseInSync();
-					
+					listener.onResponseRecieved(success, requestCode);
+
 				}
 			} catch (JSONException e)
 			{
+
 				Log.i(TAG, "Something went wrong while uploading registration id");
 				e.printStackTrace();
+
 			}
 
 		}
 	}
+
 	private void setDatabaseInSync()
 	{
 		final SharedPreferences prefs = getGcmPreferences(context);
@@ -355,12 +363,23 @@ public class GCMHelper extends Middleware
 		editor.putBoolean(PROPERTY_DATABASE_IN_SYNC, true);
 		editor.commit();
 	}
+
 	public boolean isDatabaseInSync()
 	{
 		final SharedPreferences prefs = getGcmPreferences(context);
 		boolean inSync = prefs.getBoolean(PROPERTY_DATABASE_IN_SYNC, false);
 		return inSync;
-		
+
+	}
+
+	public boolean isGcmIdEmpty()
+	{
+		regid = getRegistrationId(context);
+		if ((regid.equals("") || regid == null || regid.equals(" ")) && !(isDatabaseInSync()))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	@Override

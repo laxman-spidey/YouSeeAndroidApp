@@ -20,6 +20,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="in.yousee.main.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"

@@ -35,8 +35,8 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	Context context;
 
 	// web service URL 
-	//public static final String DOMAIN = "http://192.168.0.4/yousee_test/YouseeMobile/";
-	public static final String DOMAIN = "http://yousee.in/YouseeMobile/";
+	public static final String DOMAIN = "http://192.168.0.101/yousee_test/YouseeMobile/";   
+	//public static final String DOMAIN = "http://yousee.in/YouseeMobile/";
 	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 	Middleware listener;
@@ -57,7 +57,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 		this.listener = listener;
 		this.context = context;
 
-	}
+	} 
 
 	/**
 	 * Tells whether network is connected or not
@@ -65,7 +65,7 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	 * @param Context
 	 *                used to get System services
 	 * 
-	 * @throws CustomException
+	 * @throws CustomException 
 	 * @see in.yousee.main.model.CustomException
 	 * 
 	 * @return network Connection status

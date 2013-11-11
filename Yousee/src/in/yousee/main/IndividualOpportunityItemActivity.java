@@ -53,7 +53,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		setContentView(R.layout.individual_opportunity_item);
 		String jsonString = getIntent().getExtras().getString("result");
-		Log.i("tag", jsonString);
+		Log.i("tag", "fjedfksdjfljddilfjgldfg "+jsonString);
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);

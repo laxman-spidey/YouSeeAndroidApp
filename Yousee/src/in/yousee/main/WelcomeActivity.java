@@ -1,5 +1,7 @@
 package in.yousee.main;
 
+import in.yousee.main.constants.RequestCodes;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -29,12 +31,13 @@ public class WelcomeActivity extends Activity implements OnResponseRecievedListe
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.welcome_activity);
 
-		gcmHelper = new GCMHelper(this);
-
+		gcmHelper = new GCMHelper(this, this);
+		
 		regid = gcmHelper.getRegistrationId(this);
-		Log.i("tag", regid);
-		if ((regid.equals("") || regid == null) && (gcmHelper.isDatabaseInSync()))
+		Log.i("tag", "registration ID" + regid + "gvnsdhfjs");
+		if (gcmHelper.isGcmIdEmpty())
 		{
+			Log.i("tag", "first time run");
 			processFirstTime();
 		} else
 		{
@@ -58,7 +61,7 @@ public class WelcomeActivity extends Activity implements OnResponseRecievedListe
 		{
 			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
 			{
-				
+
 				GooglePlayServicesUtil.getErrorDialog(resultCode, this, GCMHelper.PLAY_SERVICES_RESOLUTION_REQUEST).show();
 
 			} else
@@ -113,7 +116,18 @@ public class WelcomeActivity extends Activity implements OnResponseRecievedListe
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
-		
+		if(requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
+		{
+			boolean success = (Boolean) response;
+			if(success)
+			{
+				showMainActivity();
+			}
+			else
+			{
+				showMainActivity();
+			}
+		}
 	}
 
 	@Override

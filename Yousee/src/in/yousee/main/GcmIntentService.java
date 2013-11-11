@@ -16,21 +16,23 @@
 
 package in.yousee.main;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
+import in.yousee.main.model.ProxyOpportunityItem;
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -44,6 +46,7 @@ public class GcmIntentService extends IntentService
 	public static final int NOTIFICATION_ID = 1;
 	private NotificationManager mNotificationManager;
 	NotificationCompat.Builder builder;
+	Bundle extras;
 
 	public GcmIntentService()
 	{
@@ -56,7 +59,7 @@ public class GcmIntentService extends IntentService
 	protected void onHandleIntent(Intent intent)
 	{
 		Toast.makeText(getApplicationContext(), "gcm data recieved", Toast.LENGTH_LONG).show();
-		Bundle extras = intent.getExtras();
+		extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
 		// The getMessageType() intent parameter must be the intent you
 		// received
@@ -95,6 +98,7 @@ public class GcmIntentService extends IntentService
 				}
 				Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 				// Post notification of received message.
+
 				sendNotification("Received: " + extras.toString());
 				Log.i(TAG, "Received: " + extras.toString());
 			}
@@ -102,6 +106,18 @@ public class GcmIntentService extends IntentService
 		// Release the wake lock provided by the
 		// WakefulBroadcastReceiver.
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
+	}
+
+	private ProxyOpportunityItem extractData(Bundle extras)
+	{
+		String idS = extras.getString("opportunity_id");
+		int id = 10;
+		String title = extras.getString("title");
+		String description = extras.getString("Description");
+		String type = extras.getString("type");
+		ProxyOpportunityItem proxyItem = new ProxyOpportunityItem(id, title, type, null, description);
+		return proxyItem;
+
 	}
 
 	// Put the message into a notification and post it.
@@ -112,23 +128,33 @@ public class GcmIntentService extends IntentService
 		String notificationHeader = "New Opportunity.";
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
+		Intent resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addNextIntent(resultIntent);
+
 		Log.i("tag", msg);
-		JSONObject msgobj;
-		String title = "title";
-		try
-		{
-			msgobj = new JSONObject(msg);
-			title = msgobj.getString("title");
-		} catch (JSONException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		ProxyOpportunityItem proxyItem = extractData(extras);
+		// resultIntent.putExtra("result", proxyItem.toJsonString());
+		resultIntent.putExtra("result", proxyItem.toJsonString());
+		Log.i("tag", "checking extra: " + resultIntent.getStringExtra("result"));
+		String title = proxyItem.getTitle();
+		int resourceId = proxyItem.getNotificationResourceOfCatagoryType();
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(notificationHeader).setStyle(new NotificationCompat.BigTextStyle().bigText(title)).setContentText(title);
+		mBuilder.setAutoCancel(true);
 
-		mBuilder.setContentIntent(contentIntent);
-		mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+		Bitmap icon = BitmapFactory.decodeResource(getResources(), resourceId);
+
+		mBuilder.setLargeIcon(icon);
+
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		Notification notification = mBuilder.build();
+		notification.defaults = Notification.DEFAULT_ALL;
+		mNotificationManager.notify(NOTIFICATION_ID, notification);
 	}
 }

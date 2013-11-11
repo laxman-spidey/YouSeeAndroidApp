@@ -5,6 +5,8 @@ import in.yousee.main.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class ProxyOpportunityItem implements JSONParsable
 {
 	private static final String TAG_ID = "id";
@@ -135,7 +137,7 @@ public class ProxyOpportunityItem implements JSONParsable
 		JSONObject jsonObject = new JSONObject();
 		try
 		{
-			jsonObject.put(TAG_ID, id);
+			jsonObject.put(TAG_ID, ""+id);
 			jsonObject.put(TAG_TITLE, title);
 			jsonObject.put(TAG_TYPE, opportunityType);
 			jsonObject.put(TAG_DESCRIPTION, description);
@@ -145,7 +147,7 @@ public class ProxyOpportunityItem implements JSONParsable
 			e.printStackTrace();
 		}
 		jsonString = jsonObject.toString();
-
+		Log.i("tag", "Converted String: "+jsonString);
 		return jsonString;
 	}
 
@@ -157,6 +159,17 @@ public class ProxyOpportunityItem implements JSONParsable
 			return R.drawable.ic_environment;
 		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_HEALTH))
 			return R.drawable.ic_health;
+		else
+			return R.drawable.ic_launcher;
+	}
+	public int getNotificationResourceOfCatagoryType()
+	{
+		if(opportunityType.equalsIgnoreCase(TAG_TYPE_EDUCATION))
+			return R.drawable.ic_notif_education;
+		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_ENVIRONMENT))
+			return R.drawable.ic_notif_environment;
+		else if(opportunityType.equalsIgnoreCase(TAG_TYPE_HEALTH))
+			return R.drawable.ic_notif_health;
 		else
 			return R.drawable.ic_launcher;
 	}
