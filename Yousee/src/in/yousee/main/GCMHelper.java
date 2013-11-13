@@ -350,7 +350,6 @@ public class GCMHelper extends Middleware
 
 				Log.i(TAG, "Something went wrong while uploading registration id");
 				e.printStackTrace();
-
 			}
 
 		}

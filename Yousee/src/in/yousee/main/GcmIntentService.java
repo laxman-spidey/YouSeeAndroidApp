@@ -16,6 +16,9 @@
 
 package in.yousee.main;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import in.yousee.main.model.ProxyOpportunityItem;
 import android.app.IntentService;
 import android.app.Notification;
@@ -23,6 +26,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -47,10 +51,13 @@ public class GcmIntentService extends IntentService
 	private NotificationManager mNotificationManager;
 	NotificationCompat.Builder builder;
 	Bundle extras;
+	private static int notificationCount = 10;
+	private Context context;
 
 	public GcmIntentService()
 	{
 		super("GcmIntentService");
+
 	}
 
 	public static final String TAG = "GCM Demo";
@@ -99,7 +106,7 @@ public class GcmIntentService extends IntentService
 				Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 				// Post notification of received message.
 
-				sendNotification("Received: " + extras.toString());
+				sendNotificationTest("Received: " + extras.toString());
 				Log.i(TAG, "Received: " + extras.toString());
 			}
 		}
@@ -120,6 +127,42 @@ public class GcmIntentService extends IntentService
 
 	}
 
+	private static SharedPreferences getNotificationCountSharedPreferences(Context context)
+	{
+		return context.getSharedPreferences("NOTIFICATION_COUNT", MODE_PRIVATE);
+	}
+
+	private final static String TAG_NOTIFICATION_COUNT = "notificationCount";
+
+	public static void resetNotificationCount(Context context)
+	{
+		SharedPreferences pref = getNotificationCountSharedPreferences(context);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(TAG_NOTIFICATION_COUNT, 0);
+		editor.commit();
+	}
+
+	private void setNotificationCount(int count)
+	{
+		SharedPreferences pref = getNotificationCountSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(TAG_NOTIFICATION_COUNT, count);
+		editor.commit();
+	}
+
+	private int getNotificationCount()
+	{
+		SharedPreferences pref = getNotificationCountSharedPreferences(getApplicationContext());
+		return pref.getInt(TAG_NOTIFICATION_COUNT, 0);
+	}
+
+	private int incrementNotificationCount()
+	{
+		int currentCount = getNotificationCount();
+		setNotificationCount(++currentCount);
+		return notificationCount;
+	}
+
 	// Put the message into a notification and post it.
 	// This is just one simple example of what you might choose to do with
 	// a GCM message.
@@ -128,33 +171,142 @@ public class GcmIntentService extends IntentService
 		String notificationHeader = "New Opportunity.";
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
-		Intent resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
+		int notifCount = getNotificationCount();
+		PendingIntent contentIntent;
+		Intent resultIntent;
+		if (notifCount == 0)
+		{
+			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
+			resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
+			notificationHeader = "1 New Opportunity.";
+
+		} else
+		{
+			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+			resultIntent = new Intent(this, MainActivity.class);
+			notificationHeader = notifCount + " New Opportunities.";
+		}
+		incrementNotificationCount();
+		Log.i("tag", msg);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addNextIntent(resultIntent);
-
-		Log.i("tag", msg);
 
 		ProxyOpportunityItem proxyItem = extractData(extras);
 		// resultIntent.putExtra("result", proxyItem.toJsonString());
 		resultIntent.putExtra("result", proxyItem.toJsonString());
 		Log.i("tag", "checking extra: " + resultIntent.getStringExtra("result"));
 		String title = proxyItem.getTitle();
-		int resourceId = proxyItem.getNotificationResourceOfCatagoryType();
+		int resourceId = proxyItem.getResourceOfCatagoryType();
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(notificationHeader).setStyle(new NotificationCompat.BigTextStyle().bigText(title)).setContentText(title);
 		mBuilder.setAutoCancel(true);
 
 		Bitmap icon = BitmapFactory.decodeResource(getResources(), resourceId);
+		mBuilder.setLargeIcon(icon);
+
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		mBuilder.setNumber(notifCount);
+		Notification notification = mBuilder.build();
+		// notification.defaults = Notification.DEFAULT_ALL;
+		mNotificationManager.notify(NOTIFICATION_ID, notification);
+	}
+
+	TaskStackBuilder stackBuilder;
+
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+	}
+
+	private void sendCommonNotification(String msg)
+	{
+		String notificationHeader = "There are new Opportunities. Check them out!";
+		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+		Intent resultIntent = new Intent(this, MainActivity.class);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addNextIntent(resultIntent);
+
+		Log.i("tag", msg);
+
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(notificationHeader).setStyle(new NotificationCompat.BigTextStyle().bigText(notificationHeader));
+		mBuilder.setAutoCancel(true);
+
+		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 
 		mBuilder.setLargeIcon(icon);
 
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);
+
 		Notification notification = mBuilder.build();
-		notification.defaults = Notification.DEFAULT_ALL;
+		notification.number = notificationCount++;
+		// notification.defaults = Notification.DEFAULT_ALL;
 		mNotificationManager.notify(NOTIFICATION_ID, notification);
 	}
+
+	public void sendNotificationTest(String msg)
+	{
+
+		String notificationHeader = "There are new Opportunities. Check them out!";
+		// Creates an explicit intent for an Activity in your app
+		int notifCount = getNotificationCount();
+		ProxyOpportunityItem proxyItem = extractData(extras);
+		PendingIntent contentIntent;
+		Intent resultIntent;
+		Bitmap icon;
+		incrementNotificationCount();
+		if (notifCount == 0)
+		{ 
+			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
+			resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
+			notificationHeader = "1 New Opportunity.";
+			icon = BitmapFactory.decodeResource(getResources(), proxyItem.getNotificationResourceOfCatagoryType());
+		} else
+		{
+			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+			resultIntent = new Intent(this, MainActivity.class);
+			notificationHeader = notifCount + " New Opportunities.";
+			icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		}
+		
+		// The stack builder object will contain an artificial back
+		// stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads
+		// out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent
+		// itself)
+		stackBuilder.addParentStack(NotificationTestActivity.class);
+		// Adds the Intent that starts the Activity to the top of the
+		// stack
+		String string = proxyItem.toJsonString();
+		resultIntent.putExtra("result", string);
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(notificationHeader).setContentText(proxyItem.getTitle());
+		
+		mBuilder.setLargeIcon(icon);
+
+		// mBuilder.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+		// R.drawable.ic_education));
+		mBuilder.setAutoCancel(true);
+		mBuilder.setNumber(notifCount);
+		// mBuilder.setContentIntent(resultPendingIntent);
+		mBuilder.setContentIntent(contentIntent);
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+
+		mNotificationManager.notify(123456, mBuilder.build());
+	}
+
 }

@@ -116,6 +116,7 @@ public class WelcomeActivity extends Activity implements OnResponseRecievedListe
 	@Override
 	public void onResponseRecieved(Object response, int requestCode)
 	{
+		finish();
 		if(requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
 		{
 			boolean success = (Boolean) response;
@@ -128,6 +129,7 @@ public class WelcomeActivity extends Activity implements OnResponseRecievedListe
 				showMainActivity();
 			}
 		}
+		
 	}
 
 	@Override
