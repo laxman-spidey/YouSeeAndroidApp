@@ -43,6 +43,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		GCMHelper gcm = new GCMHelper(this, this);
+		GcmIntentService.resetNotificationCount(getApplicationContext());
 		filterFrame = (FrameLayout) findViewById(R.id.filterFrame);
 		updateButton = (Button) findViewById(R.id.updateButton);
 		setUpdateButtonOnClickListener();

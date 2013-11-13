@@ -57,7 +57,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
-
+		GcmIntentService.resetNotificationCount(getApplicationContext());
 		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
 		super.requestSenderMiddleware = builder;
 
