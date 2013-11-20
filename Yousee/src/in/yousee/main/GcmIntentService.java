@@ -117,10 +117,10 @@ public class GcmIntentService extends IntentService
 
 	private ProxyOpportunityItem extractData(Bundle extras)
 	{
-		String idS = extras.getString("opportunity_id");
-		int id = 10;
+		String idS = extras.getString("id");
+		int id = new Integer(idS);
 		String title = extras.getString("title");
-		String description = extras.getString("Description");
+		String description = extras.getString("description");
 		String type = extras.getString("type");
 		ProxyOpportunityItem proxyItem = new ProxyOpportunityItem(id, title, type, null, description);
 		return proxyItem;
@@ -257,18 +257,19 @@ public class GcmIntentService extends IntentService
 
 		String notificationHeader = "There are new Opportunities. Check them out!";
 		// Creates an explicit intent for an Activity in your app
-		int notifCount = getNotificationCount();
+		
 		ProxyOpportunityItem proxyItem = extractData(extras);
 		PendingIntent contentIntent;
 		Intent resultIntent;
 		Bitmap icon;
 		incrementNotificationCount();
-		if (notifCount == 0)
+		int notifCount = getNotificationCount();
+		if (notifCount == 1)
 		{ 
 			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
 			resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
 			notificationHeader = "1 New Opportunity.";
-			icon = BitmapFactory.decodeResource(getResources(), proxyItem.getNotificationResourceOfCatagoryType());
+			icon = BitmapFactory.decodeResource(this.getResources(), proxyItem.getResourceOfCatagoryType());
 		} else
 		{
 			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
@@ -276,7 +277,7 @@ public class GcmIntentService extends IntentService
 			notificationHeader = notifCount + " New Opportunities.";
 			icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		}
-		
+		resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		// The stack builder object will contain an artificial back
 		// stack for the
 		// started Activity.
@@ -286,7 +287,7 @@ public class GcmIntentService extends IntentService
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		// Adds the back stack for the Intent (but not the Intent
 		// itself)
-		stackBuilder.addParentStack(NotificationTestActivity.class);
+		//stackBuilder.addParentStack(NotificationTestActivity.class);
 		// Adds the Intent that starts the Activity to the top of the
 		// stack
 		String string = proxyItem.toJsonString();
@@ -297,15 +298,13 @@ public class GcmIntentService extends IntentService
 		
 		mBuilder.setLargeIcon(icon);
 
-		// mBuilder.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
-		// R.drawable.ic_education));
 		mBuilder.setAutoCancel(true);
+		
 		mBuilder.setNumber(notifCount);
 		// mBuilder.setContentIntent(resultPendingIntent);
 		mBuilder.setContentIntent(contentIntent);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
-
 		mNotificationManager.notify(123456, mBuilder.build());
 	}
 

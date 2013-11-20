@@ -59,6 +59,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
 		GcmIntentService.resetNotificationCount(getApplicationContext());
 		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
 		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
