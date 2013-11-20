@@ -27,9 +27,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.Window;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class RegistrationActivity extends YouseeCustomActivity implements
-		OnFocusChangeListener, OnClickListener, UsesLoginFeature,
-		OnResponseRecievedListener
+public class RegistrationActivity extends YouseeCustomActivity implements OnFocusChangeListener, OnClickListener, UsesLoginFeature, OnResponseRecievedListener
 {
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -190,8 +188,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements
 		Pattern pattern;
 		Matcher matcher;
 
-		String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 		String emailString = emailField.getText().toString();
 		pattern = Pattern.compile(EMAIL_PATTERN);
@@ -206,8 +203,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements
 			{
 				Log.i(LOG_TAG, "not matched email id ");
 
-				showErrorInField(emailField,
-						"invalid email format");
+				showErrorInField(emailField, "invalid email format");
 				return false;
 			}
 		} else
@@ -225,21 +221,15 @@ public class RegistrationActivity extends YouseeCustomActivity implements
 		try
 		{
 			JSONObject obj = new JSONObject((String) response);
-			responseCode = obj
-					.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
+			responseCode = obj.getInt(Middleware.TAG_NETWORK_RESULT_CODE);
 			if (responseCode == CustomException.SUCCESS_CODE)
 			{
-				SessionHandler sessionHandler = new SessionHandler(
-						getApplicationContext(), this);
-				Log.i(LOG_TAG,
-						"Sending response to session handler");
-				sessionHandler.serveResponse(
-						(String) response,
-						RequestCodes.NETWORK_REQUEST_LOGIN);
+				SessionHandler sessionHandler = new SessionHandler(getApplicationContext(), this);
+				Log.i(LOG_TAG, "Sending response to session handler");
+				sessionHandler.serveResponse((String) response, RequestCodes.NETWORK_REQUEST_LOGIN);
 			} else if (responseCode == CustomException.REGISTRATION_EMAIL_ALREADY_TAKEN)
 			{
-				showErrorInField(email,
-						"Email, you have entered is already taken, Try with another Email");
+				showErrorInField(email, "Email, you have entered is already taken, Try with another Email");
 			} else
 			{
 				Log.i(LOG_TAG, "response code not matched");
@@ -293,8 +283,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements
 		regFormObject.setDob(dob.getText().toString());
 		regFormObject.setPhNo(phNo.getText().toString());
 		regFormObject.setCity(city.getText().toString());
-		RegistrationProcessor registrationProcessor = new RegistrationProcessor(
-				this, regFormObject);
+		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
 		requestSenderMiddleware = registrationProcessor;
 		sendRequest();
 	}
@@ -311,8 +300,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements
 		setSupportProgressBarIndeterminateVisibility(false);
 		// Toast.makeText(getApplicationContext(), "login success",
 		// Toast.LENGTH_LONG).show();
-		setResult(Activity.RESULT_OK,
-				new Intent().putExtra("result", "success"));
+		setResult(Activity.RESULT_OK, new Intent().putExtra("result", "success"));
 		finish();
 	}
 
