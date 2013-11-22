@@ -53,7 +53,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 
 		setContentView(R.layout.individual_opportunity_item);
 		String jsonString = getIntent().getExtras().getString("result");
-		Log.i("tag", "fjedfksdjfljddilfjgldfg "+jsonString);
+		Log.i("tag", "fjedfksdjfljddilfjgldfg " + jsonString);
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
 		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
@@ -234,7 +234,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 					int x = map.get(v);
 					checkedState[x] = !(checkedState[x]);
 					setScheduleSelected(v, checkedState[x]);
-					Toast.makeText(getApplicationContext(), "clicked" + x, Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -310,8 +309,6 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			{
 				sessionId = SessionHandler.getSessionId(getApplicationContext());
 				Log.i("tag", "sessionID = " + sessionId);
-				Toast.makeText(getApplicationContext(), sessionId, Toast.LENGTH_LONG).show();
-
 				commit();
 
 			} else

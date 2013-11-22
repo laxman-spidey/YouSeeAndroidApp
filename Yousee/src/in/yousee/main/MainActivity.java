@@ -317,6 +317,10 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 			setSupportProgressBarIndeterminateVisibility(false);
 		}
+		else if(requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
+		{
+			//Toast.makeText(getContext(), "Something went wrong, Please restart the Application.", Toast.LENGTH_SHORT).show();
+		}
 		super.onResponseRecieved(response, requestCode);
 	}
 

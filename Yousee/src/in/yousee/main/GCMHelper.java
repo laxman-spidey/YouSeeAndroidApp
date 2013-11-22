@@ -23,6 +23,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -76,8 +77,7 @@ public class GCMHelper extends Middleware
 				if (regid.equals("") || regid == null)
 				{
 					registerInBackground(true);
-				}
-				else if (isDatabaseInSync())
+				} else if (isDatabaseInSync())
 				{
 					Log.i("tag", "database in not insync");
 					sendRegistrationIdToBackend(true);
@@ -263,7 +263,7 @@ public class GCMHelper extends Middleware
 	{
 		this.register = register;
 		this.assembleRequest();
-		Log.i("tag","register = "+register);
+		Log.i("tag", "register = " + register);
 		try
 		{
 			this.sendRequest();
@@ -332,18 +332,25 @@ public class GCMHelper extends Middleware
 	@Override
 	public void serveResponse(String result, int requestCode)
 	{
+		Log.i(TAG, "in serveResponse");
 		if (requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
 		{
+			Log.i(TAG, "requestCode is NETWORK_REQUEST_SEND_GCM_ID");
 			try
 			{
 				JSONObject json = new JSONObject(result);
 				boolean success = json.getBoolean("successFlag");
+				Log.i(TAG, "success flag : " + success);
 				if (success)
 				{
 					Log.i(TAG, "Registration id successfully uploaded to database");
 					setDatabaseInSync();
 					listener.onResponseRecieved(success, requestCode);
 
+				} else
+				{
+
+					listener.onResponseRecieved(success, requestCode);
 				}
 			} catch (JSONException e)
 			{
@@ -361,6 +368,7 @@ public class GCMHelper extends Middleware
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean(PROPERTY_DATABASE_IN_SYNC, true);
 		editor.commit();
+		Log.i(TAG, "database is in sync");
 	}
 
 	public boolean isDatabaseInSync()

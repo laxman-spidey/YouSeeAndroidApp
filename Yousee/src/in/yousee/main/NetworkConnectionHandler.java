@@ -35,12 +35,12 @@ public class NetworkConnectionHandler extends AsyncTask<HttpPost, Void, Response
 	Context context;
 
 	// web service URL 
-	public static final String DOMAIN = "http://192.168.0.101/yousee_test/YouseeMobile/";   
-	//public static final String DOMAIN = "http://yousee.in/YouseeMobile/";
+	//public static final String DOMAIN = "http://192.168.0.100/yousee_test/YouseeMobile/";   
+	public static final String DOMAIN = "http://yousee.in/YouseeMobile/";
 	// DownloadWebpageTask downloadwebContent;
 	HttpPost postRequest;
 	Middleware listener;
-	public static String sessionId;
+	public static String sessionId; 
 	public static final DefaultHttpClient httpclient = new DefaultHttpClient();
 
 	public static boolean isExecuting = false;
