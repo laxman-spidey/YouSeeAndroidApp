@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -27,7 +29,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class MainActivity extends YouseeCustomActivity implements OnItemClickListener
+public class MainActivity extends YouseeCustomActivity implements OnItemClickListener, OnScrollListener
 {
 
 	private FrameLayout filterFrame;
@@ -35,6 +37,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	ListView listview;
 	OpportunityListBuilder listBuilder;
 	ArrayList<ProxyOpportunityItem> proxyList;
+	private boolean isFilterEnabled = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -64,7 +67,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 
 	}
 
-	public void buildOpportunityList(ArrayList<ProxyOpportunityItem> proxyList)
+	public void renderOpportunityListView(ArrayList<ProxyOpportunityItem> proxyList)
 	{
 
 		this.proxyList = proxyList;
@@ -100,10 +103,11 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			@Override
 			public void onClick(View v)
 			{
+				isFilterEnabled = true;
 				setSupportProgressBarIndeterminateVisibility(true);
 				showFilterMenu(false);
 				listBuilder = new OpportunityListBuilder(filterGroupList, MainActivity.this);
-
+				
 				requestSenderMiddleware = listBuilder;
 				sendRequest();
 
@@ -305,7 +309,7 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			if (responseObject.size() > 0)
 			{
 				infoMsg.setVisibility(View.GONE);
-				buildOpportunityList(responseObject);
+				renderOpportunityListView(responseObject);
 				listview.setVisibility(View.VISIBLE);
 
 			} else
@@ -316,10 +320,11 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 			}
 
 			setSupportProgressBarIndeterminateVisibility(false);
-		}
-		else if(requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
+		} else if (requestCode == RequestCodes.NETWORK_REQUEST_SEND_GCM_ID)
 		{
-			//Toast.makeText(getContext(), "Something went wrong, Please restart the Application.", Toast.LENGTH_SHORT).show();
+			// Toast.makeText(getContext(),
+			// "Something went wrong, Please restart the Application.",
+			// Toast.LENGTH_SHORT).show();
 		}
 		super.onResponseRecieved(response, requestCode);
 	}
@@ -350,6 +355,34 @@ public class MainActivity extends YouseeCustomActivity implements OnItemClickLis
 	{
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
+	}
+
+	private boolean isLoading = false;
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+	{
+		final int lastItem = firstVisibleItem + visibleItemCount;
+		if (lastItem == totalItemCount)
+		{
+			// you have reached end of list, load more data
+			if(isLoading == false)
+			{
+				isLoading = true;
+				Log.i(LOG_TAG,"scroll completed, Loading data");
+				//
+			}
+			else
+			{
+				Log.i(LOG_TAG,"already loading/..");
+			}
+		}
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

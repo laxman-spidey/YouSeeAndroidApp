@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.yousee.main"
+   package="in.yousee.main"
     android:versionCode="3"
-    android:versionName="1.0.1" >
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -20,18 +20,18 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="in.yousee.main.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name="in.yousee.main.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                
 
                 <category android:name="in.yousee.main" />
             </intent-filter>
@@ -42,6 +42,11 @@
         <activity
             android:name="in.yousee.main.WelcomeActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="in.yousee.main.MainActivity"
@@ -73,13 +78,12 @@
             android:label="@string/title_activity_about_us" >
         </activity>
         <activity
+            android:name="in.yousee.main.SettingsActivity"
+            android:label="@string/title_activity_about_us" >
+        </activity>
+        <activity
             android:name="in.yousee.main.NotificationTestActivity"
             android:label="@string/title_activity_notification_test" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

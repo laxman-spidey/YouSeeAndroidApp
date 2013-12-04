@@ -255,7 +255,7 @@ public class GcmIntentService extends IntentService
 	public void sendNotificationTest(String msg)
 	{
 
-		String notificationHeader = "There are new Opportunities. Check them out!";
+		String notificationHeader;
 		// Creates an explicit intent for an Activity in your app
 		
 		ProxyOpportunityItem proxyItem = extractData(extras);
@@ -268,13 +268,13 @@ public class GcmIntentService extends IntentService
 		{ 
 			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, IndividualOpportunityItemActivity.class), 0);
 			resultIntent = new Intent(this, IndividualOpportunityItemActivity.class);
-			notificationHeader = "1 New Opportunity.";
+			notificationHeader = "1 New Volunteering Opportunity.";
 			icon = BitmapFactory.decodeResource(this.getResources(), proxyItem.getResourceOfCatagoryType());
 		} else
 		{
 			contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 			resultIntent = new Intent(this, MainActivity.class);
-			notificationHeader = notifCount + " New Opportunities.";
+			notificationHeader = notifCount + " New Volunteering Opportunities.";
 			icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		}
 		resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

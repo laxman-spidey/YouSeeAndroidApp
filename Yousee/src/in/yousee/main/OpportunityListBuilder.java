@@ -27,6 +27,8 @@ public class OpportunityListBuilder extends Middleware
 {
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
+	private boolean getNextelements;
+	private boolean isFilterEnabled;
 
 	private OnResponseRecievedListener listener;
 
@@ -36,7 +38,6 @@ public class OpportunityListBuilder extends Middleware
 
 		// super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
 		assembleRequest(filterGroupList);
-
 	}
 
 	public OpportunityListBuilder(OnResponseRecievedListener listener)
@@ -67,6 +68,12 @@ public class OpportunityListBuilder extends Middleware
 
 	}
 
+	public void getDataOnScroll(boolean isScrolled,  boolean isFilterEnabled)
+	{
+		this.getNextelements = isScrolled;
+		this.isFilterEnabled = isFilterEnabled;
+	}
+	
 	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
