@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class OpportunityListBuilder extends Middleware
+public class MainActivityMiddleware extends Middleware
 {
 	private String TAG_FIRSTTIME = "firstTime";
 	private String TAG_UPDATE = "update";
@@ -32,7 +32,7 @@ public class OpportunityListBuilder extends Middleware
 
 	private OnResponseRecievedListener listener;
 
-	public OpportunityListBuilder(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener)
+	public MainActivityMiddleware(ArrayList<FilterGroupInfo> filterGroupList, OnResponseRecievedListener listener)
 	{
 		this.listener = listener;
 
@@ -40,7 +40,7 @@ public class OpportunityListBuilder extends Middleware
 		reassembleRequest(filterGroupList);
 	}
 
-	public OpportunityListBuilder(OnResponseRecievedListener listener)
+	public MainActivityMiddleware(OnResponseRecievedListener listener)
 	{
 		this.listener = listener;
 

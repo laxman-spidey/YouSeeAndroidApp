@@ -15,7 +15,7 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.Context;
 import android.util.Log;
 
-public class RegistrationProcessor extends Middleware
+public class RegistrationActivityMiddleware extends Middleware
 {
 
 	public static final String TAG_FIRSTNAME = "firstName";
@@ -29,7 +29,7 @@ public class RegistrationProcessor extends Middleware
 	private OnResponseRecievedListener responseListener;
 	private RegistrationFormObject regForm;
 
-	public RegistrationProcessor(OnResponseRecievedListener responseListener, RegistrationFormObject regForm)
+	public RegistrationActivityMiddleware(OnResponseRecievedListener responseListener, RegistrationFormObject regForm)
 	{
 		this.responseListener = responseListener;
 		this.regForm = regForm;

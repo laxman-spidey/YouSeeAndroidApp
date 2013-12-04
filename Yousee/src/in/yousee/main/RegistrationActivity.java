@@ -283,7 +283,7 @@ public class RegistrationActivity extends YouseeCustomActivity implements OnFocu
 		regFormObject.setDob(dob.getText().toString());
 		regFormObject.setPhNo(phNo.getText().toString());
 		regFormObject.setCity(city.getText().toString());
-		RegistrationProcessor registrationProcessor = new RegistrationProcessor(this, regFormObject);
+		RegistrationActivityMiddleware registrationProcessor = new RegistrationActivityMiddleware(this, regFormObject);
 		requestSenderMiddleware = registrationProcessor;
 		sendRequest();
 	}

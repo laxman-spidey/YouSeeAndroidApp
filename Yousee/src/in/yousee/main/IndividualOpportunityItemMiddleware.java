@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
-public class IndividualOpportunityItemBuilder extends Middleware
+public class IndividualOpportunityItemMiddleware extends Middleware
 {
 	private static final String TAG_ACTIVITY_ID = "activity_id";
 	private static final String TAG_OPPORTUNITY_COMMITTED_ID = "opp_id";
@@ -32,7 +32,7 @@ public class IndividualOpportunityItemBuilder extends Middleware
 	RealOpportunityItem realOpportunityItem;
 	boolean[] checkedState;
 
-	public IndividualOpportunityItemBuilder(ProxyOpportunityItem proxy, OnResponseRecievedListener responseListener)
+	public IndividualOpportunityItemMiddleware(ProxyOpportunityItem proxy, OnResponseRecievedListener responseListener)
 	{
 
 		listener = responseListener;
@@ -79,7 +79,7 @@ public class IndividualOpportunityItemBuilder extends Middleware
 	public void preCommitExecute(RealOpportunityItem realOpportunityItem, boolean checkedState[])
 	{
 		Log.i("tag", "pre Commit");
-		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+		IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
 		this.realOpportunityItem = realOpportunityItem;
 		this.checkedState = checkedState;
 		assembleRequest();

@@ -41,7 +41,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 	ArrayList<View> activityList;
 	static boolean selectall = false;
 	RealOpportunityItem realItem;
-	IndividualOpportunityItemBuilder builder;
+	IndividualOpportunityItemMiddleware builder;
 
 	private static final String LOG_TAG = "tag";
 
@@ -55,11 +55,11 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		String jsonString = getIntent().getExtras().getString("result");
 		Log.i("tag", "fjedfksdjfljddilfjgldfg " + jsonString);
 		proxyOpportunityItem = new ProxyOpportunityItem(jsonString);
-		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
-		builder = new IndividualOpportunityItemBuilder(proxyOpportunityItem, this);
+		IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+		builder = new IndividualOpportunityItemMiddleware(proxyOpportunityItem, this);
 		GcmIntentService.resetNotificationCount(getApplicationContext());
-		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
-		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemBuilder.requestCode);
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemMiddleware.requestCode);
+		Log.d("debug_tag", "requestCode = " + IndividualOpportunityItemMiddleware.requestCode);
 		super.requestSenderMiddleware = builder;
 
 		image = (ImageView) findViewById(R.id.catagoryIcon);
@@ -101,7 +101,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			if (checkedAtleastOneCard == true)
 			{
 				Log.i(LOG_TAG, "Committing");
-				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+				IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
 				builder.preCommitExecute(realItem, checkedState);
 				super.requestSenderMiddleware = builder;
 				super.sendRequest();
@@ -171,7 +171,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 				Toast.makeText(getApplicationContext(), "failed to Commit", Toast.LENGTH_SHORT).show();
 			}
 
-			IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+			IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 			builder.assembleRequest();
 			refreshActivityScheduleList();
 			super.reloadActivity();
@@ -252,7 +252,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 		activityList.removeAll(activityList);
 		i = 0;
 		map.clear();
-		IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
+		IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_ACTIVITY_COMMIT;
 		requestSenderMiddleware = builder;
 
 	}
@@ -377,7 +377,7 @@ public class IndividualOpportunityItemActivity extends YouseeCustomActivity impl
 			if (resultCode == RESULT_OK)
 			{
 
-				IndividualOpportunityItemBuilder.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
+				IndividualOpportunityItemMiddleware.requestCode = RequestCodes.NETWORK_REQUEST_OPPORTUNITY_SCHEDULE_LIST;
 				builder.assembleRequest();
 				refreshActivityScheduleList();
 			}
