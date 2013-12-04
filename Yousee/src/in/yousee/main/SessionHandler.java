@@ -90,7 +90,7 @@ public class SessionHandler extends Middleware
 		SharedPreferences sharedPrefs = getLoginSharedPrefs(context);
 		SharedPreferences.Editor editor = sharedPrefs.edit();
 		editor.putInt(KEY_USER_ID, userId);
-		Log.i(SESSION_DEBUG_TAG, "userid set to : "+userId);
+		Log.i(SESSION_DEBUG_TAG, "userid set to : " + userId);
 		editor.commit();
 	}
 
@@ -209,14 +209,7 @@ public class SessionHandler extends Middleware
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGIN);
 		nameValuePairs.add(new BasicNameValuePair("username", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
-		try
-		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		encodePostRequest(nameValuePairs);
 
 		sendRequest();
 
@@ -229,14 +222,8 @@ public class SessionHandler extends Middleware
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.LOGOUT);
 		nameValuePairs = new ArrayList<NameValuePair>();
 		super.setRequestCode(RequestCodes.NETWORK_REQUEST_LOGOUT);
-		try
-		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		encodePostRequest(nameValuePairs);
+
 		sendRequest();
 
 	}
@@ -261,14 +248,13 @@ public class SessionHandler extends Middleware
 				Log.i(SESSION_DEBUG_TAG, "setting session id");
 				setUserId(sessionData.getUserId());
 				String sessionId = null;
-				
 
 				if (isSessionIdExists(context))
 				{
 					Log.i(SESSION_DEBUG_TAG, "viewing session id");
 
 				}
-				
+
 				getLoginCredentials(username, password);
 				loginFeatureClient.onLoginSuccess();
 			}

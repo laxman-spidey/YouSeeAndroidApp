@@ -55,14 +55,8 @@ public class IndividualOpportunityItemBuilder extends Middleware
 			addUserIdToPost();
 			nameValuePairs.add(new BasicNameValuePair(TAG_ACTIVITY_ID, "" + proxy.getId()));
 
-			try
-			{
-				postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				e.printStackTrace();
-			}
+			encodePostRequest(nameValuePairs);
+
 		}
 		else if (requestCode == RequestCodes.NETWORK_ACTIVITY_COMMIT)
 		{
@@ -100,11 +94,11 @@ public class IndividualOpportunityItemBuilder extends Middleware
 		String value = "";
 		for (int i = 0; i < checkedState.length; i++)
 		{
-			Log.i("tag"," checked state : "+ checkedState[i]);
+			Log.i("tag", " checked state : " + checkedState[i]);
 			if (checkedState[i])
 			{
 				int id = this.realOpportunityItem.getActivityScheduleList().get(i).getOpportunityId();
-				Log.i("tag"," checked id: "+ id);
+				Log.i("tag", " checked id: " + id);
 				value += id + ",";
 			}
 
@@ -114,14 +108,7 @@ public class IndividualOpportunityItemBuilder extends Middleware
 		Log.i("tag", "opportunity Id values = " + value);
 		nameValuePairs.add(new BasicNameValuePair(TAG_OPPORTUNITY_COMMITTED_ID, "" + value));
 
-		try
-		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		encodePostRequest(nameValuePairs);
 
 	}
 

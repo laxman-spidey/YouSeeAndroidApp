@@ -49,14 +49,7 @@ public class RegistrationProcessor extends Middleware
 		nameValuePairs.add(new BasicNameValuePair(TAG_DOB, regForm.getDob()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_PHNO, regForm.getPhNo()));
 		nameValuePairs.add(new BasicNameValuePair(TAG_CITY, regForm.getCity()));
-		try
-		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		encodePostRequest(nameValuePairs);
 
 	}
 

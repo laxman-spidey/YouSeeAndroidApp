@@ -37,7 +37,7 @@ public class OpportunityListBuilder extends Middleware
 		this.listener = listener;
 
 		// super.requestCode = Chef.OPPORTUNITY_LIST_REQUEST_CODE;
-		assembleRequest(filterGroupList);
+		reassembleRequest(filterGroupList);
 	}
 
 	public OpportunityListBuilder(OnResponseRecievedListener listener)
@@ -56,25 +56,17 @@ public class OpportunityListBuilder extends Middleware
 		nameValuePairs = new ArrayList<NameValuePair>(2);
 		setRequestCode(RequestCodes.NETWORK_REQUEST_OPPORTUNITY_LIST);
 		nameValuePairs.add(new BasicNameValuePair(TAG_FIRSTTIME, "true"));
-
-		try
-		{
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
+		encodePostRequest(nameValuePairs);
 
 	}
 
-	public void getDataOnScroll(boolean isScrolled,  boolean isFilterEnabled)
+	public void getDataOnScroll(boolean isScrolled, boolean isFilterEnabled)
 	{
 		this.getNextelements = isScrolled;
 		this.isFilterEnabled = isFilterEnabled;
 	}
-	
-	protected void assembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
+
+	public void reassembleRequest(ArrayList<FilterGroupInfo> filterGroupList)
 	{
 		postRequest = new HttpPost(NetworkConnectionHandler.DOMAIN + ServerFiles.VOLUNTEERING_OPPORTUNITIES);
 		nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -116,20 +108,13 @@ public class OpportunityListBuilder extends Middleware
 		}
 		Log.i("tag", "name value pairs " + nameValuePairs.toString());
 
-		try
+		if (noItemChecked)
 		{
-			if(noItemChecked)
-			{
-				assembleRequest();
-			}
-			else
-			{
-				postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			}
+			assembleRequest();
 		}
-		catch (UnsupportedEncodingException e)
+		else
 		{
-			e.printStackTrace();
+			encodePostRequest(nameValuePairs);
 		}
 
 	}
@@ -162,7 +147,7 @@ public class OpportunityListBuilder extends Middleware
 			catch (JSONException e)
 			{
 				Log.i("tag", "exception caught");
-				
+
 				e.printStackTrace();
 			}
 			Log.i("tag", "item list length = " + proxyItemList.size());
