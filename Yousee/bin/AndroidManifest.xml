@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.yousee.yousee"
-    android:versionCode="1"
+   package="in.yousee.main"
+    android:versionCode="3"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -10,14 +10,37 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="in.yousee.main.permission.C2D_MESSAGE" />
+
+    <permission
+        android:name="in.yousee.main.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="in.yousee.main.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/uc_logo"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        <receiver
+            android:name="in.yousee.main.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="in.yousee.main" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="in.yousee.main.GcmIntentService" />
+
         <activity
-            android:name="in.yousee.yousee.WelcomeActivity"
+            android:name="in.yousee.main.WelcomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,29 +49,41 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="in.yousee.yousee.MainActivity"
+            android:name="in.yousee.main.MainActivity"
             android:configChanges="orientation" >
         </activity>
         <activity
-            android:name="in.yousee.yousee.IndividualOpportunityItemActivity"
+            android:name="in.yousee.main.IndividualOpportunityItemActivity"
             android:configChanges="orientation"
-            android:parentActivityName="in.yousee.yousee.MainActivity" >
+            android:parentActivityName="in.yousee.main.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.yousee.yousee.MainActivity" />
         </activity>
         <activity
-            android:name="in.yousee.yousee.LoginActivity"
+            android:name="in.yousee.main.LoginActivity"
             android:configChanges="orientation"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
-        <activity android:name="in.yousee.yousee.RegistrationActivity" >
+        <activity android:name="in.yousee.main.RegistrationActivity" >
         </activity>
         <activity
-            android:name="in.yousee.yousee.RetryActivity"
+            android:name="in.yousee.main.RetryActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_retry"
             android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="in.yousee.main.AboutUs"
+            android:label="@string/title_activity_about_us" >
+        </activity>
+        <activity
+            android:name="in.yousee.main.SettingsActivity"
+            android:label="@string/title_activity_about_us" >
+        </activity>
+        <activity
+            android:name="in.yousee.main.NotificationTestActivity"
+            android:label="@string/title_activity_notification_test" >
         </activity>
     </application>
 

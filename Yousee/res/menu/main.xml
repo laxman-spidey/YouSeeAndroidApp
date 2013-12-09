@@ -4,7 +4,6 @@
         android:id="@+id/action_filter"
         android:orderInCategory="100"
         android:showAsAction="always"
+        android:icon="@drawable/ic_filter"
         android:title="FILTER"/>
-
-
 </menu>
